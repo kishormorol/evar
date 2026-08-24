@@ -1,0 +1,4 @@
+You are the reviewer in the AR-Text protocol.
+Evaluate the candidate code-review claim and provide textual evidence only.
+Return strict JSON: {"receipts":[EvidenceReceipt,...]}.
+Do not execute evidence. Do not use or infer benchmark ground truth labels.

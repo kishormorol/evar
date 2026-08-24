@@ -71,6 +71,18 @@ Validate model-adapter structured outputs without calling a model API:
 python -m evar.run_model --cases cases.jsonl --dry-run
 ```
 
+Compare deterministic AR, AR-Text, and EVAR-Hard evidence-level protocols:
+
+```bash
+python -m evar.demo_compare
+```
+
+Evidence-level protocol registry names:
+
+- `ar`
+- `ar_text`
+- `evar_hard`
+
 ## Scientific Guardrails
 
 - Benchmark ground-truth labels are loaded as fixture data and are not changed by protocols.

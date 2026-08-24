@@ -5,6 +5,7 @@ from typing import Any
 
 from evar.benchmark.schema import BenchmarkCase, GroundTruth
 from evar.protocols.base import ProtocolResult
+from evar.results import BenchmarkResultRecord
 
 
 @dataclass(frozen=True)
@@ -84,3 +85,19 @@ def compute_fcr_scr(records: list[dict[str, Any]]) -> AggregateMetrics:
 def _has_actionable_finding(record: dict[str, Any]) -> bool:
     actionable = record.get("actionable_findings", [])
     return isinstance(actionable, list) and len(actionable) > 0
+
+
+def false_consensus_rate(results: list[BenchmarkResultRecord]) -> float:
+    unsupported = [result for result in results if result.ground_truth == GroundTruth.UNSUPPORTED]
+    if not unsupported:
+        return 0.0
+    accepted = [result for result in unsupported if result.final_actionable]
+    return len(accepted) / len(unsupported)
+
+
+def supported_claim_retention(results: list[BenchmarkResultRecord]) -> float:
+    supported = [result for result in results if result.ground_truth == GroundTruth.SUPPORTED]
+    if not supported:
+        return 0.0
+    accepted = [result for result in supported if result.final_actionable]
+    return len(accepted) / len(supported)

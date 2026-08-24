@@ -35,6 +35,18 @@ class ReviewFinding:
     verification_result: VerificationResult
     critic_decision: CriticDecision
     actionable: bool
+    text_evidence: TextEvidence | None = None
+
+
+@dataclass(frozen=True)
+class TextEvidence:
+    claim: str
+    file: str
+    line_start: int | None
+    line_end: int | None
+    explanation: str
+    quoted_or_paraphrased_support: str
+    falsification_condition: str
 
 
 @dataclass(frozen=True)
@@ -84,6 +96,16 @@ class FakeCritic:
         if isinstance(self.decisions, CriticDecision):
             return self.decisions
         return self.decisions.get(receipt.claim_id, CriticDecision.CHALLENGE_EVIDENCE)
+
+    def critique_text(
+        self,
+        task: str,
+        receipt: EvidenceReceipt,
+        text_evidence: TextEvidence,
+        verification_result: VerificationResult,
+    ) -> CriticDecision:
+        del text_evidence
+        return self.critique(task, receipt, verification_result)
 
 
 class EVARHardEvidenceProtocol:
@@ -355,6 +377,16 @@ def _event(event_type: str, claim_id: str, **payload: object) -> dict[str, objec
         "timestamp": datetime.now(timezone.utc).isoformat(),
         **{key: _json_safe(value) for key, value in payload.items()},
     }
+
+
+def no_verification_result(reason: str) -> VerificationResult:
+    return VerificationResult(
+        status=VerificationStatus.UNVERIFIABLE,
+        stdout="",
+        stderr="",
+        exit_code=None,
+        reason=reason,
+    )
 
 
 def _interaction(

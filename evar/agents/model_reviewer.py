@@ -3,14 +3,10 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol
 
+from evar.model_backend import ModelBackend, ModelResponse
+from evar.prompts import PromptTemplate, load_prompt, prompt_filename
 from evar.verifier.models import EvidenceReceipt, EvidenceType
-
-
-class ModelClient(Protocol):
-    def complete(self, prompt: str, *, seed: int | None = None) -> str:
-        ...
 
 
 @dataclass(frozen=True)
@@ -26,21 +22,41 @@ class ModelOutputError(ValueError):
 
 
 class ModelReviewer:
-    def __init__(self, client: ModelClient, config: ModelAgentConfig) -> None:
-        self.client = client
+    def __init__(
+        self,
+        backend: ModelBackend,
+        config: ModelAgentConfig,
+        *,
+        protocol: str = "evar_hard",
+    ) -> None:
+        self.backend = backend
         self.config = config
+        self.protocol = protocol
+        self.prompt = load_prompt(prompt_filename("reviewer", protocol))
+        self.responses: list[ModelResponse] = []
 
     def review(self, task: str, repo_path: Path) -> list[EvidenceReceipt]:
-        prompt = _review_prompt(task, repo_path)
-        raw = self.client.complete(prompt, seed=self.config.seed)
-        return parse_reviewer_receipts(raw)
+        response = self.backend.generate(
+            self.prompt.text,
+            _review_user_prompt(task, repo_path),
+            response_schema={"type": "object", "required": ["receipts"]},
+        )
+        self.responses.append(response)
+        return parse_reviewer_receipts(response.parsed_output if response.parsed_output is not None else response.text)
+
+    @property
+    def prompt_template(self) -> PromptTemplate:
+        return self.prompt
 
 
-def parse_reviewer_receipts(raw: str) -> list[EvidenceReceipt]:
-    try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise ModelOutputError(f"Reviewer output is not valid JSON: {exc}") from exc
+def parse_reviewer_receipts(raw: str | object) -> list[EvidenceReceipt]:
+    if isinstance(raw, str):
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise ModelOutputError(f"Reviewer output is not valid JSON: {exc}") from exc
+    else:
+        payload = raw
     if not isinstance(payload, dict) or not isinstance(payload.get("receipts"), list):
         raise ModelOutputError("Reviewer output must be an object with a receipts list.")
     return [_parse_receipt(item) for item in payload["receipts"]]
@@ -72,11 +88,12 @@ def _parse_receipt(item: object) -> EvidenceReceipt:
     )
 
 
-def _review_prompt(task: str, repo_path: Path) -> str:
+def _review_user_prompt(task: str, repo_path: Path) -> str:
     return (
-        "Return strict JSON with a receipts list of EVAR EvidenceReceipt objects. "
-        "Do not include benchmark ground truth. "
-        f"Task: {task}\nRepository path: {repo_path}"
+        f"Task description and candidate claim:\n{task}\n\n"
+        f"Repository path:\n{repo_path}\n\n"
+        "Use only repository context allowed by the experiment policy. "
+        "Do not include benchmark labels or expected final decisions."
     )
 
 
