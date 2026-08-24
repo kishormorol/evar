@@ -1,33 +1,45 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path
 
 
-class EvidenceKind(StrEnum):
+class EvidenceType(StrEnum):
     STRUCTURAL = "structural"
     BEHAVIORAL = "behavioral"
 
 
+EvidenceKind = EvidenceType
+
+
+class VerificationStatus(StrEnum):
+    VERIFIED = "VERIFIED"
+    FAILED = "FAILED"
+    UNVERIFIABLE = "UNVERIFIABLE"
+
+
 @dataclass(frozen=True)
 class EvidenceReceipt:
-    kind: EvidenceKind
-    target: Path
+    claim_id: str
     claim: str
+    evidence_type: EvidenceType
+    file: str
     line_start: int | None = None
     line_end: int | None = None
-    must_contain: str | None = None
-    command: tuple[str, ...] | None = None
-    expected_exit_code: int = 0
-    stdout_must_contain: str | None = None
-    cwd: Path | None = None
-    metadata: dict[str, str] = field(default_factory=dict)
+    verification_command: str | None = None
+    expected_exit_code: int | None = None
+    expected_stdout_contains: str | None = None
+    falsification_condition: str = ""
 
 
 @dataclass(frozen=True)
 class VerificationResult:
-    ok: bool
-    kind: EvidenceKind
-    message: str
-    details: dict[str, str] = field(default_factory=dict)
+    status: VerificationStatus
+    stdout: str
+    stderr: str
+    exit_code: int | None
+    reason: str
+
+    @property
+    def ok(self) -> bool:
+        return self.status == VerificationStatus.VERIFIED

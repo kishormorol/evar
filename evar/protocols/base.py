@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import Protocol
 
 from evar.verifier.models import EvidenceReceipt, VerificationResult
@@ -41,6 +42,20 @@ class Challenge:
     reason: str
 
 
+class CriticDecisionType(StrEnum):
+    ACCEPT = "ACCEPT"
+    CHALLENGE_EVIDENCE = "CHALLENGE_EVIDENCE"
+    REQUEST_STRONGER_WITNESS = "REQUEST_STRONGER_WITNESS"
+    COUNTEREXAMPLE = "COUNTEREXAMPLE"
+
+
+@dataclass(frozen=True)
+class CriticDecision:
+    finding_id: str
+    decision: CriticDecisionType
+    reason: str = ""
+
+
 @dataclass(frozen=True)
 class ProtocolResult:
     protocol_name: str
@@ -50,6 +65,7 @@ class ProtocolResult:
     verification_results: dict[str, VerificationResult] = field(default_factory=dict)
     budget: ProtocolBudget = field(default_factory=ProtocolBudget)
     config: AgentConfig = field(default_factory=lambda: AgentConfig(model_name="unset"))
+    interaction_log: list[dict[str, object]] = field(default_factory=list)
 
 
 class Reviewer(Protocol):

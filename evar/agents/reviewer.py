@@ -2,20 +2,20 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from evar.benchmark.schema import BenchmarkCase
+from evar.benchmark.schema import TaskCase
 from evar.protocols.base import AgentConfig, Challenge, Finding
 
 
 class DummyReviewer:
     """Deterministic reviewer used for tests and no-LLM examples."""
 
-    def propose_findings(self, case: BenchmarkCase, config: AgentConfig) -> list[Finding]:
+    def propose_findings(self, case: TaskCase, config: AgentConfig) -> list[Finding]:
         del config
         return [replace(finding) for finding in case.seed_findings]
 
     def revise_findings(
         self,
-        case: BenchmarkCase,
+        case: TaskCase,
         findings: list[Finding],
         challenges: list[Challenge],
         config: AgentConfig,

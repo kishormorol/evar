@@ -10,7 +10,7 @@ from evar.protocols.evar import EVARHardProtocol
 
 
 def main() -> None:
-    case = load_dummy_case()
+    case = load_dummy_case().to_task_case()
     reviewer = DummyReviewer()
     critic = DummyCritic()
     config = AgentConfig(model_name="dummy-model", temperature=0.0, seed=7)
