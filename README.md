@@ -56,6 +56,21 @@ python -m evar.run --protocol evar --cases cases.jsonl
 
 Each command writes JSONL results to stdout for later statistical analysis.
 
+Summarize result JSONL with FCR/SCR:
+
+```bash
+python -m evar.eval_table --results ar_results.jsonl evar_results.jsonl
+python -m evar.eval_table --results ar_results.jsonl evar_results.jsonl --bootstrap 10000 --seed 7
+```
+
+`FCR` is the unsupported-case actionable rate. `SCR` is the supported-case actionable rate.
+
+Validate model-adapter structured outputs without calling a model API:
+
+```bash
+python -m evar.run_model --cases cases.jsonl --dry-run
+```
+
 ## Scientific Guardrails
 
 - Benchmark ground-truth labels are loaded as fixture data and are not changed by protocols.

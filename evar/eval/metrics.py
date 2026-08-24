@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from evar.benchmark.schema import BenchmarkCase, GroundTruth
 from evar.protocols.base import ProtocolResult
@@ -12,6 +13,20 @@ class Metrics:
     false_positives: int
     actionable_count: int
     precision: float
+
+
+@dataclass(frozen=True)
+class AggregateMetrics:
+    protocol: str
+    total_cases: int
+    completed_cases: int
+    failed_runs: int
+    supported_cases: int
+    unsupported_cases: int
+    supported_actionable: int
+    unsupported_actionable: int
+    fcr: float
+    scr: float
 
 
 def compute_metrics(case: BenchmarkCase, result: ProtocolResult) -> Metrics:
@@ -26,3 +41,46 @@ def compute_metrics(case: BenchmarkCase, result: ProtocolResult) -> Metrics:
         actionable_count=actionable_count,
         precision=precision,
     )
+
+
+def compute_fcr_scr(records: list[dict[str, Any]]) -> AggregateMetrics:
+    if not records:
+        return AggregateMetrics(
+            protocol="",
+            total_cases=0,
+            completed_cases=0,
+            failed_runs=0,
+            supported_cases=0,
+            unsupported_cases=0,
+            supported_actionable=0,
+            unsupported_actionable=0,
+            fcr=0.0,
+            scr=0.0,
+        )
+
+    protocols = {str(record.get("protocol", "")) for record in records}
+    protocol = protocols.pop() if len(protocols) == 1 else "mixed"
+
+    completed = [record for record in records if record.get("run_status", "ok") == "ok"]
+    supported = [record for record in completed if record.get("ground_truth") == GroundTruth.SUPPORTED.value]
+    unsupported = [record for record in completed if record.get("ground_truth") == GroundTruth.UNSUPPORTED.value]
+    supported_actionable = sum(1 for record in supported if _has_actionable_finding(record))
+    unsupported_actionable = sum(1 for record in unsupported if _has_actionable_finding(record))
+
+    return AggregateMetrics(
+        protocol=protocol,
+        total_cases=len(records),
+        completed_cases=len(completed),
+        failed_runs=len(records) - len(completed),
+        supported_cases=len(supported),
+        unsupported_cases=len(unsupported),
+        supported_actionable=supported_actionable,
+        unsupported_actionable=unsupported_actionable,
+        fcr=unsupported_actionable / len(unsupported) if unsupported else 0.0,
+        scr=supported_actionable / len(supported) if supported else 0.0,
+    )
+
+
+def _has_actionable_finding(record: dict[str, Any]) -> bool:
+    actionable = record.get("actionable_findings", [])
+    return isinstance(actionable, list) and len(actionable) > 0
