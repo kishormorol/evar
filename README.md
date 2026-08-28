@@ -6,7 +6,12 @@ Research question:
 
 > Can external executable verification reduce false consensus between LLM reviewer/critic agents during code review?
 
-This is not a production application. The current implementation uses deterministic dummy agents so the end-to-end path can run without calling an LLM.
+This is not a production application. It supports deterministic dummy-agent smoke tests and OpenAI-backed reviewer/critic experiments.
+
+Current writeup:
+
+- [Paper draft](PAPER.md)
+- [Manual 50 benchmark results](benchmarks/manual_50/RESULTS.md)
 
 ## Protocols
 
@@ -55,6 +60,7 @@ python -m evar.run --protocol evar --cases cases.jsonl
 ```
 
 Each command writes JSONL results to stdout for later statistical analysis.
+Configured model runs write timestamped JSONL files to `results/` and per-case transcripts to `results/transcripts/<run_id>/`.
 
 Summarize result JSONL with FCR/SCR:
 
@@ -82,6 +88,24 @@ Evidence-level protocol registry names:
 - `ar`
 - `ar_text`
 - `evar_hard`
+
+## Current Results
+
+Held-out 50-case `gpt-4.1` result:
+
+| Protocol | FCR | SCR |
+| --- | ---: | ---: |
+| `ar` | 0.040 | 0.960 |
+| `ar_text` | 0.000 | 0.920 |
+| `evar_hard` | 0.000 | 1.000 |
+
+Three `gpt-4.1-mini` repetitions on the same 50-case benchmark:
+
+| Protocol | Mean FCR | Mean SCR |
+| --- | ---: | ---: |
+| `ar` | 0.000 | 0.813 |
+| `ar_text` | 0.000 | 0.987 |
+| `evar_hard` | 0.000 | 0.987 |
 
 ## Scientific Guardrails
 

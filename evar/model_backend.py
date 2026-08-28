@@ -67,7 +67,7 @@ class DryRunBackend:
                             "line_end": None,
                             "verification_command": "python -m unittest discover",
                             "expected_exit_code": 0,
-                            "expected_stdout_contains": "OK",
+                            "expected_stdout_contains": "EVAR_WITNESS_PASS",
                             "falsification_condition": "FAILED",
                         }
                     ]

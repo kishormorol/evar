@@ -36,6 +36,35 @@ class VerifierTests(unittest.TestCase):
         self.assertIn("return a - b", result.stdout)
         self.assertEqual(result.stderr, "")
 
+    def test_structural_verifier_accepts_dedented_multiline_observation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            target = repo / "sample.py"
+            target.write_text(
+                "def merge_records(records):\n"
+                "    merged = []\n"
+                "    for record in records:\n"
+                "        merged.append(record)\n"
+                "        merged.append(record)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="sample.py",
+                line_start=3,
+                line_end=5,
+                expected_stdout_contains=(
+                    "for record in records:\n"
+                    "    merged.append(record)\n"
+                    "    merged.append(record)"
+                ),
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertEqual(result.exit_code, 0)
+
     def test_structural_verifier_rejects_missing_expected_observation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -111,7 +140,8 @@ class VerifierTests(unittest.TestCase):
             probe.write_text(
                 "from pathlib import Path\n"
                 "print(Path.cwd().name)\n"
-                "print(Path('marker.txt').read_text())\n",
+                "print(Path('marker.txt').read_text())\n"
+                "print('EVAR_WITNESS_PASS')\n",
                 encoding="utf-8",
             )
             (repo / "marker.txt").write_text("verified from repo cwd", encoding="utf-8")
@@ -120,7 +150,7 @@ class VerifierTests(unittest.TestCase):
                 file="sample.py",
                 verification_command=f"{sys.executable} probe.py",
                 expected_exit_code=0,
-                expected_stdout_contains="verified from repo cwd",
+                expected_stdout_contains="EVAR_WITNESS_PASS",
                 falsification_condition="not from repo",
             )
 
@@ -130,6 +160,27 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertIn("verified from repo cwd", result.stdout)
         self.assertEqual(result.stderr, "")
+
+    def test_behavioral_verifier_handles_quoted_python_c_command(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("def ok():\n    return True\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.BEHAVIORAL,
+                file="sample.py",
+                verification_command=(
+                    f'{sys.executable} -c "from sample import ok; '
+                    "print('EVAR_WITNESS_PASS' if ok() else '')\""
+                ),
+                expected_exit_code=0,
+                expected_stdout_contains="EVAR_WITNESS_PASS",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn("EVAR_WITNESS_PASS", result.stdout)
 
     def test_behavioral_verifier_captures_stderr_and_exit_code_on_failed_execution(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -148,7 +199,7 @@ class VerifierTests(unittest.TestCase):
                 file="sample.py",
                 verification_command=f"{sys.executable} probe.py",
                 expected_exit_code=0,
-                expected_stdout_contains="real stdout",
+                expected_stdout_contains="EVAR_WITNESS_PASS",
             )
 
             result = verify_evidence(receipt, repo)
@@ -169,7 +220,7 @@ class VerifierTests(unittest.TestCase):
                 file="sample.py",
                 verification_command=f"{sys.executable} probe.py",
                 expected_exit_code=0,
-                expected_stdout_contains="reviewer claimed output",
+                expected_stdout_contains="EVAR_WITNESS_PASS reviewer claimed output",
             )
 
             result = verify_evidence(receipt, repo)
@@ -186,7 +237,7 @@ class VerifierTests(unittest.TestCase):
                 evidence_type=EvidenceType.BEHAVIORAL,
                 file="sample.py",
                 verification_command=None,
-                expected_stdout_contains="anything",
+                expected_stdout_contains="EVAR_WITNESS_PASS",
             )
 
             result = verify_evidence(receipt, repo)
@@ -205,7 +256,7 @@ class VerifierTests(unittest.TestCase):
                 file="sample.py",
                 verification_command=f"{sys.executable} probe.py",
                 expected_exit_code=0,
-                expected_stdout_contains="late",
+                expected_stdout_contains="EVAR_WITNESS_PASS",
             )
 
             result = verify_evidence(receipt, repo, timeout_seconds=0.1)
@@ -239,7 +290,7 @@ class VerifierTests(unittest.TestCase):
             line_end=2,
             verification_command="python -m pytest test_supported.py -q",
             expected_exit_code=0,
-            expected_stdout_contains="NOT_THE_REAL_OUTPUT",
+            expected_stdout_contains="EVAR_WITNESS_PASS_MISSING",
             falsification_condition="FAILED",
         )
 
@@ -263,6 +314,25 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(first.stdout, second.stdout)
         self.assertEqual(first.stderr, second.stderr)
         self.assertEqual(first.exit_code, second.exit_code)
+
+    def test_behavioral_receipt_without_support_marker_is_unverifiable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("# referenced file\n", encoding="utf-8")
+            probe = repo / "probe.py"
+            probe.write_text("print('plain output')\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.BEHAVIORAL,
+                file="sample.py",
+                verification_command=f"{sys.executable} probe.py",
+                expected_exit_code=0,
+                expected_stdout_contains="plain output",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.UNVERIFIABLE)
+        self.assertIn("EVAR_WITNESS_PASS", result.reason)
 
 
 def _receipt(

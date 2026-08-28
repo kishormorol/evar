@@ -58,7 +58,10 @@ class ModelCritic:
     ) -> CriticDecision:
         response = self.backend.generate(
             self.prompt.text,
-            _critic_user_prompt(CriticPromptContext(task, receipt, verification_result)),
+            _critic_user_prompt(
+                CriticPromptContext(task, receipt, verification_result),
+                protocol=self.protocol,
+            ),
             response_schema=CRITIC_RESPONSE_SCHEMA,
         )
         self.responses.append(response)
@@ -71,8 +74,17 @@ class ModelCritic:
         text_evidence: TextEvidence,
         verification_result: VerificationResult,
     ) -> CriticDecision:
-        del text_evidence
-        return self.critique(task, receipt, verification_result)
+        response = self.backend.generate(
+            self.prompt.text,
+            _critic_user_prompt(
+                CriticPromptContext(task, receipt, verification_result),
+                protocol=self.protocol,
+                text_evidence=text_evidence,
+            ),
+            response_schema=CRITIC_RESPONSE_SCHEMA,
+        )
+        self.responses.append(response)
+        return parse_critic_decision(response.parsed_output if response.parsed_output is not None else response.text)
 
     @property
     def prompt_template(self) -> PromptTemplate:
@@ -95,11 +107,30 @@ def parse_critic_decision(raw: str | object) -> CriticDecision:
         raise ModelOutputError(f"Unsupported critic decision: {payload['decision']}") from exc
 
 
-def _critic_user_prompt(context: CriticPromptContext) -> str:
-    return (
+def _critic_user_prompt(
+    context: CriticPromptContext,
+    *,
+    protocol: str,
+    text_evidence: TextEvidence | None = None,
+) -> str:
+    common = (
         f"Task: {context.task}\n"
         f"Claim: {context.receipt.claim}\n"
         f"Evidence receipt: {context.receipt}\n"
-        f"Verification status: {context.verification_result.status.value}\n"
-        f"Verification reason: {context.verification_result.reason}"
+    )
+    if protocol == "ar_text" and text_evidence is not None:
+        return common + f"Textual evidence: {text_evidence}\nExternal verification: not used by AR-Text."
+    if protocol == "ar":
+        return common + "External verification: not used by AR."
+    return (
+        common
+        + f"Verification status: {context.verification_result.status.value}\n"
+        + f"Verification reason: {context.verification_result.reason}\n"
+        + f"Verification stdout: {context.verification_result.stdout}\n"
+        + f"Verification stderr: {context.verification_result.stderr}\n"
+        + f"Verification exit code: {context.verification_result.exit_code}\n"
+        + (
+            "Verifier note: when status is VERIFIED, the expected observation was found "
+            "and the falsification condition was not observed."
+        )
     )

@@ -124,6 +124,8 @@ def _run_configured(
 
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"{run_id}_{normalized_protocol}.jsonl"
+    transcript_dir = output_dir / "transcripts" / run_id
+    transcript_dir.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
         raise RuntimeError(f"Refusing to overwrite existing results file: {output_path}")
 
@@ -134,6 +136,13 @@ def _run_configured(
             try:
                 result = protocol.run(task, case.repo_path)
                 duration = time.perf_counter() - started
+                transcript_path = _write_configured_transcript(
+                    transcript_dir,
+                    case,
+                    normalized_protocol,
+                    run_id,
+                    result,
+                )
                 record = _configured_result_record(
                     case,
                     result,
@@ -143,9 +152,19 @@ def _run_configured(
                     reviewer,
                     critic,
                     config,
+                    transcript_path,
                 )
             except Exception as exc:
                 duration = time.perf_counter() - started
+                transcript_path = _write_failure_transcript(
+                    transcript_dir,
+                    case,
+                    normalized_protocol,
+                    run_id,
+                    exc,
+                    reviewer,
+                    critic,
+                )
                 record = _configured_failure_record(
                     case,
                     normalized_protocol,
@@ -155,6 +174,7 @@ def _run_configured(
                     reviewer,
                     critic,
                     config,
+                    transcript_path,
                 )
             handle.write(json.dumps(record, sort_keys=True) + "\n")
     print(str(output_path))
@@ -190,6 +210,7 @@ def _configured_result_record(
     reviewer: ModelReviewer,
     critic: ModelCritic,
     config: PilotConfig,
+    transcript_path: Path,
 ) -> dict[str, object]:
     first = result.findings[0] if result.findings else None
     return {
@@ -201,7 +222,7 @@ def _configured_result_record(
         "final_actionable": bool(result.accepted_findings),
         "verification_status": first.verification_result.status.value if first else None,
         "critic_decision": first.critic_decision.value if first else None,
-        "transcript_path": None,
+        "transcript_path": str(transcript_path),
         "duration": duration,
         "metadata": {
             "model": _json_safe(config.model),
@@ -231,6 +252,7 @@ def _configured_failure_record(
     reviewer: ModelReviewer,
     critic: ModelCritic,
     config: PilotConfig,
+    transcript_path: Path,
 ) -> dict[str, object]:
     return {
         "case_id": case.case_id,
@@ -241,7 +263,7 @@ def _configured_failure_record(
         "final_actionable": False,
         "verification_status": None,
         "critic_decision": None,
-        "transcript_path": None,
+        "transcript_path": str(transcript_path),
         "duration": duration,
         "metadata": {
             "model": _json_safe(config.model),
@@ -259,6 +281,62 @@ def _configured_failure_record(
         "run_status": "failed",
         "failure": {"type": type(exc).__name__, "reason": str(exc)},
     }
+
+
+def _write_configured_transcript(
+    transcript_dir: Path,
+    case: BenchmarkCase,
+    protocol: str,
+    run_id: str,
+    result: object,
+) -> Path:
+    transcript_path = transcript_dir / f"{case.case_id}.json"
+    payload = {
+        "case_id": case.case_id,
+        "run_id": run_id,
+        "protocol": protocol,
+        "repo_path": str(case.repo_path),
+        "task_description": case.task_description,
+        "claim": case.claim,
+        "claim_family": case.claim_family.value,
+        "ground_truth": case.ground_truth.value,
+        "ground_truth_evidence": case.ground_truth_evidence,
+        "findings": _json_safe(getattr(result, "findings", [])),
+        "accepted_findings": _json_safe(getattr(result, "accepted_findings", [])),
+        "rejected_findings": _json_safe(getattr(result, "rejected_findings", [])),
+        "transcript": _json_safe(getattr(result, "transcript", [])),
+        "metadata": _json_safe(getattr(result, "metadata", {})),
+    }
+    transcript_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    return transcript_path
+
+
+def _write_failure_transcript(
+    transcript_dir: Path,
+    case: BenchmarkCase,
+    protocol: str,
+    run_id: str,
+    exc: Exception,
+    reviewer: ModelReviewer,
+    critic: ModelCritic,
+) -> Path:
+    transcript_path = transcript_dir / f"{case.case_id}.json"
+    payload = {
+        "case_id": case.case_id,
+        "run_id": run_id,
+        "protocol": protocol,
+        "repo_path": str(case.repo_path),
+        "task_description": case.task_description,
+        "claim": case.claim,
+        "claim_family": case.claim_family.value,
+        "ground_truth": case.ground_truth.value,
+        "ground_truth_evidence": case.ground_truth_evidence,
+        "reviewer_model": _response_summary(reviewer.responses[-1:]),
+        "critic_model": _response_summary(critic.responses[-1:]),
+        "failure": {"type": type(exc).__name__, "reason": str(exc)},
+    }
+    transcript_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    return transcript_path
 
 
 def _response_summary(responses: list[object]) -> dict[str, object] | None:

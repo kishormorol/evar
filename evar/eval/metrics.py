@@ -83,6 +83,8 @@ def compute_fcr_scr(records: list[dict[str, Any]]) -> AggregateMetrics:
 
 
 def _has_actionable_finding(record: dict[str, Any]) -> bool:
+    if "final_actionable" in record:
+        return bool(record["final_actionable"])
     actionable = record.get("actionable_findings", [])
     return isinstance(actionable, list) and len(actionable) > 0
 

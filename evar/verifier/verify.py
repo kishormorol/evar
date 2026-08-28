@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import shlex
 import subprocess
+import os
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -14,6 +16,7 @@ from evar.verifier.models import (
 
 
 DEFAULT_TIMEOUT_SECONDS = 5.0
+BEHAVIORAL_SUPPORT_MARKER = "EVAR_WITNESS_PASS"
 
 
 @dataclass(frozen=True)
@@ -70,9 +73,10 @@ def execute_command(
 ) -> CommandExecution:
     """Central command execution point; intentionally uses shell=False."""
     argv = _parse_command(command)
+    popen_args: str | list[str] = command if os.name == "nt" else argv
     try:
         completed = subprocess.run(
-            argv,
+            popen_args,
             cwd=repo_path,
             capture_output=True,
             text=True,
@@ -102,7 +106,7 @@ def execute_command(
 def _parse_command(command: str) -> list[str]:
     if not command or not command.strip():
         raise ValueError("verification_command must be a non-empty string.")
-    return shlex.split(command, posix=False)
+    return shlex.split(command, posix=os.name != "nt")
 
 
 def _check_repo_path(repo_path: Path) -> VerificationResult | None:
@@ -204,7 +208,11 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
 
     lines = target.read_text(encoding="utf-8").splitlines()
     excerpt = "\n".join(lines[receipt.line_start - 1 : receipt.line_end])
-    if receipt.falsification_condition and receipt.falsification_condition in excerpt:
+    normalized_excerpt = _normalize_structural_text(excerpt)
+    if (
+        receipt.falsification_condition
+        and _normalize_structural_text(receipt.falsification_condition) in normalized_excerpt
+    ):
         return VerificationResult(
             status=VerificationStatus.FAILED,
             stdout=excerpt,
@@ -212,7 +220,10 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
             exit_code=0,
             reason="Falsification condition was observed in referenced lines.",
         )
-    if receipt.expected_stdout_contains and receipt.expected_stdout_contains not in excerpt:
+    if (
+        receipt.expected_stdout_contains
+        and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_excerpt
+    ):
         return VerificationResult(
             status=VerificationStatus.FAILED,
             stdout=excerpt,
@@ -237,6 +248,10 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
     )
 
 
+def _normalize_structural_text(text: str) -> str:
+    return "\n".join(line.strip() for line in textwrap.dedent(text).strip().splitlines())
+
+
 def _verify_behavioral(
     receipt: EvidenceReceipt,
     repo_root: Path,
@@ -257,6 +272,20 @@ def _verify_behavioral(
             stderr="",
             exit_code=None,
             reason="Behavioral evidence requires expected_exit_code or expected_stdout_contains.",
+        )
+    if (
+        receipt.expected_stdout_contains is None
+        or BEHAVIORAL_SUPPORT_MARKER not in receipt.expected_stdout_contains
+    ):
+        return VerificationResult(
+            status=VerificationStatus.UNVERIFIABLE,
+            stdout="",
+            stderr="",
+            exit_code=None,
+            reason=(
+                "Behavioral evidence requires expected_stdout_contains to include "
+                f"{BEHAVIORAL_SUPPORT_MARKER!r}, printed only when the witness supports the claim."
+            ),
         )
 
     try:

@@ -45,7 +45,13 @@ REVIEWER_RESPONSE_SCHEMA = {
                     "line_end": {"type": ["integer", "null"]},
                     "verification_command": {"type": ["string", "null"]},
                     "expected_exit_code": {"type": ["integer", "null"]},
-                    "expected_stdout_contains": {"type": ["string", "null"]},
+                    "expected_stdout_contains": {
+                        "type": ["string", "null"],
+                        "description": (
+                            "For behavioral evidence, include EVAR_WITNESS_PASS. "
+                            "The command should print that marker only when the witness supports the claim."
+                        ),
+                    },
                     "falsification_condition": {"type": "string"},
                 },
             },
@@ -194,7 +200,9 @@ def _optional_string(item: dict[str, object], key: str) -> str | None:
     value = item.get(key)
     if value is None:
         return None
-    if not isinstance(value, str) or not value:
+    if isinstance(value, str) and not value.strip():
+        return None
+    if not isinstance(value, str):
         raise ModelOutputError(f"{key} must be null or a non-empty string.")
     return value
 
