@@ -16,7 +16,7 @@ from evar.protocols.base import (
     ProtocolResult as LegacyProtocolResult,
 )
 from evar.verifier.models import EvidenceReceipt
-from evar.verifier.models import VerificationResult, VerificationStatus
+from evar.verifier.models import EvidenceRole, VerificationResult, VerificationStatus
 from evar.verifier.verify import DeterministicVerifier
 
 
@@ -158,6 +158,7 @@ class EVARHardEvidenceProtocol:
 
             actionable = (
                 verification_result.status == VerificationStatus.VERIFIED
+                and receipt.evidence_role == EvidenceRole.SUPPORTS_CLAIM
                 and critic_decision == CriticDecision.ACCEPT
             )
             finding = ReviewFinding(
@@ -291,6 +292,7 @@ class EVARHardProtocol(BaseProtocol):
 
             accepted = (
                 result.status == VerificationStatus.VERIFIED
+                and finding.receipt.evidence_role == EvidenceRole.SUPPORTS_CLAIM
                 and _legacy_decision_value(decision) == CriticDecisionType.ACCEPT
             )
             if accepted:

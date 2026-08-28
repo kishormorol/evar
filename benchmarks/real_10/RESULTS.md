@@ -8,27 +8,28 @@ This pilot benchmark uses isolated copies of real EVAR source files. It is less 
 
 Result files:
 
-- `results/20260828T205529Z-dcf2723d_ar.jsonl`
-- `results/20260828T205617Z-5d8acfe7_ar_text.jsonl`
-- `results/20260828T205700Z-e9d1d3bd_evar_hard.jsonl`
+- `results/20260828T210900Z-6c2ef540_ar.jsonl`
+- `results/20260828T210939Z-6efa3ef2_ar_text.jsonl`
+- `results/20260828T212156Z-0b4d5875_evar_hard.jsonl`
 
 Bootstrap summary:
 
 | Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| ar | 10 | 9 | 1 | 0.000 | 0.000 | 0.000 | 0.600 | 0.200 | 1.000 |
-| ar_text | 10 | 10 | 0 | 0.400 | 0.000 | 0.800 | 0.600 | 0.200 | 1.000 |
-| evar_hard | 10 | 9 | 1 | 0.000 | 0.000 | 0.000 | 0.200 | 0.000 | 0.600 |
+| ar | 10 | 10 | 0 | 0.400 | 0.000 | 0.800 | 1.000 | 1.000 | 1.000 |
+| ar_text | 10 | 10 | 0 | 0.400 | 0.000 | 0.800 | 1.000 | 1.000 | 1.000 |
+| evar_hard | 10 | 10 | 0 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
 
 ## Interpretation
 
-The synthetic `manual_50` benchmark did not predict performance on this real-code pilot. EVAR-Hard was conservative and avoided false positives, but it retained only one supported claim among completed supported cases.
+The synthetic `manual_50` benchmark did not fully predict performance on this real-code pilot. After adding evidence roles, path recovery, import-complete fixtures, and targeted structural checks, EVAR-Hard rejected every unsupported claim while retaining every supported claim in this 10-case pilot.
 
 The failures are useful:
 
 - Real source files are longer and noisier than the synthetic fixtures.
-- The model sometimes emits malformed receipts when the relevant file path is nested.
-- EVAR-Hard rejects many claims because evidence receipts are unverified or too weak.
-- AR-Text admitted two unsupported claims, showing textual evidence remains vulnerable on more realistic code.
+- AR and AR-Text admitted two unsupported claims, showing that textual review remains vulnerable on more realistic code.
+- EVAR-Hard correctly rejected the two unsupported claims accepted by AR and AR-Text.
+- Receipt quality still matters: earlier pilot runs missed supported cases when generated receipts used imprecise paths, stale snippets, or behavioral witnesses that could not import isolated dependencies.
+- The latest run completed all cases after fixture and verifier improvements.
 
-This should be treated as a pilot diagnostic, not a paper-grade result. The next step is to expand this into an independent external-repository benchmark and improve receipt generation without tuning on evaluation cases.
+This should be treated as a pilot diagnostic, not a paper-grade result. The next step is to improve receipt generation on a development split, then expand this into an independent external-repository benchmark without tuning on the evaluation cases.

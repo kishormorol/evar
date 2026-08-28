@@ -10,7 +10,7 @@ from evar.benchmark.cases.toy_calculator_receipts import (
     TOY_REPO_PATH,
     UNSUPPORTED_RECEIPT,
 )
-from evar.verifier.models import EvidenceReceipt, EvidenceType, VerificationStatus
+from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType, VerificationStatus
 from evar.verifier.verify import verify_evidence
 
 
@@ -65,6 +65,59 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.status, VerificationStatus.VERIFIED)
         self.assertEqual(result.exit_code, 0)
 
+    def test_structural_verifier_uses_ast_for_wrong_callee_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "emails.py").write_text(
+                "def build_welcome_email(user):\n"
+                "    return f'Welcome {user}'\n\n"
+                "def build_password_reset_email(user):\n"
+                "    return f'Reset {user}'\n\n"
+                "def send_welcome_email(user):\n"
+                "    return build_welcome_email(user)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="emails.py",
+                line_start=7,
+                line_end=8,
+                claim="send_welcome_email(user) calls build_password_reset_email(user).",
+                expected_stdout_contains="return build_welcome_email(user)",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("AST", result.reason)
+
+    def test_structural_verifier_verifies_contradicting_wrong_callee_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "emails.py").write_text(
+                "def build_welcome_email(user):\n"
+                "    return f'Welcome {user}'\n\n"
+                "def build_password_reset_email(user):\n"
+                "    return f'Reset {user}'\n\n"
+                "def send_welcome_email(user):\n"
+                "    return build_welcome_email(user)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                evidence_role=EvidenceRole.CONTRADICTS_CLAIM,
+                file="emails.py",
+                line_start=7,
+                line_end=8,
+                claim="send_welcome_email(user) calls build_password_reset_email(user).",
+                expected_stdout_contains="return build_welcome_email(user)",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("evidence_role=contradicts_claim", result.reason)
+
     def test_structural_verifier_rejects_missing_expected_observation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -82,6 +135,107 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.status, VerificationStatus.FAILED)
         self.assertEqual(result.exit_code, 0)
         self.assertIn("Expected structural observation", result.reason)
+
+    def test_structural_verifier_recovers_single_python_file_when_receipt_path_is_wrong(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "real_module.py").write_text("def run():\n    return True\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="invented/path/wrapper.py",
+                line_start=1,
+                line_end=2,
+                expected_stdout_contains="return True",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("return True", result.stdout)
+
+    def test_structural_verifier_recovers_file_by_claim_function_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            package = repo / "evar" / "verifier"
+            package.mkdir(parents=True)
+            (package / "verify.py").write_text(
+                "import subprocess\n\n"
+                "def execute_command(command):\n"
+                "    return subprocess.run(command, shell=False)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="src/execute_command.py",
+                line_start=1,
+                line_end=4,
+                claim="execute_command intentionally invokes subprocess.run with shell=False",
+                expected_stdout_contains="subprocess.run(command, shell=False)",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_subprocess_shell_false", result.reason)
+
+    def test_structural_verifier_searches_file_when_line_range_is_stale(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("def run():\n    return True\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="sample.py",
+                line_start=10,
+                line_end=12,
+                expected_stdout_contains="return True",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+
+    def test_structural_verifier_uses_ast_for_transcript_write_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "run.py").write_text(
+                "def _run_configured(output_dir, run_id, cases):\n"
+                "    transcript_dir = output_dir / 'transcripts' / run_id\n"
+                "    for case in cases:\n"
+                "        _write_configured_transcript(transcript_dir, case)\n\n"
+                "def _write_configured_transcript(transcript_dir, case):\n"
+                "    transcript_path = transcript_dir / f'{case.case_id}.json'\n"
+                "    transcript_path.write_text('{}')\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="run.py",
+                line_start=1,
+                line_end=4,
+                claim="_run_configured writes per-case transcript JSON files under results/transcripts.",
+                expected_stdout_contains="with open(os.path.join('results', 'transcripts', f'{case_name}.json'), 'w')",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_transcript_write", result.reason)
+
+    def test_structural_verifier_normalizes_escaped_newlines_from_model_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("def run():\n    return None\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="sample.py",
+                line_start=1,
+                line_end=2,
+                expected_stdout_contains="def run():\\n    return None",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
 
     def test_structural_verifier_rejects_falsification_condition(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -339,6 +493,8 @@ def _receipt(
     *,
     evidence_type: EvidenceType,
     file: str,
+    evidence_role: EvidenceRole = EvidenceRole.SUPPORTS_CLAIM,
+    claim: str = "sample claim",
     line_start: int = 1,
     line_end: int = 1,
     verification_command: str | None = None,
@@ -348,8 +504,9 @@ def _receipt(
 ) -> EvidenceReceipt:
     return EvidenceReceipt(
         claim_id="C001",
-        claim="sample claim",
+        claim=claim,
         evidence_type=evidence_type,
+        evidence_role=evidence_role,
         file=file,
         line_start=line_start,
         line_end=line_end,

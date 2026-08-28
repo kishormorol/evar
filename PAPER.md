@@ -2,7 +2,7 @@
 
 ## Abstract
 
-LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, though the current benchmark remains synthetic and should be extended to real repository changes.
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. A 10-case real-code pilot also reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard, while AR and AR-Text each admitted two unsupported claims. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but the real-code evidence is still preliminary.
 
 ## 1. Research Question
 
@@ -20,7 +20,7 @@ We compare three protocols:
 | AR-Text | Reviewer provides textual evidence; critic evaluates without execution. | Critic returns `ACCEPT`. |
 | EVAR-Hard | Reviewer submits a structured `EvidenceReceipt`; verifier checks structural or behavioral evidence; critic evaluates the verified observation. | Verifier returns `VERIFIED` and critic returns `ACCEPT`. |
 
-The EVAR-Hard receipt contains the claim, evidence type, referenced file and line range, optional verification command, expected observation, and falsification condition. Behavioral witnesses must print `EVAR_WITNESS_PASS` only when the claim is supported.
+The EVAR-Hard receipt contains the claim, evidence type, evidence role, referenced file and line range, optional verification command, expected observation, and falsification condition. The evidence role distinguishes evidence intended to support a claim from evidence intended to contradict it. Behavioral witnesses must print `EVAR_WITNESS_PASS` only when the claim is supported.
 
 ## 3. Benchmark
 
@@ -100,6 +100,22 @@ Result files:
 - `results/20260828T203246Z-fb1d8e13_ar_text.jsonl`
 - `results/20260828T203836Z-f25cfab0_evar_hard.jsonl`
 
+### 5.3 GPT-4.1 Mini, Real-Code 10-Case Pilot
+
+This pilot uses isolated copies of EVAR source files. It is more realistic than `manual_50`, but it is still drawn from the same repository and should be treated as diagnostic rather than paper-grade evidence.
+
+| Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| AR | 10 | 10 | 0 | 0.400 | 0.000 | 0.800 | 1.000 | 1.000 | 1.000 |
+| AR-Text | 10 | 10 | 0 | 0.400 | 0.000 | 0.800 | 1.000 | 1.000 | 1.000 |
+| EVAR-Hard | 10 | 10 | 0 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
+
+Result files:
+
+- `results/20260828T210900Z-6c2ef540_ar.jsonl`
+- `results/20260828T210939Z-6efa3ef2_ar_text.jsonl`
+- `results/20260828T212156Z-0b4d5875_evar_hard.jsonl`
+
 ## 6. Interpretation
 
 EVAR-Hard is strongest in the `gpt-4.1` comparison: it retains all supported claims while rejecting all unsupported claims. AR-Text also avoids false positives, but misses two supported claims. AR retains most supported claims but admits one unsupported claim.
@@ -108,9 +124,11 @@ In the `gpt-4.1-mini` repeated runs, both AR-Text and EVAR-Hard avoid false cons
 
 The most important positive signal is not just EVAR-Hard's final score, but the failure mode it enforces: a claim cannot become actionable unless evidence is mechanically checked. During development, this exposed errors in command parsing, structural matching, and critic interpretation of counterevidence.
 
+The real-code pilot gives a stronger diagnostic signal than the synthetic benchmark. AR and AR-Text accepted all five supported claims, but also admitted two unsupported claims. EVAR-Hard retained all five supported claims and rejected all five unsupported claims after adding evidence roles, path recovery, import-complete fixtures, and targeted structural checks.
+
 ## 7. Threats to Validity
 
-The benchmark is synthetic and templated. Even though `manual_50` was held out from the original 10-case tuning loop, the cases share simple patterns and short files. Results should not be presented as evidence of real-world code-review performance without a less templated benchmark.
+The primary benchmark is synthetic and templated. Even though `manual_50` was held out from the original 10-case tuning loop, the cases share simple patterns and short files. The `real_10` pilot is closer to real code, but it is small and drawn from this repository rather than independent external projects. Results should not be presented as evidence of real-world code-review performance without a larger external benchmark.
 
 Prompts were improved after observing failures on the development benchmark and during held-out analysis. This is appropriate for harness development but weakens claims about prompt-independent generalization.
 
@@ -118,7 +136,7 @@ The sample size remains small for statistical claims. Bootstrap intervals are us
 
 ## 8. Next Work
 
-The next research-quality step is to build a real-repository benchmark from actual commits or pull requests. Cases should include multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. EVAR should then be evaluated without further prompt tuning on that held-out set.
+The next research-quality step is to build a real-repository benchmark from actual commits or pull requests. Cases should include multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. Receipt generation should be improved on a development split, then EVAR should be evaluated without further prompt tuning on the held-out external set.
 
 Additional useful extensions:
 
@@ -126,5 +144,4 @@ Additional useful extensions:
 - Track token cost and latency per protocol.
 - Compare more models.
 - Add a judge-free transcript audit report.
-- Distinguish verified support from verified counterevidence at the schema level.
-
+- Add richer structural verifiers for common Python review claims.

@@ -2,6 +2,9 @@ You are the reviewer in the AR protocol.
 Evaluate the candidate code-review claim as an actionable finding.
 Return strict JSON: {"receipts":[EvidenceReceipt,...]}.
 Use the EvidenceReceipt fields to summarize your non-executed review evidence.
+Set evidence_role to supports_claim when the evidence supports the candidate claim.
+Set evidence_role to contradicts_claim when the evidence shows the candidate claim is false.
 For supported claims, include exact code text or a precise behavioral observation in expected_stdout_contains.
 For unsupported claims, include the contradicting code text or observation and make falsification_condition explain why the claim is false.
+File paths must be the shortest path relative to Repository path, for example evar/run.py. Keep file under 120 characters. Never include the Repository path itself, benchmarks/, repos/, or case_* in file.
 Do not use or infer benchmark ground truth labels.

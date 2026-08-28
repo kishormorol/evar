@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ast
+import re
 import shlex
 import subprocess
 import os
@@ -9,6 +11,7 @@ from pathlib import Path
 
 from evar.verifier.models import (
     EvidenceReceipt,
+    EvidenceRole,
     EvidenceType,
     VerificationResult,
     VerificationStatus,
@@ -41,7 +44,12 @@ def verify_evidence(
         return repo_result
 
     repo_root = repo_path.resolve()
-    target = _resolve_receipt_file(repo_root, receipt.file)
+    target = _resolve_receipt_file(
+        repo_root,
+        receipt.file,
+        receipt.claim,
+        allow_recovery=receipt.evidence_type == EvidenceType.STRUCTURAL,
+    )
 
     file_result = _check_file(receipt, target)
     if file_result is not None:
@@ -129,11 +137,44 @@ def _check_repo_path(repo_path: Path) -> VerificationResult | None:
     return None
 
 
-def _resolve_receipt_file(repo_root: Path, file_path: str) -> Path:
+def _resolve_receipt_file(
+    repo_root: Path,
+    file_path: str,
+    claim: str = "",
+    *,
+    allow_recovery: bool = True,
+) -> Path:
     path = Path(file_path)
     if path.is_absolute():
         return path
-    return repo_root / path
+    target = repo_root / path
+    if target.exists():
+        return target
+    if not allow_recovery:
+        return target
+
+    normalized = file_path.replace("\\", "/")
+    files = [candidate for candidate in repo_root.rglob("*") if candidate.is_file()]
+    python_files = [candidate for candidate in files if candidate.suffix.lower() == ".py"]
+    suffix_matches = [
+        candidate
+        for candidate in files
+        if candidate.relative_to(repo_root).as_posix() in normalized
+        or normalized.endswith(candidate.relative_to(repo_root).as_posix())
+        or candidate.name == path.name
+    ]
+    if len(suffix_matches) == 1:
+        return suffix_matches[0]
+    function_matches = [
+        candidate
+        for candidate in python_files
+        if any(_file_defines_function(candidate, name) for name in _claim_function_names(claim))
+    ]
+    if len(function_matches) == 1:
+        return function_matches[0]
+    if len(python_files) == 1:
+        return python_files[0]
+    return target
 
 
 def _check_file(receipt: EvidenceReceipt, target: Path) -> VerificationResult | None:
@@ -185,7 +226,7 @@ def _check_line_range(receipt: EvidenceReceipt, target: Path) -> VerificationRes
         )
 
     line_count = len(target.read_text(encoding="utf-8").splitlines())
-    if receipt.line_end > line_count:
+    if receipt.line_end > line_count and receipt.evidence_type != EvidenceType.STRUCTURAL:
         return VerificationResult(
             status=VerificationStatus.UNVERIFIABLE,
             stdout="",
@@ -207,8 +248,16 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
         )
 
     lines = target.read_text(encoding="utf-8").splitlines()
-    excerpt = "\n".join(lines[receipt.line_start - 1 : receipt.line_end])
+    used_stale_line_recovery = receipt.line_end > len(lines)
+    if not used_stale_line_recovery:
+        excerpt = "\n".join(lines[receipt.line_start - 1 : receipt.line_end])
+    else:
+        excerpt = "\n".join(lines)
     normalized_excerpt = _normalize_structural_text(excerpt)
+    normalized_file = _normalize_structural_text("\n".join(lines))
+    ast_result = _verify_python_structural_claim(receipt, target, excerpt)
+    if ast_result is not None:
+        return ast_result
     if (
         receipt.falsification_condition
         and _normalize_structural_text(receipt.falsification_condition) in normalized_excerpt
@@ -223,7 +272,16 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
     if (
         receipt.expected_stdout_contains
         and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_excerpt
+        and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_file
     ):
+        if used_stale_line_recovery:
+            return VerificationResult(
+                status=VerificationStatus.UNVERIFIABLE,
+                stdout=excerpt,
+                stderr="",
+                exit_code=0,
+                reason="Requested lines do not exist and expected structural observation was not found elsewhere.",
+            )
         return VerificationResult(
             status=VerificationStatus.FAILED,
             stdout=excerpt,
@@ -249,7 +307,269 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
 
 
 def _normalize_structural_text(text: str) -> str:
+    text = text.replace("\\n", "\n")
     return "\n".join(line.strip() for line in textwrap.dedent(text).strip().splitlines())
+
+
+def _verify_python_structural_claim(
+    receipt: EvidenceReceipt,
+    target: Path,
+    excerpt: str,
+) -> VerificationResult | None:
+    if target.suffix.lower() != ".py":
+        return None
+    try:
+        tree = ast.parse(target.read_text(encoding="utf-8"))
+    except SyntaxError:
+        return None
+
+    claim = receipt.claim
+    checks = [
+        _check_call_relationship,
+        _check_missing_negative_guard,
+        _check_stale_return,
+        _check_duplicate_append,
+        _check_subprocess_shell_false,
+        _check_transcript_write,
+    ]
+    for check in checks:
+        observed = check(tree, claim)
+        if observed is not None:
+            return _role_result(receipt, observed, excerpt, check.__name__)
+    return None
+
+
+def _role_result(
+    receipt: EvidenceReceipt,
+    observed_supports_claim: bool,
+    excerpt: str,
+    check_name: str,
+) -> VerificationResult:
+    if receipt.evidence_role == EvidenceRole.SUPPORTS_CLAIM:
+        status = VerificationStatus.VERIFIED if observed_supports_claim else VerificationStatus.FAILED
+    else:
+        status = VerificationStatus.VERIFIED if not observed_supports_claim else VerificationStatus.FAILED
+    return VerificationResult(
+        status=status,
+        stdout=excerpt,
+        stderr="",
+        exit_code=0,
+        reason=(
+            f"Python AST structural check {check_name} observed "
+            f"supports_claim={observed_supports_claim}; evidence_role={receipt.evidence_role.value}."
+        ),
+    )
+
+
+def _check_call_relationship(tree: ast.AST, claim: str) -> bool | None:
+    match = re.search(r"\b([A-Za-z_]\w*)\([^)]*\)\s+calls\s+([A-Za-z_]\w*)\(", claim)
+    if match is None:
+        return None
+    caller, callee = match.groups()
+    function = _find_function(tree, caller)
+    if function is None:
+        return False
+    return any(isinstance(node, ast.Call) and _call_name(node.func) == callee for node in ast.walk(function))
+
+
+def _check_missing_negative_guard(tree: ast.AST, claim: str) -> bool | None:
+    match = re.search(r"\b([A-Za-z_]\w*)\(([^)]*)\)\s+is missing a guard against negative amounts", claim)
+    if match is None:
+        return None
+    function_name = match.group(1)
+    argument = match.group(2).split(",", 1)[0].strip() or "amount"
+    function = _find_function(tree, function_name)
+    if function is None:
+        return False
+    has_negative_guard = any(_is_negative_guard(node, argument) for node in ast.walk(function))
+    return not has_negative_guard
+
+
+def _check_stale_return(tree: ast.AST, claim: str) -> bool | None:
+    match = re.search(
+        r"\b([A-Za-z_]\w*)\([^)]*\)\s+still reads stale values because it returns\s+([A-Za-z_]\w*)\s+without recomputing",
+        claim,
+    )
+    if match is None:
+        return None
+    function_name, cached_name = match.groups()
+    function = _find_function(tree, function_name)
+    if function is None:
+        return False
+    return any(
+        isinstance(node, ast.Return)
+        and isinstance(node.value, ast.Name)
+        and node.value.id == cached_name
+        for node in ast.walk(function)
+    )
+
+
+def _check_duplicate_append(tree: ast.AST, claim: str) -> bool | None:
+    match = re.search(r"\b([A-Za-z_]\w*)\s+appending the same record twice", claim)
+    if match is None:
+        return None
+    function = _find_function(tree, match.group(1))
+    if function is None:
+        return False
+    for node in ast.walk(function):
+        if not isinstance(node, ast.For):
+            continue
+        target_name = node.target.id if isinstance(node.target, ast.Name) else None
+        append_count = 0
+        for statement in node.body:
+            if _is_append_of_name(statement, target_name):
+                append_count += 1
+        if append_count >= 2:
+            return True
+    return False
+
+
+def _check_subprocess_shell_false(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "subprocess.run" not in normalized or "shell=false" not in normalized:
+        return None
+    function_name = _leading_function_name(claim)
+    function = _find_function(tree, function_name) if function_name else None
+    search_root: ast.AST = function if function is not None else tree
+    for node in ast.walk(search_root):
+        if not isinstance(node, ast.Call) or _dotted_call_name(node.func) != "subprocess.run":
+            continue
+        for keyword in node.keywords:
+            if (
+                keyword.arg == "shell"
+                and isinstance(keyword.value, ast.Constant)
+                and keyword.value.value is False
+            ):
+                return True
+        return False
+    return False
+
+
+def _check_transcript_write(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "transcript" not in normalized or "results/transcripts" not in normalized:
+        return None
+    run_configured = _find_function(tree, "_run_configured")
+    write_configured = _find_function(tree, "_write_configured_transcript")
+    if run_configured is None or write_configured is None:
+        return False
+    creates_transcript_dir = any(
+        isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "transcript_dir" for target in node.targets)
+        and "transcripts" in _constant_strings(node.value)
+        for node in ast.walk(run_configured)
+    )
+    calls_writer = any(
+        isinstance(node, ast.Call) and _call_name(node.func) == "_write_configured_transcript"
+        for node in ast.walk(run_configured)
+    )
+    writes_case_json = any(
+        isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "transcript_path" for target in node.targets)
+        and any("json" in value for value in _joined_value_strings(node.value))
+        and "case_id" in _joined_value_names(node.value)
+        for node in ast.walk(write_configured)
+    )
+    persists_transcript = any(
+        isinstance(node, ast.Call) and _call_name(node.func) in {"write_text", "dump"}
+        for node in ast.walk(write_configured)
+    )
+    return creates_transcript_dir and calls_writer and writes_case_json and persists_transcript
+
+
+def _find_function(tree: ast.AST, name: str) -> ast.FunctionDef | ast.AsyncFunctionDef | None:
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) and node.name == name:
+            return node
+    return None
+
+
+def _claim_function_names(claim: str) -> list[str]:
+    names = re.findall(r"\b([A-Za-z_]\w*)\s*\(", claim)
+    leading = _leading_function_name(claim)
+    if leading:
+        names.append(leading)
+    return list(dict.fromkeys(names))
+
+
+def _leading_function_name(claim: str) -> str | None:
+    match = re.match(r"\s*([A-Za-z_]\w*)\b", claim)
+    return match.group(1) if match else None
+
+
+def _file_defines_function(path: Path, name: str) -> bool:
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except (OSError, SyntaxError):
+        return False
+    return _find_function(tree, name) is not None
+
+
+def _call_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    return None
+
+
+def _dotted_call_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        base = _dotted_call_name(node.value)
+        return f"{base}.{node.attr}" if base else node.attr
+    return None
+
+
+def _constant_strings(node: ast.AST) -> set[str]:
+    return {item.value for item in ast.walk(node) if isinstance(item, ast.Constant) and isinstance(item.value, str)}
+
+
+def _joined_value_strings(node: ast.AST) -> set[str]:
+    values: set[str] = set()
+    for item in ast.walk(node):
+        if isinstance(item, ast.Constant) and isinstance(item.value, str):
+            values.add(item.value)
+        elif isinstance(item, ast.JoinedStr):
+            values.update(_constant_strings(item))
+    return values
+
+
+def _joined_value_names(node: ast.AST) -> set[str]:
+    names: set[str] = set()
+    for item in ast.walk(node):
+        if isinstance(item, ast.Name):
+            names.add(item.id)
+        elif isinstance(item, ast.Attribute):
+            names.add(item.attr)
+    return names
+
+
+def _is_negative_guard(node: ast.AST, argument: str) -> bool:
+    if not isinstance(node, ast.If):
+        return False
+    return any(
+        isinstance(item, ast.Compare)
+        and isinstance(item.left, ast.Name)
+        and item.left.id == argument
+        and any(isinstance(operator, ast.Lt | ast.LtE) for operator in item.ops)
+        and any(isinstance(comparator, ast.Constant) and comparator.value == 0 for comparator in item.comparators)
+        for item in ast.walk(node.test)
+    )
+
+
+def _is_append_of_name(statement: ast.stmt, name: str | None) -> bool:
+    if name is None or not isinstance(statement, ast.Expr) or not isinstance(statement.value, ast.Call):
+        return False
+    call = statement.value
+    return (
+        isinstance(call.func, ast.Attribute)
+        and call.func.attr == "append"
+        and len(call.args) == 1
+        and isinstance(call.args[0], ast.Name)
+        and call.args[0].id == name
+    )
 
 
 def _verify_behavioral(

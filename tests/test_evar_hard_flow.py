@@ -15,7 +15,7 @@ from evar.protocols.base import (
     ProtocolBudget,
 )
 from evar.protocols.evar import EVARHardProtocol
-from evar.verifier.models import EvidenceReceipt, EvidenceType, VerificationResult, VerificationStatus
+from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType, VerificationResult, VerificationStatus
 
 
 class FakeReviewer:
@@ -122,6 +122,28 @@ class EVARHardFlowTests(unittest.TestCase):
         self.assertEqual(result.interaction_log[-1]["critic_decision"]["decision"], "COUNTEREXAMPLE")
         self.assertFalse(result.interaction_log[-1]["final_acceptance"])
 
+    def test_verified_counterevidence_is_not_actionable_even_if_critic_accepts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = _write_repo(Path(tmp), "def add(a, b):\n    return a - b\n")
+            finding = _finding(
+                _receipt(
+                    expected_stdout_contains="return a - b",
+                    evidence_role=EvidenceRole.CONTRADICTS_CLAIM,
+                )
+            )
+            critic = FakeCritic(CriticDecisionType.ACCEPT)
+
+            result = EVARHardProtocol(
+                FakeReviewer([finding]),
+                critic,
+                AgentConfig(model_name="fake"),
+                ProtocolBudget(review_turns=1, challenge_turns=1, revision_turns=1),
+            ).run(_case(repo, [finding]).to_task_case())
+
+        self.assertEqual(result.verification_results["F001"].status, VerificationStatus.VERIFIED)
+        self.assertEqual(result.actionable_findings, [])
+        self.assertFalse(result.interaction_log[-1]["final_acceptance"])
+
     def test_failed_verification_is_not_actionable_and_does_not_reach_acceptance_critic(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = _write_repo(Path(tmp), "def add(a, b):\n    return a + b\n")
@@ -166,11 +188,16 @@ def _write_repo(repo: Path, contents: str) -> Path:
     return repo
 
 
-def _receipt(expected_stdout_contains: str) -> EvidenceReceipt:
+def _receipt(
+    expected_stdout_contains: str,
+    *,
+    evidence_role: EvidenceRole = EvidenceRole.SUPPORTS_CLAIM,
+) -> EvidenceReceipt:
     return EvidenceReceipt(
         claim_id="F001",
         claim="add uses the wrong operator",
         evidence_type=EvidenceType.STRUCTURAL,
+        evidence_role=evidence_role,
         file="sample.py",
         line_start=2,
         line_end=2,

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from evar.model_backend import ModelBackend, ModelResponse
 from evar.prompts import PromptTemplate, load_prompt, prompt_filename
-from evar.verifier.models import EvidenceReceipt, EvidenceType
+from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType
 
 
 MAX_REPOSITORY_CONTEXT_BYTES = 12000
@@ -28,6 +28,7 @@ REVIEWER_RESPONSE_SCHEMA = {
                     "claim_id",
                     "claim",
                     "evidence_type",
+                    "evidence_role",
                     "file",
                     "line_start",
                     "line_end",
@@ -40,6 +41,7 @@ REVIEWER_RESPONSE_SCHEMA = {
                     "claim_id": {"type": "string"},
                     "claim": {"type": "string"},
                     "evidence_type": {"type": "string", "enum": ["behavioral", "structural"]},
+                    "evidence_role": {"type": "string", "enum": ["supports_claim", "contradicts_claim"]},
                     "file": {"type": "string"},
                     "line_start": {"type": ["integer", "null"]},
                     "line_end": {"type": ["integer", "null"]},
@@ -124,12 +126,17 @@ def _parse_receipt(item: object) -> EvidenceReceipt:
         evidence_type = EvidenceType(str(item["evidence_type"]))
     except ValueError as exc:
         raise ModelOutputError(f"Unsupported evidence_type: {item['evidence_type']}") from exc
+    try:
+        evidence_role = EvidenceRole(str(item.get("evidence_role", EvidenceRole.SUPPORTS_CLAIM.value)))
+    except ValueError as exc:
+        raise ModelOutputError(f"Unsupported evidence_role: {item['evidence_role']}") from exc
 
     return EvidenceReceipt(
         claim_id=_string(item, "claim_id"),
         claim=_string(item, "claim"),
         evidence_type=evidence_type,
         file=_string(item, "file"),
+        evidence_role=evidence_role,
         line_start=_optional_int(item, "line_start"),
         line_end=_optional_int(item, "line_end"),
         verification_command=_optional_string(item, "verification_command"),
@@ -147,7 +154,7 @@ def _review_user_prompt(task: str, repo_path: Path) -> str:
         f"{_repository_context(repo_path)}\n\n"
         "Use only repository context allowed by the experiment policy. "
         "Do not include benchmark labels or expected final decisions. "
-        "For evidence receipts, file must be a path relative to Repository path."
+        "For evidence receipts, copy one file path exactly from a Repository context header like --- evar/run.py ---."
     )
 
 

@@ -12,7 +12,7 @@ from evar.agents.model_reviewer import ModelOutputError, _repository_context, pa
 from evar.eval.metrics import compute_fcr_scr
 from evar.protocols.evar import CriticDecision, TextEvidence
 from evar.run_model import main
-from evar.verifier.models import EvidenceReceipt, EvidenceType, VerificationResult, VerificationStatus
+from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType, VerificationResult, VerificationStatus
 
 
 class ModelAdapterTests(unittest.TestCase):
@@ -25,6 +25,7 @@ class ModelAdapterTests(unittest.TestCase):
                             "claim_id": "c1",
                             "claim": "claim",
                             "evidence_type": "behavioral",
+                            "evidence_role": "supports_claim",
                             "file": "calculator.py",
                             "line_start": 1,
                             "line_end": 2,
@@ -41,6 +42,31 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertEqual(len(receipts), 1)
         self.assertEqual(receipts[0].claim_id, "c1")
         self.assertEqual(receipts[0].evidence_type, EvidenceType.BEHAVIORAL)
+        self.assertEqual(receipts[0].evidence_role, EvidenceRole.SUPPORTS_CLAIM)
+
+    def test_parse_reviewer_receipts_defaults_legacy_evidence_role_to_supports(self) -> None:
+        receipts = parse_reviewer_receipts(
+            json.dumps(
+                {
+                    "receipts": [
+                        {
+                            "claim_id": "c1",
+                            "claim": "claim",
+                            "evidence_type": "structural",
+                            "file": "sample.py",
+                            "line_start": 1,
+                            "line_end": 1,
+                            "verification_command": None,
+                            "expected_exit_code": None,
+                            "expected_stdout_contains": "return value",
+                            "falsification_condition": "FAIL",
+                        }
+                    ]
+                }
+            )
+        )
+
+        self.assertEqual(receipts[0].evidence_role, EvidenceRole.SUPPORTS_CLAIM)
 
     def test_parse_reviewer_receipts_rejects_malformed_output(self) -> None:
         with self.assertRaises(ModelOutputError):
@@ -191,6 +217,7 @@ def _critic_context() -> CriticPromptContext:
             claim_id="c1",
             claim="claim",
             evidence_type=EvidenceType.STRUCTURAL,
+            evidence_role=EvidenceRole.SUPPORTS_CLAIM,
             file="sample.py",
             line_start=1,
             line_end=1,

@@ -34,7 +34,12 @@ def main() -> None:
         ),
         _case(
             3,
-            files=["evar/agents/model_reviewer.py"],
+            files=[
+                "evar/agents/model_reviewer.py",
+                "evar/model_backend.py",
+                "evar/prompts.py",
+                "evar/verifier/models.py",
+            ],
             task="Review optional string parsing.",
             claim="_optional_string normalizes blank strings to None.",
             ground_truth="SUPPORTED",
@@ -43,7 +48,12 @@ def main() -> None:
         ),
         _case(
             4,
-            files=["evar/agents/model_reviewer.py"],
+            files=[
+                "evar/agents/model_reviewer.py",
+                "evar/model_backend.py",
+                "evar/prompts.py",
+                "evar/verifier/models.py",
+            ],
             task="Review reviewer receipt validation.",
             claim="parse_reviewer_receipts accepts unknown evidence_type values.",
             ground_truth="UNSUPPORTED",
