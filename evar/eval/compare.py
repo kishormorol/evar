@@ -77,11 +77,7 @@ def _summary(records: list[dict[str, Any]]) -> dict[str, object]:
             if record.get("run_status") == "failed"
             and record.get("failure", {}).get("type") == "ModelOutputError"
         ),
-        "verifier_failures": sum(
-            1
-            for record in completed
-            if record.get("verification_status") in ("FAILED", "UNVERIFIABLE")
-        ),
+        "verifier_failures": _verifier_failures(protocol, completed),
         "mean_input_tokens": sum(input_tokens) / len(input_tokens) if input_tokens else None,
         "mean_output_tokens": sum(output_tokens) / len(output_tokens) if output_tokens else None,
     }
@@ -98,6 +94,16 @@ def _tokens(records: list[dict[str, Any]], key: str) -> list[int]:
             if isinstance(model, dict) and isinstance(model.get(key), int):
                 values.append(model[key])
     return values
+
+
+def _verifier_failures(protocol: str, records: list[dict[str, Any]]) -> int:
+    if protocol not in {"evar", "evar_hard"}:
+        return 0
+    return sum(
+        1
+        for record in records
+        if record.get("verification_status") in ("FAILED", "UNVERIFIABLE")
+    )
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:

@@ -5,6 +5,7 @@ import os
 import time
 import urllib.request
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Protocol
 
 
@@ -97,7 +98,7 @@ class OpenAIResponsesBackend:
         self.model_name = model_name
         self.temperature = temperature
         self.max_output_tokens = max_output_tokens
-        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or _load_env_api_key(Path(".env"))
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is required for the OpenAI backend.")
 
@@ -108,7 +109,6 @@ class OpenAIResponsesBackend:
         *,
         response_schema: object | None = None,
     ) -> ModelResponse:
-        del response_schema
         payload: dict[str, Any] = {
             "model": self.model_name,
             "temperature": self.temperature,
@@ -119,6 +119,15 @@ class OpenAIResponsesBackend:
         }
         if self.max_output_tokens is not None:
             payload["max_output_tokens"] = self.max_output_tokens
+        if response_schema is not None:
+            payload["text"] = {
+                "format": {
+                    "type": "json_schema",
+                    "name": "evar_model_response",
+                    "schema": response_schema,
+                    "strict": True,
+                }
+            }
 
         request = urllib.request.Request(
             "https://api.openai.com/v1/responses",
@@ -165,6 +174,22 @@ def _try_parse_json(text: str) -> object | None:
         return json.loads(text)
     except json.JSONDecodeError:
         return None
+
+
+def _load_env_api_key(path: Path) -> str | None:
+    try:
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
+    except OSError:
+        return None
+    for raw_line in lines:
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        if key.strip() == "OPENAI_API_KEY":
+            stripped = value.strip().strip('"').strip("'")
+            return stripped or None
+    return None
 
 
 def _extract_candidate_claim(user_prompt: str) -> str:

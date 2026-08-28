@@ -9,6 +9,51 @@ from evar.prompts import PromptTemplate, load_prompt, prompt_filename
 from evar.verifier.models import EvidenceReceipt, EvidenceType
 
 
+MAX_REPOSITORY_CONTEXT_BYTES = 12000
+SKIPPED_DIRS = {"__pycache__", ".git", ".pytest_cache", ".venv"}
+CONTEXT_SUFFIXES = {".py", ".md", ".txt", ".toml", ".yaml", ".yml"}
+
+
+REVIEWER_RESPONSE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["receipts"],
+    "properties": {
+        "receipts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "claim_id",
+                    "claim",
+                    "evidence_type",
+                    "file",
+                    "line_start",
+                    "line_end",
+                    "verification_command",
+                    "expected_exit_code",
+                    "expected_stdout_contains",
+                    "falsification_condition",
+                ],
+                "properties": {
+                    "claim_id": {"type": "string"},
+                    "claim": {"type": "string"},
+                    "evidence_type": {"type": "string", "enum": ["behavioral", "structural"]},
+                    "file": {"type": "string"},
+                    "line_start": {"type": ["integer", "null"]},
+                    "line_end": {"type": ["integer", "null"]},
+                    "verification_command": {"type": ["string", "null"]},
+                    "expected_exit_code": {"type": ["integer", "null"]},
+                    "expected_stdout_contains": {"type": ["string", "null"]},
+                    "falsification_condition": {"type": "string"},
+                },
+            },
+        }
+    },
+}
+
+
 @dataclass(frozen=True)
 class ModelAgentConfig:
     model_name: str
@@ -39,7 +84,7 @@ class ModelReviewer:
         response = self.backend.generate(
             self.prompt.text,
             _review_user_prompt(task, repo_path),
-            response_schema={"type": "object", "required": ["receipts"]},
+            response_schema=REVIEWER_RESPONSE_SCHEMA,
         )
         self.responses.append(response)
         return parse_reviewer_receipts(response.parsed_output if response.parsed_output is not None else response.text)
@@ -92,9 +137,50 @@ def _review_user_prompt(task: str, repo_path: Path) -> str:
     return (
         f"Task description and candidate claim:\n{task}\n\n"
         f"Repository path:\n{repo_path}\n\n"
+        "Repository context:\n"
+        f"{_repository_context(repo_path)}\n\n"
         "Use only repository context allowed by the experiment policy. "
-        "Do not include benchmark labels or expected final decisions."
+        "Do not include benchmark labels or expected final decisions. "
+        "For evidence receipts, file must be a path relative to Repository path."
     )
+
+
+def _repository_context(repo_path: Path, *, max_bytes: int = MAX_REPOSITORY_CONTEXT_BYTES) -> str:
+    if not repo_path.exists() or not repo_path.is_dir():
+        return "[repository unavailable]"
+    chunks: list[str] = []
+    used = 0
+    for path in sorted(_iter_context_files(repo_path)):
+        relative = path.relative_to(repo_path).as_posix()
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        rendered = f"--- {relative} ---\n{_line_numbered(text)}\n"
+        encoded_len = len(rendered.encode("utf-8"))
+        if used + encoded_len > max_bytes:
+            chunks.append("[repository context truncated]")
+            break
+        chunks.append(rendered)
+        used += encoded_len
+    return "\n".join(chunks) if chunks else "[no text files available]"
+
+
+def _iter_context_files(repo_path: Path) -> list[Path]:
+    files: list[Path] = []
+    for path in repo_path.rglob("*"):
+        if not path.is_file():
+            continue
+        if any(part in SKIPPED_DIRS for part in path.relative_to(repo_path).parts):
+            continue
+        if path.suffix.lower() not in CONTEXT_SUFFIXES:
+            continue
+        files.append(path)
+    return files
+
+
+def _line_numbered(text: str) -> str:
+    return "\n".join(f"{index}: {line}" for index, line in enumerate(text.splitlines(), start=1))
 
 
 def _string(item: dict[str, object], key: str) -> str:

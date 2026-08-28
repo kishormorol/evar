@@ -266,6 +266,8 @@ def _response_summary(responses: list[object]) -> dict[str, object] | None:
         return None
     response = responses[-1]
     return {
+        "text": response.text,
+        "parsed_output": _json_safe(response.parsed_output),
         "model_name": response.model_name,
         "input_tokens": response.input_tokens,
         "output_tokens": response.output_tokens,

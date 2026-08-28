@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 from evar.agents.model_critic import parse_critic_decision
-from evar.agents.model_reviewer import ModelOutputError, parse_reviewer_receipts
+from evar.agents.model_reviewer import ModelOutputError, _repository_context, parse_reviewer_receipts
 from evar.protocols.evar import CriticDecision
 from evar.run_model import main
 from evar.verifier.models import EvidenceType
@@ -68,6 +68,26 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertTrue(row["dry_run"])
         self.assertEqual(row["case_count"], 1)
         self.assertEqual(row["parsed_receipts"], 0)
+
+    def test_repository_context_includes_relative_paths_and_line_numbers(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "calculator.py").write_text("def divide(a, b):\n    return a / b\n", encoding="utf-8")
+
+            context = _repository_context(repo)
+
+        self.assertIn("--- calculator.py ---", context)
+        self.assertIn("1: def divide(a, b):", context)
+        self.assertIn("2:     return a / b", context)
+
+    def test_repository_context_excludes_jsonl_benchmark_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "cases.jsonl").write_text('{"ground_truth":"SUPPORTED"}\n', encoding="utf-8")
+
+            context = _repository_context(repo)
+
+        self.assertNotIn("ground_truth", context)
 
 
 def _raw_case(repo: Path) -> dict[str, object]:

@@ -11,6 +11,24 @@ from evar.protocols.evar import TextEvidence
 from evar.verifier.models import EvidenceReceipt, VerificationResult
 
 
+CRITIC_RESPONSE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["decision"],
+    "properties": {
+        "decision": {
+            "type": "string",
+            "enum": [
+                "ACCEPT",
+                "CHALLENGE_EVIDENCE",
+                "REQUEST_STRONGER_WITNESS",
+                "COUNTEREXAMPLE",
+            ],
+        }
+    },
+}
+
+
 @dataclass(frozen=True)
 class CriticPromptContext:
     task: str
@@ -41,7 +59,7 @@ class ModelCritic:
         response = self.backend.generate(
             self.prompt.text,
             _critic_user_prompt(CriticPromptContext(task, receipt, verification_result)),
-            response_schema={"type": "object", "required": ["decision"]},
+            response_schema=CRITIC_RESPONSE_SCHEMA,
         )
         self.responses.append(response)
         return parse_critic_decision(response.parsed_output if response.parsed_output is not None else response.text)
