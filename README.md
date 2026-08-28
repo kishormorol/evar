@@ -12,6 +12,7 @@ Current writeup:
 
 - [Paper draft](PAPER.md)
 - [Manual 50 benchmark results](benchmarks/manual_50/RESULTS.md)
+- [Real 10 pilot results](benchmarks/real_10/RESULTS.md)
 
 ## Protocols
 
