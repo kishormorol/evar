@@ -237,6 +237,48 @@ class VerifierTests(unittest.TestCase):
 
         self.assertEqual(result.status, VerificationStatus.VERIFIED)
 
+    def test_structural_verifier_tolerates_python_quote_style_differences(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text(
+                "def escape(value):\n"
+                "    return value.replace('\"', \"&#34;\")\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="sample.py",
+                line_start=1,
+                line_end=2,
+                expected_stdout_contains="replace('\"', '&#34;')",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+
+    def test_structural_verifier_rejects_optional_slash_for_required_slash_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "glob.py").write_text(
+                "def match_dirs(pattern):\n"
+                "    return rf'{pattern}[/]?'\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="glob.py",
+                line_start=1,
+                line_end=2,
+                claim="Translator.match_dirs requires directory names to end with a slash.",
+                expected_stdout_contains="return rf'{pattern}[/]?'",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_match_dirs_requires_slash", result.reason)
+
     def test_structural_verifier_rejects_falsification_condition(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)

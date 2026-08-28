@@ -13,6 +13,7 @@ Current writeup:
 - [Paper draft](PAPER.md)
 - [Manual 50 benchmark results](benchmarks/manual_50/RESULTS.md)
 - [Real 10 pilot results](benchmarks/real_10/RESULTS.md)
+- [External 10 pilot results](benchmarks/external_10/RESULTS.md)
 
 ## Protocols
 
@@ -107,6 +108,14 @@ Three `gpt-4.1-mini` repetitions on the same 50-case benchmark:
 | `ar` | 0.000 | 0.813 |
 | `ar_text` | 0.000 | 0.987 |
 | `evar_hard` | 0.000 | 0.987 |
+
+Independent-source `external_10` pilot with `gpt-4.1-mini`:
+
+| Protocol | FCR | SCR |
+| --- | ---: | ---: |
+| `ar` | 0.000 | 1.000 |
+| `ar_text` | 0.200 | 1.000 |
+| `evar_hard` | 0.000 | 1.000 |
 
 ## Scientific Guardrails
 

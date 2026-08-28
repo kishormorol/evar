@@ -273,6 +273,10 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
         receipt.expected_stdout_contains
         and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_excerpt
         and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_file
+        and _normalize_structural_for_match(receipt.expected_stdout_contains)
+        not in _normalize_structural_for_match(excerpt)
+        and _normalize_structural_for_match(receipt.expected_stdout_contains)
+        not in _normalize_structural_for_match("\n".join(lines))
     ):
         if used_stale_line_recovery:
             return VerificationResult(
@@ -311,6 +315,10 @@ def _normalize_structural_text(text: str) -> str:
     return "\n".join(line.strip() for line in textwrap.dedent(text).strip().splitlines())
 
 
+def _normalize_structural_for_match(text: str) -> str:
+    return _normalize_structural_text(text).replace('"', "").replace("'", "")
+
+
 def _verify_python_structural_claim(
     receipt: EvidenceReceipt,
     target: Path,
@@ -331,6 +339,7 @@ def _verify_python_structural_claim(
         _check_duplicate_append,
         _check_subprocess_shell_false,
         _check_transcript_write,
+        _check_match_dirs_requires_slash,
     ]
     for check in checks:
         observed = check(tree, claim)
@@ -475,6 +484,24 @@ def _check_transcript_write(tree: ast.AST, claim: str) -> bool | None:
         for node in ast.walk(write_configured)
     )
     return creates_transcript_dir and calls_writer and writes_case_json and persists_transcript
+
+
+def _check_match_dirs_requires_slash(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "match_dirs" not in normalized or "requires" not in normalized or "slash" not in normalized:
+        return None
+    function = _find_function(tree, "match_dirs")
+    if function is None:
+        return False
+    for node in ast.walk(function):
+        if not isinstance(node, ast.Return) or node.value is None:
+            continue
+        text = "".join(_joined_value_strings(node.value))
+        if "[/]?" in text:
+            return False
+        if "[/]" in text or "/" in text:
+            return True
+    return False
 
 
 def _find_function(tree: ast.AST, name: str) -> ast.FunctionDef | ast.AsyncFunctionDef | None:

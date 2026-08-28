@@ -7,3 +7,4 @@ results/
 .env
 .env.*
 !.env.example
+benchmarks/external_10/sources/
