@@ -11,7 +11,7 @@ from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType
 
 MAX_REPOSITORY_CONTEXT_BYTES = 30000
 SKIPPED_DIRS = {"__pycache__", ".git", ".pytest_cache", ".venv"}
-CONTEXT_SUFFIXES = {".py", ".md", ".txt", ".toml", ".yaml", ".yml"}
+CONTEXT_SUFFIXES = {".diff", ".md", ".patch", ".py", ".txt", ".toml", ".yaml", ".yml"}
 
 
 REVIEWER_RESPONSE_SCHEMA = {
@@ -21,6 +21,8 @@ REVIEWER_RESPONSE_SCHEMA = {
     "properties": {
         "receipts": {
             "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
             "items": {
                 "type": "object",
                 "additionalProperties": False,
@@ -112,6 +114,8 @@ def parse_reviewer_receipts(raw: str | object) -> list[EvidenceReceipt]:
         payload = raw
     if not isinstance(payload, dict) or not isinstance(payload.get("receipts"), list):
         raise ModelOutputError("Reviewer output must be an object with a receipts list.")
+    if len(payload["receipts"]) != 1:
+        raise ModelOutputError("Reviewer output must contain exactly one receipt.")
     return [_parse_receipt(item) for item in payload["receipts"]]
 
 

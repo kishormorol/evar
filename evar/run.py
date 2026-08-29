@@ -25,6 +25,7 @@ from evar.protocols.ar_text import ARTextProtocol
 from evar.protocols.base import AgentConfig, ProtocolBudget, BaseProtocol
 from evar.protocols.evar import EVARHardProtocol
 from evar.protocols.registry import create_protocol
+from evar.verifier.verify import DeterministicVerifier
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -105,6 +106,9 @@ def _run_configured(
         normalized_protocol,
         reviewer,
         critic,
+        verifier=DeterministicVerifier(
+            timeout_seconds=config.protocol.verifier_timeout_seconds
+        ),
         metadata={
             "run_id": run_id,
             "critic_rounds": config.protocol.critic_rounds,
@@ -221,6 +225,9 @@ def _configured_result_record(
         "claim_family": case.claim_family.value,
         "ground_truth": case.ground_truth.value,
         "final_actionable": bool(result.accepted_findings),
+        "finding_count": len(result.findings),
+        "accepted_finding_count": len(result.accepted_findings),
+        "findings": _json_safe(result.findings),
         "verification_status": first.verification_result.status.value if first else None,
         "critic_decision": first.critic_decision.value if first else None,
         "transcript_path": str(transcript_path),

@@ -20,7 +20,22 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         cases = load_jsonl_cases(args.cases)
-        reviewer_raw = _read_or_default(args.reviewer_output, '{"receipts":[]}')
+        reviewer_raw = _read_or_default(
+            args.reviewer_output,
+            json.dumps(
+                {
+                    "receipts": [
+                        {
+                            "claim_id": "dry-run",
+                            "claim": "dry-run claim",
+                            "evidence_type": "structural",
+                            "file": "README.md",
+                            "falsification_condition": "dry-run only",
+                        }
+                    ]
+                }
+            ),
+        )
         critic_raw = _read_or_default(args.critic_output, '{"decision":"CHALLENGE_EVIDENCE"}')
         receipts = parse_reviewer_receipts(reviewer_raw)
         critic_decision = parse_critic_decision(critic_raw)

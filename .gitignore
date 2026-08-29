@@ -8,3 +8,4 @@ results/
 .env.*
 !.env.example
 benchmarks/external_10/sources/
+benchmarks/external_pr_50/sources/

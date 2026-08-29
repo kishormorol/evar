@@ -22,6 +22,23 @@ from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType, Ve
 
 
 class ModelAdapterTests(unittest.TestCase):
+    def test_reviewer_rejects_more_than_one_receipt(self) -> None:
+        payload = {
+            "receipts": [
+                {
+                    "claim_id": str(index),
+                    "claim": "claim",
+                    "evidence_type": "structural",
+                    "file": "sample.py",
+                    "falsification_condition": "missing",
+                }
+                for index in range(2)
+            ]
+        }
+
+        with self.assertRaisesRegex(ModelOutputError, "exactly one receipt"):
+            parse_reviewer_receipts(payload)
+
     def test_parse_reviewer_receipts_accepts_strict_json(self) -> None:
         receipts = parse_reviewer_receipts(
             json.dumps(
@@ -152,7 +169,7 @@ class ModelAdapterTests(unittest.TestCase):
         row = json.loads(stdout.getvalue())
         self.assertTrue(row["dry_run"])
         self.assertEqual(row["case_count"], 1)
-        self.assertEqual(row["parsed_receipts"], 0)
+        self.assertEqual(row["parsed_receipts"], 1)
 
     def test_repository_context_includes_relative_paths_and_line_numbers(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
