@@ -9,7 +9,7 @@ from evar.prompts import PromptTemplate, load_prompt, prompt_filename
 from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType
 
 
-MAX_REPOSITORY_CONTEXT_BYTES = 12000
+MAX_REPOSITORY_CONTEXT_BYTES = 30000
 SKIPPED_DIRS = {"__pycache__", ".git", ".pytest_cache", ".venv"}
 CONTEXT_SUFFIXES = {".py", ".md", ".txt", ".toml", ".yaml", ".yml"}
 
@@ -147,14 +147,16 @@ def _parse_receipt(item: object) -> EvidenceReceipt:
 
 
 def _review_user_prompt(task: str, repo_path: Path) -> str:
+    valid_files = _valid_file_list(repo_path)
     return (
         f"Task description and candidate claim:\n{task}\n\n"
         f"Repository path:\n{repo_path}\n\n"
+        f"Valid file paths for EvidenceReceipt.file:\n{valid_files}\n\n"
         "Repository context:\n"
         f"{_repository_context(repo_path)}\n\n"
         "Use only repository context allowed by the experiment policy. "
         "Do not include benchmark labels or expected final decisions. "
-        "For evidence receipts, copy one file path exactly from a Repository context header like --- evar/run.py ---."
+        "For evidence receipts, file must be exactly one path from the valid file path list above."
     )
 
 
@@ -177,6 +179,13 @@ def _repository_context(repo_path: Path, *, max_bytes: int = MAX_REPOSITORY_CONT
         chunks.append(rendered)
         used += encoded_len
     return "\n".join(chunks) if chunks else "[no text files available]"
+
+
+def _valid_file_list(repo_path: Path) -> str:
+    if not repo_path.exists() or not repo_path.is_dir():
+        return "[repository unavailable]"
+    files = [path.relative_to(repo_path).as_posix() for path in sorted(_iter_context_files(repo_path))]
+    return "\n".join(f"- {path}" for path in files) if files else "[no text files available]"
 
 
 def _iter_context_files(repo_path: Path) -> list[Path]:

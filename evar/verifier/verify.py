@@ -340,6 +340,11 @@ def _verify_python_structural_claim(
         _check_subprocess_shell_false,
         _check_transcript_write,
         _check_match_dirs_requires_slash,
+        _check_raises_exception,
+        _check_extend_regex_terminator,
+        _check_striptags_whitespace_order,
+        _check_path_base_purepath,
+        _check_ancestry_separator_behavior,
     ]
     for check in checks:
         observed = check(tree, claim)
@@ -504,6 +509,118 @@ def _check_match_dirs_requires_slash(tree: ast.AST, claim: str) -> bool | None:
     return False
 
 
+def _check_raises_exception(tree: ast.AST, claim: str) -> bool | None:
+    match = re.search(r"\b(?:[A-Za-z_]\w*\.)?([A-Za-z_]\w*)\s+.*raises\s+([A-Za-z_]\w*)", claim)
+    if match is None:
+        return None
+    function_name, exception_name = match.groups()
+    function = _find_function(tree, function_name)
+    if function is None:
+        return False
+    return any(_raise_exception_name(node) == exception_name for node in ast.walk(function) if isinstance(node, ast.Raise))
+
+
+def _check_extend_regex_terminator(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "extend" not in normalized or "generated regex" not in normalized:
+        return None
+    if "\\z" not in claim and "\\Z" not in claim:
+        return None
+    expected = "\\z" if "\\z" in claim else "\\Z"
+    function = _find_function(tree, "extend")
+    if function is None:
+        return False
+    return any(
+        isinstance(node, ast.Return) and expected in "".join(_joined_value_strings(node.value))
+        for node in ast.walk(function)
+        if isinstance(node, ast.Return) and node.value is not None
+    )
+
+
+def _check_striptags_whitespace_order(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "striptags" not in normalized or "collapses whitespace" not in normalized:
+        return None
+    wants_after = "after removing comments and tags" in normalized
+    wants_before = "before removing comments and tags" in normalized
+    if not wants_after and not wants_before:
+        return None
+    function = _find_function(tree, "striptags")
+    if function is None:
+        return False
+    collapse_lines = [
+        node.lineno
+        for node in ast.walk(function)
+        if isinstance(node, ast.Call)
+        and _call_name(node.func) == "join"
+        and any(isinstance(child, ast.Call) and _call_name(child.func) == "split" for child in ast.walk(node))
+    ]
+    removal_lines = [
+        node.lineno
+        for node in ast.walk(function)
+        if isinstance(node, ast.Call)
+        and _call_name(node.func) == "find"
+        and any(value in {"<!--", "<"} for value in _constant_strings(node))
+    ]
+    if not collapse_lines or not removal_lines:
+        return False
+    collapse_after = min(collapse_lines) > max(removal_lines)
+    return collapse_after if wants_after else not collapse_after
+
+
+def _check_path_base_purepath(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "_base" not in normalized or ("purepath" not in normalized and "pureposixpath" not in normalized):
+        return None
+    function = _find_function(tree, "_base")
+    if function is None:
+        return False
+    root_filename_purepath = False
+    root_filename_pureposix = False
+    for node in ast.walk(function):
+        if not isinstance(node, ast.Call):
+            continue
+        call_name = _dotted_call_name(node.func)
+        if call_name not in {"pathlib.PurePath", "pathlib.PurePosixPath", "PurePath", "PurePosixPath"}:
+            continue
+        if not node.args or "filename" not in _joined_value_names(node.args[0]):
+            continue
+        if call_name in {"pathlib.PurePath", "PurePath"}:
+            root_filename_purepath = True
+        if call_name in {"pathlib.PurePosixPath", "PurePosixPath"}:
+            root_filename_pureposix = True
+    if "always" in normalized and "pureposixpath" in normalized:
+        return root_filename_pureposix and not root_filename_purepath
+    if "when self.at is empty" in normalized:
+        return root_filename_purepath
+    return None
+
+
+def _check_ancestry_separator_behavior(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "_ancestry" not in normalized:
+        return None
+    function = _find_function(tree, "_ancestry")
+    if function is None:
+        return False
+    has_endswith_stop = any(
+        isinstance(node, ast.Call)
+        and _call_name(node.func) == "endswith"
+        and any(_dotted_call_name(child) == "posixpath.sep" for child in ast.walk(node))
+        for node in ast.walk(function)
+    )
+    has_exact_sep_compare = any(
+        isinstance(node, ast.Compare)
+        and any(_dotted_call_name(comparator) == "posixpath.sep" for comparator in node.comparators)
+        for node in ast.walk(function)
+    )
+    if "multiple separators" in normalized:
+        return has_endswith_stop
+    if "equals exactly posixpath.sep" in normalized:
+        return has_exact_sep_compare and not has_endswith_stop
+    return None
+
+
 def _find_function(tree: ast.AST, name: str) -> ast.FunctionDef | ast.AsyncFunctionDef | None:
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef) and node.name == name:
@@ -513,6 +630,7 @@ def _find_function(tree: ast.AST, name: str) -> ast.FunctionDef | ast.AsyncFunct
 
 def _claim_function_names(claim: str) -> list[str]:
     names = re.findall(r"\b([A-Za-z_]\w*)\s*\(", claim)
+    names.extend(re.findall(r"\b[A-Za-z_]\w*\.([A-Za-z_]\w*)\b", claim))
     leading = _leading_function_name(claim)
     if leading:
         names.append(leading)
@@ -547,6 +665,14 @@ def _dotted_call_name(node: ast.AST) -> str | None:
         base = _dotted_call_name(node.value)
         return f"{base}.{node.attr}" if base else node.attr
     return None
+
+
+def _raise_exception_name(node: ast.Raise) -> str | None:
+    if node.exc is None:
+        return None
+    if isinstance(node.exc, ast.Call):
+        return _call_name(node.exc.func)
+    return _call_name(node.exc)
 
 
 def _constant_strings(node: ast.AST) -> set[str]:

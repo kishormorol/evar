@@ -279,6 +279,133 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.status, VerificationStatus.FAILED)
         self.assertIn("_check_match_dirs_requires_slash", result.reason)
 
+    def test_structural_verifier_checks_method_exception_type(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "class Path:\n"
+                "    def iterdir(self):\n"
+                "        raise NotADirectoryError(\"Can't listdir a file\")\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="path.py",
+                line_start=1,
+                line_end=3,
+                claim="Path.iterdir still raises ValueError when called on a file.",
+                expected_stdout_contains="raise NotADirectoryError",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_raises_exception", result.reason)
+
+    def test_structural_verifier_checks_regex_terminator_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "glob.py").write_text(
+                "class Translator:\n"
+                "    def extend(self, pattern):\n"
+                "        return rf'(?s:{pattern})\\z'\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="glob.py",
+                line_start=1,
+                line_end=3,
+                claim="Translator.extend still appends \\Z to the generated regex.",
+                expected_stdout_contains="return rf'(?s:{pattern})\\z'",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_extend_regex_terminator", result.reason)
+
+    def test_structural_verifier_checks_striptags_whitespace_order(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "markup.py").write_text(
+                "class Markup:\n"
+                "    def striptags(self):\n"
+                "        value = str(self)\n"
+                "        while True:\n"
+                "            start = value.find('<')\n"
+                "            break\n"
+                "        value = ' '.join(value.split())\n"
+                "        return value\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="markup.py",
+                line_start=1,
+                line_end=8,
+                claim="Markup.striptags collapses whitespace after removing comments and tags.",
+                expected_stdout_contains="value = ' '.join(value.split())",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_striptags_whitespace_order", result.reason)
+
+    def test_structural_verifier_checks_path_base_purepath_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "import pathlib\n\n"
+                "class Path:\n"
+                "    def _base(self):\n"
+                "        if self.at:\n"
+                "            return pathlib.PurePosixPath(self.at)\n"
+                "        else:\n"
+                "            return pathlib.PurePath(self.root.filename)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="wrong/path.py",
+                line_start=1,
+                line_end=8,
+                claim="Path._base always wraps self.root.filename with pathlib.PurePosixPath.",
+                expected_stdout_contains="return pathlib.PurePath(self.root.filename)",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_path_base_purepath", result.reason)
+
+    def test_structural_verifier_checks_ancestry_separator_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "import posixpath\n\n"
+                "def _ancestry(path):\n"
+                "    path = path.rstrip(posixpath.sep)\n"
+                "    while path and not path.endswith(posixpath.sep):\n"
+                "        yield path\n"
+                "        path, tail = posixpath.split(path)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="wrong/path.py",
+                line_start=1,
+                line_end=7,
+                claim="_ancestry still loops until path equals exactly posixpath.sep.",
+                expected_stdout_contains="while path and not path.endswith(posixpath.sep):",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_ancestry_separator_behavior", result.reason)
+
     def test_structural_verifier_rejects_falsification_condition(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)

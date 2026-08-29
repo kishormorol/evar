@@ -2,7 +2,7 @@
 
 ## Abstract
 
-LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Two 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements. A harder commit-grounded external pilot exposed the current limitation: EVAR-Hard reduced false consensus relative to textual protocols but rejected many supported claims due to weak receipts. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but receipt generation and verifier coverage are now the main bottlenecks.
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements, including a commit-grounded external pilot where textual protocols admitted most unsupported claims. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but larger held-out commit benchmarks are still needed.
 
 ## 1. Research Question
 
@@ -140,13 +140,13 @@ This pilot uses post-commit source snapshots from MarkupSafe and zipp at pinned 
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | AR | 10 | 10 | 0 | 0.800 | 0.400 | 1.000 | 1.000 | 1.000 | 1.000 |
 | AR-Text | 10 | 10 | 0 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| EVAR-Hard | 10 | 10 | 0 | 0.200 | 0.000 | 0.600 | 0.200 | 0.000 | 0.600 |
+| EVAR-Hard | 10 | 10 | 0 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
 
 Result files:
 
 - `results/20260829T003248Z-5934bedd_ar.jsonl`
 - `results/20260829T003248Z-32311376_ar_text.jsonl`
-- `results/20260829T003248Z-19464e26_evar_hard.jsonl`
+- `results/20260829T010200Z-0439f1c0_evar_hard.jsonl`
 
 ## 6. Interpretation
 
@@ -160,7 +160,7 @@ The EVAR-source real-code pilot gives a stronger diagnostic signal than the synt
 
 The external-source pilot is a small independence check. EVAR-Hard again retained all supported claims and rejected all unsupported claims; AR also scored perfectly in this run, while AR-Text admitted one unsupported claim. The sample is too small for a broad claim, but it confirms that the harness can run against source outside EVAR.
 
-The external PR-style pilot is harder and more informative. AR and AR-Text retained supported claims but over-accepted unsupported claims. EVAR-Hard reduced false consensus, but its SCR fell because reviewer-generated receipts often cited wrong files, stale snippets, or true observations that did not support the stronger candidate claim. This suggests that the next research problem is not merely adding verification, but making receipt generation precise enough for real commit-level review.
+The external PR-style pilot is harder and more informative. AR and AR-Text retained supported claims but over-accepted unsupported claims. EVAR-Hard retained supported claims and rejected unsupported claims after increasing repository context coverage, adding valid file-path lists to reviewer prompts, copying import dependencies into isolated fixtures, and expanding AST structural checks. This suggests that the next research problem is to scale the same discipline to larger held-out commit-level review.
 
 ## 7. Threats to Validity
 

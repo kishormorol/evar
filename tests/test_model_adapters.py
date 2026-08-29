@@ -8,7 +8,12 @@ import unittest
 from pathlib import Path
 
 from evar.agents.model_critic import CriticPromptContext, _critic_user_prompt, parse_critic_decision
-from evar.agents.model_reviewer import ModelOutputError, _repository_context, parse_reviewer_receipts
+from evar.agents.model_reviewer import (
+    ModelOutputError,
+    _repository_context,
+    _review_user_prompt,
+    parse_reviewer_receipts,
+)
 from evar.eval.metrics import compute_fcr_scr
 from evar.protocols.evar import CriticDecision, TextEvidence
 from evar.run_model import main
@@ -140,6 +145,19 @@ class ModelAdapterTests(unittest.TestCase):
             context = _repository_context(repo)
 
         self.assertNotIn("ground_truth", context)
+
+    def test_reviewer_prompt_lists_valid_receipt_file_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            package = repo / "zipp"
+            package.mkdir()
+            (package / "__init__.py").write_text("class Path:\n    pass\n", encoding="utf-8")
+
+            prompt = _review_user_prompt("Review Path behavior.", repo)
+
+        self.assertIn("Valid file paths for EvidenceReceipt.file:", prompt)
+        self.assertIn("- zipp/__init__.py", prompt)
+        self.assertIn("file must be exactly one path from the valid file path list", prompt)
 
     def test_eval_table_counts_configured_final_actionable_records(self) -> None:
         summary = compute_fcr_scr(

@@ -26,7 +26,7 @@ def main() -> None:
             1,
             repo_name="zipp",
             commit="84be2a5570778549503492d094f40a7203197bb2",
-            files={"zipp/__init__.py": "zipp/__init__.py"},
+            files=_zipp_init_files(),
             task="Review zipp Path.iterdir behavior after commit 84be2a5.",
             claim="Path.iterdir raises NotADirectoryError when called on a file.",
             ground_truth="SUPPORTED",
@@ -37,7 +37,7 @@ def main() -> None:
             2,
             repo_name="zipp",
             commit="84be2a5570778549503492d094f40a7203197bb2",
-            files={"zipp/__init__.py": "zipp/__init__.py"},
+            files=_zipp_init_files(),
             task="Review zipp Path.iterdir behavior after commit 84be2a5.",
             claim="Path.iterdir still raises ValueError when called on a file.",
             ground_truth="UNSUPPORTED",
@@ -92,7 +92,7 @@ def main() -> None:
             7,
             repo_name="zipp",
             commit="3503c8b2e47f28eb49aad9ddb4f5c002146404ad",
-            files={"zipp/__init__.py": "zipp/__init__.py"},
+            files=_zipp_init_files(),
             task="Review zipp Path._base after commit 3503c8b.",
             claim="Path._base uses pathlib.PurePath for the zipfile filename when self.at is empty.",
             ground_truth="SUPPORTED",
@@ -103,7 +103,7 @@ def main() -> None:
             8,
             repo_name="zipp",
             commit="3503c8b2e47f28eb49aad9ddb4f5c002146404ad",
-            files={"zipp/__init__.py": "zipp/__init__.py"},
+            files=_zipp_init_files(),
             task="Review zipp Path._base after commit 3503c8b.",
             claim="Path._base always wraps self.root.filename with pathlib.PurePosixPath.",
             ground_truth="UNSUPPORTED",
@@ -114,7 +114,7 @@ def main() -> None:
             9,
             repo_name="zipp",
             commit="f89b93f0370dd85d23d243e25dfc1f99f4d8de48",
-            files={"zipp/__init__.py": "zipp/__init__.py"},
+            files=_zipp_init_files(),
             task="Review zipp malformed path ancestry after commit f89b93f.",
             claim="_ancestry treats multiple separators like a single path separator.",
             ground_truth="SUPPORTED",
@@ -125,7 +125,7 @@ def main() -> None:
             10,
             repo_name="zipp",
             commit="f89b93f0370dd85d23d243e25dfc1f99f4d8de48",
-            files={"zipp/__init__.py": "zipp/__init__.py"},
+            files=_zipp_init_files(),
             task="Review zipp malformed path ancestry after commit f89b93f.",
             claim="_ancestry still loops until path equals exactly posixpath.sep.",
             ground_truth="UNSUPPORTED",
@@ -180,14 +180,28 @@ def _case(
     }
 
 
+def _zipp_init_files() -> dict[str, str]:
+    return {
+        "zipp/__init__.py": "zipp/__init__.py",
+        "zipp/_functools.py": "zipp/_functools.py",
+        "zipp/glob.py": "zipp/glob.py",
+        "zipp/compat/py310.py": "zipp/compat/py310.py",
+    }
+
+
 def _write_git_file(repo_name: str, commit: str, source: str, target: Path) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
-    completed = subprocess.run(
-        ["git", "-C", str(SOURCES[repo_name]), "show", f"{commit}:{source}"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        completed = subprocess.run(
+            ["git", "-C", str(SOURCES[repo_name]), "show", f"{commit}:{source}"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError:
+        if source in {"zipp/_functools.py", "zipp/glob.py", "zipp/compat/py310.py"}:
+            return
+        raise
     target.write_text(completed.stdout, encoding="utf-8")
 
 

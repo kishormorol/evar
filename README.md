@@ -124,7 +124,7 @@ External commit-grounded `external_pr_10` pilot with `gpt-4.1-mini`:
 | --- | ---: | ---: |
 | `ar` | 0.800 | 1.000 |
 | `ar_text` | 1.000 | 1.000 |
-| `evar_hard` | 0.200 | 0.200 |
+| `evar_hard` | 0.000 | 1.000 |
 
 ## Scientific Guardrails
 

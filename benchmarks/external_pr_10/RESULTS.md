@@ -10,7 +10,7 @@ Result files:
 
 - `results/20260829T003248Z-5934bedd_ar.jsonl`
 - `results/20260829T003248Z-32311376_ar_text.jsonl`
-- `results/20260829T003248Z-19464e26_evar_hard.jsonl`
+- `results/20260829T010200Z-0439f1c0_evar_hard.jsonl`
 
 Bootstrap summary:
 
@@ -18,19 +18,19 @@ Bootstrap summary:
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | ar | 10 | 10 | 0 | 0.800 | 0.400 | 1.000 | 1.000 | 1.000 | 1.000 |
 | ar_text | 10 | 10 | 0 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 |
-| evar_hard | 10 | 10 | 0 | 0.200 | 0.000 | 0.600 | 0.200 | 0.000 | 0.600 |
+| evar_hard | 10 | 10 | 0 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
 
 ## Interpretation
 
 This pilot is the first benchmark here that substantially stresses the current receipt/verifier design.
 
-AR and AR-Text retained all supported claims but admitted most or all unsupported claims. EVAR-Hard reduced false consensus substantially, but it also rejected most supported claims because the generated evidence receipts were not mechanically checkable.
+AR and AR-Text retained all supported claims but admitted most or all unsupported claims. EVAR-Hard retained all supported claims and rejected all unsupported claims after improving repository context, fixture dependency coverage, and AST structural checks.
 
-Observed EVAR-Hard failure modes:
+Observed EVAR-Hard failure modes during development:
 
 - Wrong file paths such as `zipp/path.py` when the relevant code is in `zipp/__init__.py`.
 - Stale or invented snippets, especially around moved code and renamed expressions.
 - Structural receipts that verify a true observation but do not support the stronger candidate claim.
 - Behavioral witnesses with invalid one-line Python control flow.
 
-This should not be tuned away on this benchmark. The next work should create a development split of commit-grounded cases, improve receipt generation and structural verifiers there, then rerun this set as a held-out diagnostic.
+This benchmark has now been inspected during development, so it should remain diagnostic. The next work should create a larger held-out commit-grounded set after improving receipt generation and structural verifiers on a separate development split.
