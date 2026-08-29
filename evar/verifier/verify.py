@@ -342,7 +342,9 @@ def _verify_python_structural_claim(
         _check_match_dirs_requires_slash,
         _check_raises_exception,
         _check_extend_regex_terminator,
+        _check_translate_match_dirs_wrapping,
         _check_striptags_whitespace_order,
+        _check_path_open_exists_order,
         _check_path_base_purepath,
         _check_ancestry_separator_behavior,
     ]
@@ -537,6 +539,29 @@ def _check_extend_regex_terminator(tree: ast.AST, claim: str) -> bool | None:
     )
 
 
+def _check_translate_match_dirs_wrapping(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "translate" not in normalized or "translate_core" not in normalized or "match_dirs" not in normalized:
+        return None
+    if "wraps" not in normalized and "without match_dirs" not in normalized:
+        return None
+    function = _find_function(tree, "translate")
+    if function is None:
+        return False
+    wraps_translate_core = any(
+        isinstance(node, ast.Call)
+        and _call_name(node.func) == "match_dirs"
+        and any(
+            isinstance(child, ast.Call) and _call_name(child.func) == "translate_core"
+            for child in ast.walk(node)
+        )
+        for node in ast.walk(function)
+    )
+    if "without match_dirs" in normalized:
+        return not wraps_translate_core
+    return wraps_translate_core
+
+
 def _check_striptags_whitespace_order(tree: ast.AST, claim: str) -> bool | None:
     normalized = claim.lower()
     if "striptags" not in normalized or "collapses whitespace" not in normalized:
@@ -566,6 +591,34 @@ def _check_striptags_whitespace_order(tree: ast.AST, claim: str) -> bool | None:
         return False
     collapse_after = min(collapse_lines) > max(removal_lines)
     return collapse_after if wants_after else not collapse_after
+
+
+def _check_path_open_exists_order(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if (
+        "path.open" not in normalized
+        or "self.exists" not in normalized
+        or ("zip mode" not in normalized and "zip_mode" not in normalized)
+    ):
+        return None
+    wants_exists_first = "self.exists" in normalized and "before checking" in normalized
+    wants_zip_mode_first = (
+        ("checks zip_mode" in normalized or "checks zip mode" in normalized)
+        and "before calling self.exists" in normalized
+    )
+    if not wants_exists_first and not wants_zip_mode_first:
+        return None
+    function = _find_function(tree, "open")
+    if function is None:
+        return False
+    for node in ast.walk(function):
+        if not isinstance(node, ast.If):
+            continue
+        order = _zip_mode_and_exists_order(node.test)
+        if order is not None:
+            expected_order = ("exists", "zip_mode") if wants_exists_first else ("zip_mode", "exists")
+            return order == expected_order
+    return False
 
 
 def _check_path_base_purepath(tree: ast.AST, claim: str) -> bool | None:
@@ -619,6 +672,55 @@ def _check_ancestry_separator_behavior(tree: ast.AST, claim: str) -> bool | None
     if "equals exactly posixpath.sep" in normalized:
         return has_exact_sep_compare and not has_endswith_stop
     return None
+
+
+def _zip_mode_and_exists_order(node: ast.AST) -> tuple[str, str] | None:
+    events = _ordered_condition_events(node)
+    if "zip_mode" not in events or "exists" not in events:
+        return None
+    return (
+        "exists" if events.index("exists") < events.index("zip_mode") else "zip_mode",
+        "zip_mode" if events.index("exists") < events.index("zip_mode") else "exists",
+    )
+
+
+def _ordered_condition_events(node: ast.AST) -> list[str]:
+    if isinstance(node, ast.BoolOp):
+        events: list[str] = []
+        for value in node.values:
+            events.extend(_ordered_condition_events(value))
+        return events
+    if _is_zip_mode_read_check(node):
+        return ["zip_mode"]
+    if _contains_self_exists_call(node):
+        return ["exists"]
+    if isinstance(node, ast.UnaryOp):
+        return _ordered_condition_events(node.operand)
+    if isinstance(node, ast.Compare):
+        events = _ordered_condition_events(node.left)
+        for comparator in node.comparators:
+            events.extend(_ordered_condition_events(comparator))
+        return events
+    return []
+
+
+def _is_zip_mode_read_check(node: ast.AST) -> bool:
+    if not isinstance(node, ast.Compare):
+        return False
+    names = [_dotted_call_name(node.left), *[_dotted_call_name(comparator) for comparator in node.comparators]]
+    constants = [
+        item.value
+        for item in [node.left, *node.comparators]
+        if isinstance(item, ast.Constant) and isinstance(item.value, str)
+    ]
+    return "zip_mode" in names and "r" in constants
+
+
+def _contains_self_exists_call(node: ast.AST) -> bool:
+    return any(
+        isinstance(item, ast.Call) and _dotted_call_name(item.func) == "self.exists"
+        for item in ast.walk(node)
+    )
 
 
 def _find_function(tree: ast.AST, name: str) -> ast.FunctionDef | ast.AsyncFunctionDef | None:

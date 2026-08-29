@@ -15,6 +15,7 @@ from evar.agents.model_reviewer import (
     parse_reviewer_receipts,
 )
 from evar.eval.metrics import compute_fcr_scr
+from evar.prompts import load_prompt
 from evar.protocols.evar import CriticDecision, TextEvidence
 from evar.run_model import main
 from evar.verifier.models import EvidenceReceipt, EvidenceRole, EvidenceType, VerificationResult, VerificationStatus
@@ -102,6 +103,33 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertIsNone(receipts[0].verification_command)
         self.assertIsNone(receipts[0].expected_stdout_contains)
 
+    def test_parse_reviewer_receipts_defaults_empty_falsification_condition(self) -> None:
+        receipts = parse_reviewer_receipts(
+            json.dumps(
+                {
+                    "receipts": [
+                        {
+                            "claim_id": "c1",
+                            "claim": "claim",
+                            "evidence_type": "structural",
+                            "file": "sample.py",
+                            "line_start": 1,
+                            "line_end": 1,
+                            "verification_command": None,
+                            "expected_exit_code": None,
+                            "expected_stdout_contains": "return value",
+                            "falsification_condition": "",
+                        }
+                    ]
+                }
+            )
+        )
+
+        self.assertEqual(
+            receipts[0].falsification_condition,
+            "The referenced evidence does not support the claim.",
+        )
+
     def test_parse_critic_decision_accepts_allowed_decision(self) -> None:
         decision = parse_critic_decision('{"decision":"REQUEST_STRONGER_WITNESS"}')
 
@@ -158,6 +186,27 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertIn("Valid file paths for EvidenceReceipt.file:", prompt)
         self.assertIn("- zipp/__init__.py", prompt)
         self.assertIn("file must be exactly one path from the valid file path list", prompt)
+
+    def test_reviewer_prompt_prefers_implementation_over_docstring_counterevidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "def _ancestry(path):\n"
+                "    \"\"\"Example may be confusing.\"\"\"\n"
+                "    return path\n",
+                encoding="utf-8",
+            )
+
+            prompt = _review_user_prompt("Review _ancestry behavior.", repo)
+
+        self.assertIn("Prefer receipts whose evidence_role directly matches executable code semantics", prompt)
+        self.assertIn("do not submit docstring-only counterevidence", prompt)
+
+    def test_evar_reviewer_prompt_prefers_structural_evidence_for_call_chains(self) -> None:
+        prompt = load_prompt("reviewer_evar_v1.txt").text
+
+        self.assertIn("wrapper/call-chain relationship", prompt)
+        self.assertIn("use structural evidence, not behavioral evidence", prompt)
 
     def test_eval_table_counts_configured_final_actionable_records(self) -> None:
         summary = compute_fcr_scr(

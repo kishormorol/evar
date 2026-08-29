@@ -325,6 +325,52 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.status, VerificationStatus.FAILED)
         self.assertIn("_check_extend_regex_terminator", result.reason)
 
+    def test_structural_verifier_checks_translate_match_dirs_wrapping(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "glob.py").write_text(
+                "class Translator:\n"
+                "    def translate(self, pattern):\n"
+                "        return self.extend(self.match_dirs(self.translate_core(pattern)))\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="glob.py",
+                line_start=1,
+                line_end=3,
+                claim="Translator.translate wraps translate_core with match_dirs.",
+                expected_stdout_contains="return self.extend(self.match_dirs(self.translate_core(pattern)))",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_translate_match_dirs_wrapping", result.reason)
+
+    def test_structural_verifier_rejects_missing_translate_match_dirs_wrapping(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "glob.py").write_text(
+                "class Translator:\n"
+                "    def translate(self, pattern):\n"
+                "        return self.extend(self.match_dirs(self.translate_core(pattern)))\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="glob.py",
+                line_start=1,
+                line_end=3,
+                claim="Translator.translate returns self.extend(self.translate_core(pattern)) without match_dirs.",
+                expected_stdout_contains="return self.extend(self.match_dirs(self.translate_core(pattern)))",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_translate_match_dirs_wrapping", result.reason)
+
     def test_structural_verifier_checks_striptags_whitespace_order(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
@@ -352,6 +398,81 @@ class VerifierTests(unittest.TestCase):
 
         self.assertEqual(result.status, VerificationStatus.VERIFIED)
         self.assertIn("_check_striptags_whitespace_order", result.reason)
+
+    def test_structural_verifier_checks_path_open_exists_after_read_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "class Path:\n"
+                "    def open(self, mode='r'):\n"
+                "        zip_mode = mode[0]\n"
+                "        if zip_mode == 'r' and not self.exists():\n"
+                "            raise FileNotFoundError(self)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="path.py",
+                line_start=1,
+                line_end=5,
+                claim="Path.open calls self.exists() before checking whether the zip mode is read mode.",
+                expected_stdout_contains="if zip_mode == 'r' and not self.exists():",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_path_open_exists_order", result.reason)
+
+    def test_structural_verifier_checks_path_open_read_mode_before_exists(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "class Path:\n"
+                "    def open(self, mode='r'):\n"
+                "        zip_mode = mode[0]\n"
+                "        if zip_mode == 'r' and not self.exists():\n"
+                "            raise FileNotFoundError(self)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="path.py",
+                line_start=1,
+                line_end=5,
+                claim="Path.open checks zip_mode == 'r' before calling self.exists().",
+                expected_stdout_contains=None,
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_path_open_exists_order", result.reason)
+
+    def test_structural_verifier_checks_path_open_exists_before_read_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "class Path:\n"
+                "    def open(self, mode='r'):\n"
+                "        zip_mode = mode[0]\n"
+                "        if not self.exists() and zip_mode == 'r':\n"
+                "            raise FileNotFoundError(self)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="path.py",
+                line_start=1,
+                line_end=5,
+                claim="Path.open calls self.exists() before checking whether the zip mode is read mode.",
+                expected_stdout_contains="if not self.exists() and zip_mode == 'r':",
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_path_open_exists_order", result.reason)
 
     def test_structural_verifier_checks_path_base_purepath_claim(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

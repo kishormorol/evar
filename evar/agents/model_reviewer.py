@@ -142,7 +142,7 @@ def _parse_receipt(item: object) -> EvidenceReceipt:
         verification_command=_optional_string(item, "verification_command"),
         expected_exit_code=_optional_int(item, "expected_exit_code"),
         expected_stdout_contains=_optional_string(item, "expected_stdout_contains"),
-        falsification_condition=_string(item, "falsification_condition"),
+        falsification_condition=_falsification_condition(item),
     )
 
 
@@ -156,7 +156,10 @@ def _review_user_prompt(task: str, repo_path: Path) -> str:
         f"{_repository_context(repo_path)}\n\n"
         "Use only repository context allowed by the experiment policy. "
         "Do not include benchmark labels or expected final decisions. "
-        "For evidence receipts, file must be exactly one path from the valid file path list above."
+        "For evidence receipts, file must be exactly one path from the valid file path list above. "
+        "Prefer receipts whose evidence_role directly matches executable code semantics. "
+        "When comments or docstrings appear to disagree with implementation behavior, use the implementation "
+        "as the primary evidence and do not submit docstring-only counterevidence."
     )
 
 
@@ -221,6 +224,15 @@ def _optional_string(item: dict[str, object], key: str) -> str | None:
     if not isinstance(value, str):
         raise ModelOutputError(f"{key} must be null or a non-empty string.")
     return value
+
+
+def _falsification_condition(item: dict[str, object]) -> str:
+    value = item.get("falsification_condition")
+    if isinstance(value, str) and value.strip():
+        return value
+    if isinstance(value, str):
+        return "The referenced evidence does not support the claim."
+    raise ModelOutputError("falsification_condition must be a string.")
 
 
 def _optional_int(item: dict[str, object], key: str) -> int | None:

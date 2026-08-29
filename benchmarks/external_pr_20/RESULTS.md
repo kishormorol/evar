@@ -30,3 +30,15 @@ EVAR-Hard errors:
 - Unsupported case 12: the structural verifier accepted the observed condition `zip_mode == 'r' and not self.exists()`, but the candidate claim was about evaluation order and should have been rejected.
 
 This is the best current target for improvement: add development cases for evaluation-order semantics and confusing docstring/code disagreement, then rerun this 20-case benchmark without direct tuning.
+
+## Post-Fix EVAR-Hard Diagnostic
+
+After adding an AST check for `Path.open` evaluation order, defaulting blank reviewer falsification text, and steering call-chain claims toward structural evidence, EVAR-Hard was rerun on the same 20 cases:
+
+- `results/20260829T014432Z-cca220d5_evar_hard.jsonl`
+
+| Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| evar_hard | 20 | 20 | 0 | 0.000 | 0.000 | 0.000 | 0.800 | 0.500 | 1.000 |
+
+The evaluation-order false positive was removed, but supported retention dropped because the model still sometimes emits fragile behavioral witnesses or mislabeled counterevidence. The remaining development targets are receipt-role correction/retry when deterministic AST evidence contradicts the submitted role, and stronger rejection or rewriting of one-line Python witnesses with invalid `try/except` syntax.
