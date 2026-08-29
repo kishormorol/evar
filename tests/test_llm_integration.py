@@ -108,6 +108,35 @@ class LLMIntegrationTests(unittest.TestCase):
         self.assertNotIn(case.ground_truth.value, call.user_prompt)
         self.assertNotIn(case.ground_truth_evidence, call.user_prompt)
 
+    def test_configured_run_records_claim_family_and_duration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cases = root / "cases.jsonl"
+            output_dir = root / "results"
+            cases.write_text(json.dumps(_raw_case(root)) + "\n", encoding="utf-8")
+            stdout = io.StringIO()
+
+            with contextlib.redirect_stdout(stdout):
+                exit_code = main(
+                    [
+                        "--cases",
+                        str(cases),
+                        "--protocol",
+                        "evar_hard",
+                        "--config",
+                        "configs/pilot.yaml",
+                        "--output-dir",
+                        str(output_dir),
+                    ]
+                )
+
+            output_path = Path(stdout.getvalue().strip())
+            record = json.loads(output_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(record["claim_family"], "missing_guard")
+        self.assertGreaterEqual(record["duration"], 0.0)
+
 
 def _raw_case(repo: Path) -> dict[str, object]:
     return {

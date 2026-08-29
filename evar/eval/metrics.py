@@ -30,6 +30,20 @@ class AggregateMetrics:
     scr: float
 
 
+@dataclass(frozen=True)
+class EfficiencyMetrics:
+    protocol: str
+    total_cases: int
+    measured_duration_cases: int
+    total_duration_seconds: float
+    mean_duration_seconds: float | None
+    tokenized_cases: int
+    total_input_tokens: int
+    total_output_tokens: int
+    mean_input_tokens: float | None
+    mean_output_tokens: float | None
+
+
 def compute_metrics(case: BenchmarkCase, result: ProtocolResult) -> Metrics:
     actionable_ids = [finding.id for finding in result.actionable_findings]
     true_positives = len(actionable_ids) if case.ground_truth == GroundTruth.SUPPORTED else 0
@@ -80,6 +94,57 @@ def compute_fcr_scr(records: list[dict[str, Any]]) -> AggregateMetrics:
         fcr=unsupported_actionable / len(unsupported) if unsupported else 0.0,
         scr=supported_actionable / len(supported) if supported else 0.0,
     )
+
+
+def compute_efficiency_metrics(records: list[dict[str, Any]]) -> EfficiencyMetrics:
+    protocols = {str(record.get("protocol", "")) for record in records}
+    protocol = protocols.pop() if len(protocols) == 1 else "mixed" if records else ""
+
+    durations = [
+        float(record["duration"])
+        for record in records
+        if isinstance(record.get("duration"), int | float)
+        and not isinstance(record.get("duration"), bool)
+    ]
+    per_case_tokens = [_case_token_usage(record) for record in records]
+    tokenized_cases = [usage for usage in per_case_tokens if usage is not None]
+    total_input_tokens = sum(usage[0] for usage in tokenized_cases)
+    total_output_tokens = sum(usage[1] for usage in tokenized_cases)
+
+    return EfficiencyMetrics(
+        protocol=protocol,
+        total_cases=len(records),
+        measured_duration_cases=len(durations),
+        total_duration_seconds=sum(durations),
+        mean_duration_seconds=sum(durations) / len(durations) if durations else None,
+        tokenized_cases=len(tokenized_cases),
+        total_input_tokens=total_input_tokens,
+        total_output_tokens=total_output_tokens,
+        mean_input_tokens=total_input_tokens / len(tokenized_cases) if tokenized_cases else None,
+        mean_output_tokens=total_output_tokens / len(tokenized_cases) if tokenized_cases else None,
+    )
+
+
+def _case_token_usage(record: dict[str, Any]) -> tuple[int, int] | None:
+    metadata = record.get("metadata")
+    if not isinstance(metadata, dict):
+        return None
+    input_tokens = 0
+    output_tokens = 0
+    observed = False
+    for model_key in ("reviewer_model", "critic_model"):
+        model = metadata.get(model_key)
+        if not isinstance(model, dict):
+            continue
+        model_input = model.get("input_tokens")
+        model_output = model.get("output_tokens")
+        if isinstance(model_input, int) and not isinstance(model_input, bool):
+            input_tokens += model_input
+            observed = True
+        if isinstance(model_output, int) and not isinstance(model_output, bool):
+            output_tokens += model_output
+            observed = True
+    return (input_tokens, output_tokens) if observed else None
 
 
 def _has_actionable_finding(record: dict[str, Any]) -> bool:

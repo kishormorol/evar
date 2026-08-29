@@ -1,14 +1,23 @@
 # Evidence-Verified Adversarial Review for Code-Review Claims
 
+Project preview: [evar-research.elitelab-ai.chatgpt.site](https://evar-research.elitelab-ai.chatgpt.site) · Development repository: [github.com/kishormorol/evar](https://github.com/kishormorol/evar)
+
 ## Abstract
 
-LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements. On a harder 20-case commit-grounded benchmark, EVAR-Hard initially reduced FCR relative to AR (0.100 vs. 0.300) with SCR = 0.900; a diagnostic receipt-repair pass on the inspected benchmark reached FCR = 0.000 and SCR = 1.000. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but larger held-out commit benchmarks remain necessary.
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots produced diagnostic EVAR-Hard runs with FCR = 0.000 and SCR = 1.000 after verifier improvements. On a harder 20-case commit-grounded benchmark, EVAR-Hard initially reduced FCR relative to AR (0.100 vs. 0.300) with SCR = 0.900; a post-hoc receipt-repair pass on the inspected benchmark reached FCR = 0.000 and SCR = 1.000. The evidence supports executable verification as a promising reliability mechanism, but the small benchmarks, verifier specialization, and development-time tuning preclude claims about real-world code-review performance.
 
 ## 1. Research Question
 
 Can external deterministic verification reduce false consensus between LLM reviewer and critic agents during code review?
 
 We define false consensus as an unsupported candidate claim becoming actionable after reviewer/critic interaction. We also track supported-claim retention to ensure that stricter verification does not simply reject everything.
+
+This work makes four concrete contributions:
+
+1. It defines false consensus as a measurable failure mode for reviewer–critic code-review protocols.
+2. It introduces structured evidence receipts and a deterministic actionability gate.
+3. It provides a reproducible harness for comparing textual and verification-backed protocols under matched budgets.
+4. It reports synthetic, real-source, and commit-grounded diagnostic evaluations while separating held-out results from post-hoc development results.
 
 ## 2. Protocols
 
@@ -24,7 +33,17 @@ The EVAR-Hard receipt contains the claim, evidence type, evidence role, referenc
 
 ## 3. Benchmark
 
-The held-out benchmark is `benchmarks/manual_50`.
+The evaluation suite spans synthetic cases, isolated real source, and commit-grounded cases:
+
+| Benchmark | Cases | Source | Claim Construction | Role in Development |
+| --- | ---: | --- | --- | --- |
+| `manual_50` | 50 | Deterministic synthetic fixtures | Generated from five claim templates | Held out from the original 10-case development loop |
+| `real_10` | 10 | Isolated EVAR source files | Hand-authored static claims | Diagnostic |
+| `external_10` | 10 | Pinned MarkupSafe and zipp source | Hand-authored static claims | External-source diagnostic |
+| `external_pr_10` | 10 | Post-commit MarkupSafe and zipp snapshots | Hand-authored, commit-grounded claims | Development pilot |
+| `external_pr_20` | 20 | Pinned MarkupSafe and zipp commits | Hand-authored, commit-grounded claims | Harder held-out check, later inspected for diagnosis |
+
+The primary synthetic benchmark is `benchmarks/manual_50`.
 
 It contains 50 synthetic code-review claim cases:
 
@@ -60,7 +79,22 @@ Supported Claim Retention (SCR):
 supported actionable claims / supported completed cases
 ```
 
-Lower FCR is better. Higher SCR is better.
+Lower FCR is better. Higher SCR is better. Failed runs are reported separately and excluded from both denominators rather than silently counted as decisions or dropped from the result file.
+
+Bootstrap intervals use seeded resampling of eligible completed cases. Paired protocol deltas match records by `case_id` before resampling, preventing unrelated examples from being compared as pairs. These intervals are descriptive because the benchmarks are small and are not random samples from a defined population of code-review tasks.
+
+### 4.1 Analysis and Reproducibility
+
+Each configured run writes one JSONL record per attempted case and a separate transcript. Result records capture protocol, claim family, ground truth, final actionability, verifier status, critic decision, run status, model and prompt configuration, token usage, and end-to-end duration when available. Failures are emitted as explicit records with a failure type and reason.
+
+The analysis CLI reports aggregate FCR/SCR, bootstrap intervals, paired deltas, per-claim-family metrics, and protocol-level token and runtime summaries. The relevant commands are:
+
+```bash
+python -m evar.eval_table --results ar.jsonl ar_text.jsonl evar_hard.jsonl \
+  --bootstrap 10000 --seed 7 --by-family --costs
+```
+
+Per-family and efficiency reporting are instrumentation features; this paper does not claim per-family or cost differences until larger matched runs provide adequate denominators.
 
 ## 5. Results
 
@@ -198,14 +232,41 @@ Prompts were improved after observing failures on the development benchmark and 
 
 The sample size remains small for statistical claims. Bootstrap intervals are useful as descriptive uncertainty checks, but stronger claims require more diverse cases and independent repetitions.
 
+The verifier is specialized to Python and to a limited set of structural and behavioral claim patterns. Some successful checks use targeted AST logic added after observing development failures. This improves the harness but means performance can reflect verifier coverage as much as protocol quality.
+
+The 20-case receipt-repair result is explicitly post-hoc. The same benchmark informed the repair logic, so the repaired score measures whether the diagnosed failures were corrected, not whether the correction generalizes.
+
+The study does not include human reviewers, production pull-request comments, repository-scale dependency graphs, or a calibrated estimate of review utility. It measures acceptance of pre-specified candidate claims, not end-to-end bug discovery.
+
 ## 8. Next Work
 
 The next research-quality step is to build a larger real-repository benchmark from actual commits or pull requests without using it for verifier or prompt tuning. Cases should include evaluation-order claims, docstring/code disagreement, multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. Receipt generation should be improved on a development split, then EVAR should be evaluated without further prompt tuning on the held-out external set.
 
 Additional useful extensions:
 
-- Add per-family result tables.
-- Track token cost and latency per protocol.
+- Report per-family effects once the held-out benchmark is large enough.
+- Compare token cost and latency across full-size protocol runs.
 - Compare more models.
 - Add a judge-free transcript audit report.
 - Add richer structural verifiers for common Python review claims.
+
+## 9. Conclusion
+
+EVAR changes the acceptance rule for adversarial code review: reviewer–critic agreement is necessary but insufficient; a finding must also survive an external evidence check. Across the current benchmarks, this gate often reduces unsupported actionable claims without collapsing supported-claim retention. The commit-grounded evaluations also show the central limitation: EVAR is only as general as its receipt generation and verification coverage.
+
+The strongest conclusion is therefore procedural rather than performance-based. Mechanically checked evidence creates a useful failure boundary and makes unsupported agreement observable. Establishing a broader empirical advantage requires a larger, untouched benchmark drawn from real repository changes, richer verifier coverage developed on a separate split, and evaluation across additional models and repositories.
+
+## 10. Artifact Availability
+
+The project site summarizes the protocol, evidence, limitations, and reproduction path: [EVAR research site](https://evar-research.elitelab-ai.chatgpt.site).
+
+The site and repository are access-controlled during development. A public paper release should archive the exact evaluated artifact and result files at a stable public identifier.
+
+The repository contains protocol implementations, prompts, benchmark fixtures, tests, result summaries, and analysis tools. The core deterministic checks run with:
+
+```bash
+python -m unittest discover -s tests
+python -m evar.demo_compare
+```
+
+Model-backed experiments require an explicit configuration and API credentials. The artifact records seeds, prompt hashes, model settings, per-case failures, and transcripts to support auditing and later replication.

@@ -71,9 +71,14 @@ Summarize result JSONL with FCR/SCR:
 ```bash
 python -m evar.eval_table --results ar_results.jsonl evar_results.jsonl
 python -m evar.eval_table --results ar_results.jsonl evar_results.jsonl --bootstrap 10000 --seed 7
+python -m evar.eval_table --results ar_results.jsonl evar_results.jsonl --by-family
+python -m evar.eval_table --results ar_results.jsonl evar_results.jsonl --costs
 ```
 
 `FCR` is the unsupported-case actionable rate. `SCR` is the supported-case actionable rate.
+Use `--by-family` to append per-claim-family FCR/SCR rows; it can be combined with
+`--bootstrap` and either output format.
+Use `--costs` to append total token usage and per-case runtime for each protocol.
 
 Validate model-adapter structured outputs without calling a model API:
 

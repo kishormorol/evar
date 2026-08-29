@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from evar.eval.bootstrap import bootstrap_paired_delta_ci, bootstrap_rate_ci
-from evar.eval.metrics import compute_fcr_scr
+from evar.eval.metrics import compute_efficiency_metrics, compute_fcr_scr
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -17,6 +17,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--format", choices=["json", "table"], default="table")
     parser.add_argument("--bootstrap", type=int, default=0)
     parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument(
+        "--by-family",
+        action="store_true",
+        help="Also report FCR/SCR grouped by claim_family.",
+    )
+    parser.add_argument(
+        "--costs",
+        action="store_true",
+        help="Also report aggregate token usage and per-case duration.",
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -27,18 +37,17 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     rows = [asdict(summary) for summary in summaries]
-    if args.bootstrap:
-        for row, records in zip(rows, result_sets):
-            fcr = bootstrap_rate_ci(records, "fcr", n=args.bootstrap, seed=args.seed)
-            scr = bootstrap_rate_ci(records, "scr", n=args.bootstrap, seed=args.seed)
-            row.update(
-                {
-                    "fcr_low": fcr.low,
-                    "fcr_high": fcr.high,
-                    "scr_low": scr.low,
-                    "scr_high": scr.high,
-                }
-            )
+    _add_bootstrap_intervals(rows, result_sets, n=args.bootstrap, seed=args.seed)
+
+    family_rows: list[dict[str, object]] = []
+    if args.by_family:
+        family_rows, family_result_sets = _family_summaries(result_sets, rows)
+        _add_bootstrap_intervals(
+            family_rows,
+            family_result_sets,
+            n=args.bootstrap,
+            seed=args.seed,
+        )
 
     comparison_rows: list[dict[str, object]] = []
     if args.bootstrap and len(result_sets) >= 2:
@@ -59,17 +68,83 @@ def main(argv: list[str] | None = None) -> int:
                 }
             )
 
+    efficiency_rows = (
+        [asdict(compute_efficiency_metrics(records)) for records in result_sets]
+        if args.costs
+        else []
+    )
+
     if args.format == "json":
         for row in rows:
             print(json.dumps(row, sort_keys=True))
         for row in comparison_rows:
             print(json.dumps(row, sort_keys=True))
+        for row in family_rows:
+            print(json.dumps(row, sort_keys=True))
+        for row in efficiency_rows:
+            print(json.dumps({"scope": "efficiency", **row}, sort_keys=True))
     else:
         _print_table(rows, include_ci=bool(args.bootstrap))
         if comparison_rows:
             print()
             _print_comparison_table(comparison_rows)
+        if family_rows:
+            print()
+            _print_family_table(family_rows, include_ci=bool(args.bootstrap))
+        if efficiency_rows:
+            print()
+            _print_efficiency_table(efficiency_rows)
     return 0
+
+
+def _add_bootstrap_intervals(
+    rows: list[dict[str, object]],
+    result_sets: list[list[dict[str, Any]]],
+    *,
+    n: int,
+    seed: int,
+) -> None:
+    if not n:
+        return
+    for row, records in zip(rows, result_sets):
+        fcr = bootstrap_rate_ci(records, "fcr", n=n, seed=seed)
+        scr = bootstrap_rate_ci(records, "scr", n=n, seed=seed)
+        row.update(
+            {
+                "fcr_low": fcr.low,
+                "fcr_high": fcr.high,
+                "scr_low": scr.low,
+                "scr_high": scr.high,
+            }
+        )
+
+
+def _family_summaries(
+    result_sets: list[list[dict[str, Any]]],
+    overall_rows: list[dict[str, object]],
+) -> tuple[list[dict[str, object]], list[list[dict[str, Any]]]]:
+    families = sorted(
+        {
+            str(record.get("claim_family") or "unknown")
+            for records in result_sets
+            for record in records
+        }
+    )
+    rows: list[dict[str, object]] = []
+    grouped_result_sets: list[list[dict[str, Any]]] = []
+    for family in families:
+        for records, overall_row in zip(result_sets, overall_rows):
+            family_records = [
+                record
+                for record in records
+                if str(record.get("claim_family") or "unknown") == family
+            ]
+            row: dict[str, object] = asdict(compute_fcr_scr(family_records))
+            row["protocol"] = overall_row["protocol"]
+            row["claim_family"] = family
+            rows.append(row)
+            grouped_result_sets.append(family_records)
+    return rows, grouped_result_sets
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -150,6 +225,93 @@ def _print_comparison_table(rows: list[dict[str, Any]]) -> None:
                 ]
             )
         )
+
+
+def _print_family_table(rows: list[dict[str, Any]], *, include_ci: bool = False) -> None:
+    headers = [
+        "claim_family",
+        "protocol",
+        "n",
+        "completed",
+        "failed",
+        "supported",
+        "unsupported",
+        "FCR",
+        "SCR",
+    ]
+    if include_ci:
+        headers = [
+            "claim_family",
+            "protocol",
+            "n",
+            "completed",
+            "failed",
+            "supported",
+            "unsupported",
+            "FCR",
+            "FCR_low",
+            "FCR_high",
+            "SCR",
+            "SCR_low",
+            "SCR_high",
+        ]
+    print("\t".join(headers))
+    for row in rows:
+        values = [
+            str(row["claim_family"]),
+            str(row["protocol"]),
+            str(row["total_cases"]),
+            str(row["completed_cases"]),
+            str(row["failed_runs"]),
+            str(row["supported_cases"]),
+            str(row["unsupported_cases"]),
+            f"{row['fcr']:.3f}",
+        ]
+        if include_ci:
+            values.extend([f"{row['fcr_low']:.3f}", f"{row['fcr_high']:.3f}"])
+        values.append(f"{row['scr']:.3f}")
+        if include_ci:
+            values.extend([f"{row['scr_low']:.3f}", f"{row['scr_high']:.3f}"])
+        print("\t".join(values))
+
+
+def _print_efficiency_table(rows: list[dict[str, Any]]) -> None:
+    headers = [
+        "protocol",
+        "n",
+        "duration_n",
+        "total_seconds",
+        "mean_seconds",
+        "token_n",
+        "input_tokens",
+        "output_tokens",
+        "mean_input_tokens",
+        "mean_output_tokens",
+    ]
+    print("\t".join(headers))
+    for row in rows:
+        print(
+            "\t".join(
+                [
+                    str(row["protocol"]),
+                    str(row["total_cases"]),
+                    str(row["measured_duration_cases"]),
+                    f"{row['total_duration_seconds']:.3f}",
+                    _format_optional_number(row["mean_duration_seconds"], precision=3),
+                    str(row["tokenized_cases"]),
+                    str(row["total_input_tokens"]),
+                    str(row["total_output_tokens"]),
+                    _format_optional_number(row["mean_input_tokens"], precision=1),
+                    _format_optional_number(row["mean_output_tokens"], precision=1),
+                ]
+            )
+        )
+
+
+def _format_optional_number(value: object, *, precision: int) -> str:
+    if isinstance(value, int | float) and not isinstance(value, bool):
+        return f"{value:.{precision}f}"
+    return "NA"
 
 
 if __name__ == "__main__":
