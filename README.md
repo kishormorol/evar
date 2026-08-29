@@ -134,6 +134,7 @@ External commit-grounded `external_pr_20` benchmark with `gpt-4.1-mini`:
 | `ar` | 0.300 | 1.000 |
 | `ar_text` | 0.100 | 0.900 |
 | `evar_hard` | 0.100 | 0.900 |
+| `evar_hard` with receipt repair | 0.000 | 1.000 |
 
 ## Scientific Guardrails
 

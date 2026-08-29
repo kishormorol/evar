@@ -474,6 +474,58 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.status, VerificationStatus.VERIFIED)
         self.assertIn("_check_path_open_exists_order", result.reason)
 
+    def test_structural_verifier_checks_is_symlink_external_attr(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "import stat\n\n"
+                "class Path:\n"
+                "    def is_symlink(self):\n"
+                "        info = self.root.getinfo(self.at)\n"
+                "        mode = info.external_attr >> 16\n"
+                "        return stat.S_ISLNK(mode)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="path.py",
+                line_start=1,
+                line_end=7,
+                claim="Path.is_symlink uses stat.S_ISLNK on mode derived from external_attr.",
+                expected_stdout_contains=None,
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        self.assertIn("_check_is_symlink_external_attr", result.reason)
+
+    def test_structural_verifier_rejects_is_symlink_always_false_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "path.py").write_text(
+                "import stat\n\n"
+                "class Path:\n"
+                "    def is_symlink(self):\n"
+                "        info = self.root.getinfo(self.at)\n"
+                "        mode = info.external_attr >> 16\n"
+                "        return stat.S_ISLNK(mode)\n",
+                encoding="utf-8",
+            )
+            receipt = _receipt(
+                evidence_type=EvidenceType.STRUCTURAL,
+                file="path.py",
+                line_start=1,
+                line_end=7,
+                claim="Path.is_symlink always returns False.",
+                expected_stdout_contains=None,
+            )
+
+            result = verify_evidence(receipt, repo)
+
+        self.assertEqual(result.status, VerificationStatus.FAILED)
+        self.assertIn("_check_is_symlink_external_attr", result.reason)
+
     def test_structural_verifier_checks_path_base_purepath_claim(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)

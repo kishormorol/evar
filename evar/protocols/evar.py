@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum, StrEnum
 from pathlib import Path
@@ -16,7 +16,7 @@ from evar.protocols.base import (
     ProtocolResult as LegacyProtocolResult,
 )
 from evar.verifier.models import EvidenceReceipt
-from evar.verifier.models import EvidenceRole, VerificationResult, VerificationStatus
+from evar.verifier.models import EvidenceRole, EvidenceType, VerificationResult, VerificationStatus
 from evar.verifier.verify import DeterministicVerifier
 
 
@@ -146,6 +146,24 @@ class EVARHardEvidenceProtocol:
                     verification_result=verification_result,
                 )
             )
+            repaired_receipt = _repair_receipt_after_failed_verification(receipt, verification_result)
+            if repaired_receipt is not None:
+                receipt = repaired_receipt
+                transcript.append(
+                    _event(
+                        "RECEIPT_REPAIR",
+                        receipt.claim_id,
+                        receipt=receipt,
+                    )
+                )
+                verification_result = self.verifier.verify(receipt, repo_path)
+                transcript.append(
+                    _event(
+                        "VERIFICATION_RESULT",
+                        receipt.claim_id,
+                        verification_result=verification_result,
+                    )
+                )
 
             critic_decision = self.critic.critique(task, receipt, verification_result)
             transcript.append(
@@ -360,6 +378,46 @@ def _coerce_critic_decision(finding_id: str, raw_decision: object) -> LegacyCrit
             reason=str(raw_decision.get("reason", "")),
         )
     raise TypeError(f"Unsupported critic decision: {raw_decision!r}")
+
+
+def _repair_receipt_after_failed_verification(
+    receipt: EvidenceReceipt,
+    verification_result: VerificationResult,
+) -> EvidenceReceipt | None:
+    if verification_result.status != VerificationStatus.FAILED:
+        return None
+    repaired_role = _opposite_ast_observed_role(verification_result)
+    if repaired_role is not None and repaired_role != receipt.evidence_role:
+        return replace(
+            receipt,
+            evidence_role=repaired_role,
+            falsification_condition="The deterministic AST observation does not support the claim.",
+        )
+    if receipt.evidence_type == EvidenceType.BEHAVIORAL and _failed_from_inline_python_syntax(verification_result):
+        return replace(
+            receipt,
+            evidence_type=EvidenceType.STRUCTURAL,
+            verification_command=None,
+            expected_exit_code=None,
+            expected_stdout_contains=None,
+        )
+    return None
+
+
+def _opposite_ast_observed_role(verification_result: VerificationResult) -> EvidenceRole | None:
+    reason = verification_result.reason
+    if "Python AST structural check" not in reason:
+        return None
+    if "observed supports_claim=True" in reason:
+        return EvidenceRole.SUPPORTS_CLAIM
+    if "observed supports_claim=False" in reason:
+        return EvidenceRole.CONTRADICTS_CLAIM
+    return None
+
+
+def _failed_from_inline_python_syntax(verification_result: VerificationResult) -> bool:
+    text = f"{verification_result.reason}\n{verification_result.stderr}"
+    return "SyntaxError" in text and "invalid syntax" in text and "python -c" in text
 
 
 def _legacy_decision_value(decision: object) -> CriticDecisionType:

@@ -345,6 +345,7 @@ def _verify_python_structural_claim(
         _check_translate_match_dirs_wrapping,
         _check_striptags_whitespace_order,
         _check_path_open_exists_order,
+        _check_is_symlink_external_attr,
         _check_path_base_purepath,
         _check_ancestry_separator_behavior,
     ]
@@ -619,6 +620,41 @@ def _check_path_open_exists_order(tree: ast.AST, claim: str) -> bool | None:
             expected_order = ("exists", "zip_mode") if wants_exists_first else ("zip_mode", "exists")
             return order == expected_order
     return False
+
+
+def _check_is_symlink_external_attr(tree: ast.AST, claim: str) -> bool | None:
+    normalized = claim.lower()
+    if "is_symlink" not in normalized:
+        return None
+    if "external_attr" not in normalized and "always returns false" not in normalized:
+        return None
+    function = _find_function(tree, "is_symlink")
+    if function is None:
+        return False
+    derives_mode_from_external_attr = any(
+        isinstance(node, ast.BinOp)
+        and isinstance(node.op, ast.RShift)
+        and any(_dotted_call_name(child) == "info.external_attr" for child in ast.walk(node.left))
+        for node in ast.walk(function)
+    )
+    returns_s_islnk = any(
+        isinstance(node, ast.Return)
+        and node.value is not None
+        and any(
+            isinstance(child, ast.Call) and _dotted_call_name(child.func) == "stat.S_ISLNK"
+            for child in ast.walk(node.value)
+        )
+        for node in ast.walk(function)
+    )
+    always_returns_false = any(
+        isinstance(node, ast.Return)
+        and isinstance(node.value, ast.Constant)
+        and node.value.value is False
+        for node in ast.walk(function)
+    )
+    if "always returns false" in normalized:
+        return always_returns_false and not returns_s_islnk
+    return derives_mode_from_external_attr and returns_s_islnk
 
 
 def _check_path_base_purepath(tree: ast.AST, claim: str) -> bool | None:

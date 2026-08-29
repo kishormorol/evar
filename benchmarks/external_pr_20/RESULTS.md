@@ -33,12 +33,12 @@ This is the best current target for improvement: add development cases for evalu
 
 ## Post-Fix EVAR-Hard Diagnostic
 
-After adding an AST check for `Path.open` evaluation order, defaulting blank reviewer falsification text, and steering call-chain claims toward structural evidence, EVAR-Hard was rerun on the same 20 cases:
+After adding AST checks for `Path.open` evaluation order, `Translator.translate` call-chain wrapping, and `Path.is_symlink` external-attribute handling, plus blank-falsification defaults and deterministic receipt-role repair, EVAR-Hard was rerun on the same 20 cases:
 
-- `results/20260829T014432Z-cca220d5_evar_hard.jsonl`
+- `results/20260829T020606Z-de7afb35_evar_hard.jsonl`
 
 | Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| evar_hard | 20 | 20 | 0 | 0.000 | 0.000 | 0.000 | 0.800 | 0.500 | 1.000 |
+| evar_hard | 20 | 20 | 0 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
 
-The evaluation-order false positive was removed, but supported retention dropped because the model still sometimes emits fragile behavioral witnesses or mislabeled counterevidence. The remaining development targets are receipt-role correction/retry when deterministic AST evidence contradicts the submitted role, and stronger rejection or rewriting of one-line Python witnesses with invalid `try/except` syntax.
+The diagnostic repair pass removed the evaluation-order false positive and recovered all supported claims in this run. This is a development result on an already inspected benchmark, so it should not be treated as fresh held-out evidence. The next evidence needed is an independent larger commit benchmark that is not used during verifier or prompt tuning.

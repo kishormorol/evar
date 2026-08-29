@@ -2,7 +2,7 @@
 
 ## Abstract
 
-LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements. On a harder 20-case commit-grounded benchmark, EVAR-Hard reduced FCR relative to AR (0.100 vs. 0.300) with SCR = 0.900. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but larger held-out commit benchmarks remain necessary.
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements. On a harder 20-case commit-grounded benchmark, EVAR-Hard initially reduced FCR relative to AR (0.100 vs. 0.300) with SCR = 0.900; a diagnostic receipt-repair pass on the inspected benchmark reached FCR = 0.000 and SCR = 1.000. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but larger held-out commit benchmarks remain necessary.
 
 ## 1. Research Question
 
@@ -164,6 +164,16 @@ Result files:
 - `results/20260829T012754Z-2c097164_ar_text.jsonl`
 - `results/20260829T012754Z-76523fa1_evar_hard.jsonl`
 
+Post-fix diagnostic EVAR-Hard result after receipt repair and additional structural checks:
+
+| Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| EVAR-Hard + receipt repair | 20 | 20 | 0 | 0.000 | 0.000 | 0.000 | 1.000 | 1.000 | 1.000 |
+
+Result file:
+
+- `results/20260829T020606Z-de7afb35_evar_hard.jsonl`
+
 ## 6. Interpretation
 
 EVAR-Hard is strongest in the `gpt-4.1` comparison: it retains all supported claims while rejecting all unsupported claims. AR-Text also avoids false positives, but misses two supported claims. AR retains most supported claims but admits one unsupported claim.
@@ -178,7 +188,7 @@ The external-source pilot is a small independence check. EVAR-Hard again retaine
 
 The external PR-style pilot is harder and more informative. AR and AR-Text retained supported claims but over-accepted unsupported claims. EVAR-Hard retained supported claims and rejected unsupported claims after increasing repository context coverage, adding valid file-path lists to reviewer prompts, copying import dependencies into isolated fixtures, and expanding AST structural checks.
 
-The 20-case commit-grounded benchmark is the current best stress test. EVAR-Hard and AR-Text both reduce FCR compared with AR, but neither dominates: both have FCR = 0.100 and SCR = 0.900. EVAR-Hard's misses expose two next targets: distinguishing docstring examples from semantic support, and checking evaluation order rather than only verifying that a condition string exists.
+The 20-case commit-grounded benchmark is the current best stress test. Initially, EVAR-Hard and AR-Text both reduced FCR compared with AR, but neither dominated: both had FCR = 0.100 and SCR = 0.900. The EVAR-Hard misses exposed four development targets: distinguishing docstring examples from semantic support, checking evaluation order rather than only verifying that a condition string exists, preferring structural checks over fragile one-line witnesses for visible code facts, and repairing receipt roles when deterministic AST checks observe the opposite of the submitted role. A diagnostic repair pass on the inspected benchmark reached FCR = 0.000 and SCR = 1.000, but this should be treated as harness-development evidence rather than a fresh held-out result.
 
 ## 7. Threats to Validity
 
@@ -190,7 +200,7 @@ The sample size remains small for statistical claims. Bootstrap intervals are us
 
 ## 8. Next Work
 
-The next research-quality step is to fix the failure modes exposed by `external_pr_20` on separate development cases, then build a larger real-repository benchmark from actual commits or pull requests. Cases should include evaluation-order claims, docstring/code disagreement, multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. Receipt generation should be improved on a development split, then EVAR should be evaluated without further prompt tuning on the held-out external set.
+The next research-quality step is to build a larger real-repository benchmark from actual commits or pull requests without using it for verifier or prompt tuning. Cases should include evaluation-order claims, docstring/code disagreement, multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. Receipt generation should be improved on a development split, then EVAR should be evaluated without further prompt tuning on the held-out external set.
 
 Additional useful extensions:
 
