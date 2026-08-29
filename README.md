@@ -15,6 +15,7 @@ Current writeup:
 - [Real 10 pilot results](benchmarks/real_10/RESULTS.md)
 - [External 10 pilot results](benchmarks/external_10/RESULTS.md)
 - [External PR 10 pilot results](benchmarks/external_pr_10/RESULTS.md)
+- [External PR 20 results](benchmarks/external_pr_20/RESULTS.md)
 
 ## Protocols
 
@@ -125,6 +126,14 @@ External commit-grounded `external_pr_10` pilot with `gpt-4.1-mini`:
 | `ar` | 0.800 | 1.000 |
 | `ar_text` | 1.000 | 1.000 |
 | `evar_hard` | 0.000 | 1.000 |
+
+External commit-grounded `external_pr_20` benchmark with `gpt-4.1-mini`:
+
+| Protocol | FCR | SCR |
+| --- | ---: | ---: |
+| `ar` | 0.300 | 1.000 |
+| `ar_text` | 0.100 | 0.900 |
+| `evar_hard` | 0.100 | 0.900 |
 
 ## Scientific Guardrails
 

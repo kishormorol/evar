@@ -2,7 +2,7 @@
 
 ## Abstract
 
-LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements, including a commit-grounded external pilot where textual protocols admitted most unsupported claims. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but larger held-out commit benchmarks are still needed.
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (EVAR), a protocol that requires reviewer agents to attach structured evidence receipts and routes those receipts through deterministic verification before a finding can become actionable. On a held-out 50-case synthetic code-review benchmark, EVAR-Hard with `gpt-4.1` achieved zero false consensus rate (FCR = 0.000) and perfect supported-claim retention (SCR = 1.000). In three `gpt-4.1-mini` repetitions, EVAR-Hard matched AR-Text on mean SCR (0.987) while preserving zero mean FCR. Three 10-case real-code pilots reached FCR = 0.000 and SCR = 1.000 for EVAR-Hard after verifier improvements. On a harder 20-case commit-grounded benchmark, EVAR-Hard reduced FCR relative to AR (0.100 vs. 0.300) with SCR = 0.900. These results suggest that executable or mechanically checked evidence can make reviewer/critic agreement more reliable, but larger held-out commit benchmarks remain necessary.
 
 ## 1. Research Question
 
@@ -148,6 +148,22 @@ Result files:
 - `results/20260829T003248Z-32311376_ar_text.jsonl`
 - `results/20260829T010200Z-0439f1c0_evar_hard.jsonl`
 
+### 5.6 GPT-4.1 Mini, External PR-Style 20-Case Benchmark
+
+This benchmark expands the commit-grounded setup to 20 cases from pinned MarkupSafe and zipp commits. It was added after the `external_pr_10` diagnostic loop and is the current harder held-out check.
+
+| Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| AR | 20 | 20 | 0 | 0.300 | 0.000 | 0.600 | 1.000 | 1.000 | 1.000 |
+| AR-Text | 20 | 20 | 0 | 0.100 | 0.000 | 0.300 | 0.900 | 0.700 | 1.000 |
+| EVAR-Hard | 20 | 20 | 0 | 0.100 | 0.000 | 0.300 | 0.900 | 0.700 | 1.000 |
+
+Result files:
+
+- `results/20260829T012754Z-df38f2c4_ar.jsonl`
+- `results/20260829T012754Z-2c097164_ar_text.jsonl`
+- `results/20260829T012754Z-76523fa1_evar_hard.jsonl`
+
 ## 6. Interpretation
 
 EVAR-Hard is strongest in the `gpt-4.1` comparison: it retains all supported claims while rejecting all unsupported claims. AR-Text also avoids false positives, but misses two supported claims. AR retains most supported claims but admits one unsupported claim.
@@ -160,11 +176,13 @@ The EVAR-source real-code pilot gives a stronger diagnostic signal than the synt
 
 The external-source pilot is a small independence check. EVAR-Hard again retained all supported claims and rejected all unsupported claims; AR also scored perfectly in this run, while AR-Text admitted one unsupported claim. The sample is too small for a broad claim, but it confirms that the harness can run against source outside EVAR.
 
-The external PR-style pilot is harder and more informative. AR and AR-Text retained supported claims but over-accepted unsupported claims. EVAR-Hard retained supported claims and rejected unsupported claims after increasing repository context coverage, adding valid file-path lists to reviewer prompts, copying import dependencies into isolated fixtures, and expanding AST structural checks. This suggests that the next research problem is to scale the same discipline to larger held-out commit-level review.
+The external PR-style pilot is harder and more informative. AR and AR-Text retained supported claims but over-accepted unsupported claims. EVAR-Hard retained supported claims and rejected unsupported claims after increasing repository context coverage, adding valid file-path lists to reviewer prompts, copying import dependencies into isolated fixtures, and expanding AST structural checks.
+
+The 20-case commit-grounded benchmark is the current best stress test. EVAR-Hard and AR-Text both reduce FCR compared with AR, but neither dominates: both have FCR = 0.100 and SCR = 0.900. EVAR-Hard's misses expose two next targets: distinguishing docstring examples from semantic support, and checking evaluation order rather than only verifying that a condition string exists.
 
 ## 7. Threats to Validity
 
-The primary benchmark is synthetic and templated. Even though `manual_50` was held out from the original 10-case tuning loop, the cases share simple patterns and short files. The `real_10` and `external_10` pilots are closer to real code, but they remain small and use hand-authored static claims. The `external_pr_10` pilot is commit-grounded but was inspected during harness development, so it should be treated as diagnostic rather than held-out evidence. Results should not be presented as evidence of real-world code-review performance without a larger benchmark based on real repository changes.
+The primary benchmark is synthetic and templated. Even though `manual_50` was held out from the original 10-case tuning loop, the cases share simple patterns and short files. The `real_10` and `external_10` pilots are closer to real code, but they remain small and use hand-authored static claims. The `external_pr_10` pilot is commit-grounded but was inspected during harness development, so it should be treated as diagnostic rather than held-out evidence. The `external_pr_20` benchmark is a stronger held-out check, but it is still small and limited to two source projects. Results should not be presented as evidence of real-world code-review performance without a larger benchmark based on real repository changes.
 
 Prompts were improved after observing failures on the development benchmark and during held-out analysis. This is appropriate for harness development but weakens claims about prompt-independent generalization.
 
@@ -172,7 +190,7 @@ The sample size remains small for statistical claims. Bootstrap intervals are us
 
 ## 8. Next Work
 
-The next research-quality step is to build a real-repository benchmark from actual commits or pull requests. Cases should include multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. Receipt generation should be improved on a development split, then EVAR should be evaluated without further prompt tuning on the held-out external set.
+The next research-quality step is to fix the failure modes exposed by `external_pr_20` on separate development cases, then build a larger real-repository benchmark from actual commits or pull requests. Cases should include evaluation-order claims, docstring/code disagreement, multi-file reasoning, test behavior, misleading comments, stale diffs, hidden call chains, and realistic reviewer claims. Receipt generation should be improved on a development split, then EVAR should be evaluated without further prompt tuning on the held-out external set.
 
 Additional useful extensions:
 
