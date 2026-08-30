@@ -1,0 +1,22 @@
+{
+  "author_count": 266,
+  "candidate_count": 487,
+  "comment_count": 487,
+  "created_at": "2026-08-30T14:00:34.071480+00:00",
+  "input_files": [
+    "benchmarks/human_pr_200/candidates.jsonl",
+    "benchmarks/human_pr_200/candidates_expansion.jsonl"
+  ],
+  "language_counts": {
+    "Go": 82,
+    "Java": 88,
+    "JavaScript": 36,
+    "Python": 103,
+    "Rust": 108,
+    "TypeScript": 70
+  },
+  "output_sha256": "f884fb4e9985412ffc93401c002f5d706f3fc8a0a578385ac27d43fb1ee98da1",
+  "pull_request_count": 487,
+  "repository_count": 44,
+  "schema_version": 1
+}

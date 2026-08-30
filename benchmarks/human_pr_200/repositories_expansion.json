@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "purpose": "Second acquisition wave; repositories not in repositories.json",
+  "repositories": [
+    {"repository": "pallets/flask", "language": "Python"},
+    {"repository": "numpy/numpy", "language": "Python"},
+    {"repository": "scrapy/scrapy", "language": "Python"},
+    {"repository": "celery/celery", "language": "Python"},
+    {"repository": "facebook/react", "language": "JavaScript"},
+    {"repository": "angular/angular", "language": "TypeScript"},
+    {"repository": "denoland/deno", "language": "TypeScript"},
+    {"repository": "prettier/prettier", "language": "TypeScript"},
+    {"repository": "etcd-io/etcd", "language": "Go"},
+    {"repository": "caddyserver/caddy", "language": "Go"},
+    {"repository": "grpc/grpc-go", "language": "Go"},
+    {"repository": "bufbuild/buf", "language": "Go"},
+    {"repository": "rust-lang/cargo", "language": "Rust"},
+    {"repository": "rust-lang/rust-analyzer", "language": "Rust"},
+    {"repository": "tauri-apps/tauri", "language": "Rust"},
+    {"repository": "diesel-rs/diesel", "language": "Rust"},
+    {"repository": "apache/flink", "language": "Java"},
+    {"repository": "gradle/gradle", "language": "Java"},
+    {"repository": "quarkusio/quarkus", "language": "Java"},
+    {"repository": "micronaut-projects/micronaut-core", "language": "Java"}
+  ]
+}

@@ -6,29 +6,49 @@
     {"repository": "pandas-dev/pandas", "language": "Python"},
     {"repository": "scikit-learn/scikit-learn", "language": "Python"},
     {"repository": "encode/httpx", "language": "Python"},
+    {"repository": "pallets/flask", "language": "Python"},
+    {"repository": "numpy/numpy", "language": "Python"},
+    {"repository": "scrapy/scrapy", "language": "Python"},
+    {"repository": "celery/celery", "language": "Python"},
 
     {"repository": "microsoft/TypeScript", "language": "TypeScript"},
     {"repository": "vercel/next.js", "language": "TypeScript"},
     {"repository": "vitejs/vite", "language": "TypeScript"},
     {"repository": "eslint/eslint", "language": "JavaScript"},
     {"repository": "nodejs/node", "language": "JavaScript"},
+    {"repository": "facebook/react", "language": "JavaScript"},
+    {"repository": "angular/angular", "language": "TypeScript"},
+    {"repository": "denoland/deno", "language": "TypeScript"},
+    {"repository": "prettier/prettier", "language": "TypeScript"},
 
     {"repository": "golang/go", "language": "Go"},
     {"repository": "kubernetes/kubernetes", "language": "Go"},
     {"repository": "prometheus/prometheus", "language": "Go"},
     {"repository": "hashicorp/terraform", "language": "Go"},
     {"repository": "gin-gonic/gin", "language": "Go"},
+    {"repository": "etcd-io/etcd", "language": "Go"},
+    {"repository": "caddyserver/caddy", "language": "Go"},
+    {"repository": "grpc/grpc-go", "language": "Go"},
+    {"repository": "bufbuild/buf", "language": "Go"},
 
     {"repository": "rust-lang/rust", "language": "Rust"},
     {"repository": "tokio-rs/tokio", "language": "Rust"},
     {"repository": "serde-rs/json", "language": "Rust"},
     {"repository": "clap-rs/clap", "language": "Rust"},
     {"repository": "astral-sh/ruff", "language": "Rust"},
+    {"repository": "rust-lang/cargo", "language": "Rust"},
+    {"repository": "rust-lang/rust-analyzer", "language": "Rust"},
+    {"repository": "tauri-apps/tauri", "language": "Rust"},
+    {"repository": "diesel-rs/diesel", "language": "Rust"},
 
     {"repository": "spring-projects/spring-framework", "language": "Java"},
     {"repository": "apache/kafka", "language": "Java"},
     {"repository": "elastic/elasticsearch", "language": "Java"},
     {"repository": "google/guava", "language": "Java"},
     {"repository": "junit-team/junit5", "language": "Java"}
+    ,{"repository": "apache/flink", "language": "Java"}
+    ,{"repository": "gradle/gradle", "language": "Java"}
+    ,{"repository": "quarkusio/quarkus", "language": "Java"}
+    ,{"repository": "micronaut-projects/micronaut-core", "language": "Java"}
   ]
 }

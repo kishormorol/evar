@@ -392,7 +392,10 @@ def main(argv: list[str] | None = None) -> None:
 
     specs = load_repository_specs(args.repositories)
     root = Path(__file__).resolve().parents[2]
-    excluded_ids = load_excluded_comment_ids((root / "benchmarks").glob("*/cases.jsonl"))
+    excluded_ids = load_excluded_comment_ids(
+        list((root / "benchmarks").glob("*/cases.jsonl"))
+        + list((root / "benchmarks").glob("*/candidates.jsonl"))
+    )
     cutoff = parse_github_time(args.cutoff)
     candidates, repositories = acquire_candidates(
         specs,
