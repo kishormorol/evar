@@ -44,6 +44,10 @@ PYTHONPATH=. python3 scripts/prepare_human_pr_annotation_queue.py \
   --output benchmarks/human_pr_200/annotation_queue_682.jsonl
 ```
 
+For the first annotation pass, use the balanced 276-comment tranche
+`annotation_queue_280.jsonl`: 50 comments per language where available, a six-comment
+repository cap, and all records still blinded and unlabeled.
+
 Open the local annotation tool by serving the repository root and visiting
 `http://localhost:4173/review/human_pr_200.html`:
 
