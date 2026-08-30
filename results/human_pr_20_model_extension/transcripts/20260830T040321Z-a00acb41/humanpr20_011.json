@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "    def _caller_frame_info(\n        offset: int,\n        currentframe: Callable[[], Optional[FrameType]] = sys._getframe,\n    ) -> Tuple[str, int, Dict[str, Any]]:",
+        "falsification_condition": "The implementation does not reference sys._getframe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation does not reference sys._getframe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 58,
+        "quoted_or_paraphrased_support": "    def _caller_frame_info(\n        offset: int,\n        currentframe: Callable[[], Optional[FrameType]] = sys._getframe,\n    ) -> Tuple[str, int, Dict[str, Any]]:"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_011",
+  "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "    def _caller_frame_info(\n        offset: int,\n        currentframe: Callable[[], Optional[FrameType]] = sys._getframe,\n    ) -> Tuple[str, int, Dict[str, Any]]:",
+        "falsification_condition": "The implementation does not reference sys._getframe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation does not reference sys._getframe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 58,
+        "quoted_or_paraphrased_support": "    def _caller_frame_info(\n        offset: int,\n        currentframe: Callable[[], Optional[FrameType]] = sys._getframe,\n    ) -> Tuple[str, int, Dict[str, Any]]:"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/Textualize/rich/pull/4070#discussion_r3067345022; exact reviewed snapshot 63d3200199f6d4a01268d71f98f27dbe416ee268.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T040321Z-a00acb41",
+    "seed": 41
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_011",
+  "run_id": "20260830T040321Z-a00acb41",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "    def _caller_frame_info(\n        offset: int,\n        currentframe: Callable[[], Optional[FrameType]] = sys._getframe,\n    ) -> Tuple[str, int, Dict[str, Any]]:",
+        "falsification_condition": "The implementation does not reference sys._getframe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation does not reference sys._getframe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 58,
+        "quoted_or_paraphrased_support": "    def _caller_frame_info(\n        offset: int,\n        currentframe: Callable[[], Optional[FrameType]] = sys._getframe,\n    ) -> Tuple[str, int, Dict[str, Any]]:"
+      },
+      "timestamp": "2026-08-30T04:04:05.603853+00:00"
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T04:04:06.705655+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T04:04:06.705777+00:00"
+    }
+  ]
+}

@@ -19,7 +19,7 @@
 \maketitle
 
 \begin{abstract}
-LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (\evar), a protocol that requires structured evidence receipts and deterministic verification before a finding can become actionable. After a 600-record frozen experiment exposed severe supported-claim loss, we improved receipt generation only on a separate development split, froze the evaluator, and evaluated once on Human PR 20: ten real human pull-request review comments paired across their reviewed and merge commits, producing 20 balanced cases from five previously unseen Python repositories. Across 120 audited decisions, \evar-Hard tied the stronger AR-Text baseline with GPT-4.1-mini (false consensus rate 0.200, supported-claim retention 0.700) and trailed it with GPT-4.1 (0.300 versus 0.200; 0.600 versus 0.700). All bootstrap intervals are wide. \evar therefore does not demonstrate a general performance advantage over text-evidence review on this small human-comment holdout. Its contribution is a mechanically auditable acceptance boundary and a reproducible negative result showing that receipt verification alone does not reliably improve the safety-retention tradeoff.
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (\evar), a protocol that requires structured evidence receipts and deterministic verification before a finding can become actionable. After a 600-record frozen experiment exposed severe supported-claim loss, we improved receipt generation only on a separate development split, froze the evaluator, and evaluated once on Human PR 20: ten real human pull-request review comments paired across their reviewed and merge commits, producing 20 balanced cases from five previously unseen Python repositories. Across 120 audited decisions, \evar-Hard tied AR-Text with GPT-4.1-mini and trailed it with GPT-4.1. A pre-specified post-release extension added 180 audited decisions from GPT-5.6 Luna, Terra, and Sol at reasoning effort \texttt{none}. Descriptively pooled across those models, \evar-Hard scored \fcr{} 0.067 and \scr{} 0.700, versus 0.100/0.667 for AR-Text and 0.100/0.767 for AR, but model-level outcomes were heterogeneous and intervals were wide. \evar therefore does not demonstrate universal performance dominance. Its contribution is an auditable acceptance boundary and reproducible evidence that verification changes, rather than uniformly improves, the safety-retention operating point.
 \end{abstract}
 
 \section{Introduction}
@@ -33,9 +33,9 @@ Our contributions are:
   \item a measurable definition of false consensus for candidate code-review claims;
   \item a structured receipt and deterministic actionability gate;
   \item a reproducible harness for matched AR, AR-Text, and \evar-Hard comparisons;
-  \item frozen input and output manifests plus judge-free audits for 720 model decisions;
+  \item frozen input and output manifests plus judge-free audits for 900 model decisions;
   \item a temporal holdout derived from human review comments across unseen repositories; and
-  \item a mixed, non-dominance result that separates frozen evaluation, development, and post-hoc interpretation.
+  \item a mixed, non-dominance result across five models that separates the untouched study, exploratory extension, development, and post-hoc interpretation.
 \end{enumerate}
 
 \section{Related Work}
@@ -75,6 +75,8 @@ Human PR 20 was created after v2 development. Ten comments by non-bot GitHub rev
 
 The evaluator commit, prompts, configs, cases, and source excerpts were hashed before the first model call. Two model configurations each ran AR, AR-Text, and \evar-Hard once. Ground-truth fields are removed from the model-visible task object. Every attempted case produces a result row and transcript. A separate audit checks prompt hashes, transcript integrity, actionability gates, token counts, latency, and failures without calling a judge model.
 
+After the original Human PR 20 study was released, we specified an exploratory model extension before making its benchmark calls. The unchanged cases, prompts, verifier semantics, scoring, and budgets were evaluated once per protocol with GPT-5.6 Luna, Terra, and Sol. All configurations used explicit reasoning effort \texttt{none}; seed 41 is a provenance label rather than a deterministic inference control. A transport-only backend change omitted the unsupported \texttt{temperature} field for these models. The evaluator and three configurations were frozen before evaluation.
+
 \section{Metrics and Analysis}
 
 For completed cases, false consensus rate and supported-claim retention are
@@ -111,6 +113,34 @@ GPT-4.1-mini & \evar-Hard & .200 (.000-.500) & .700 (.400-1.000) & 18 & .030 \\
 
 With GPT-4.1-mini, AR-Text and \evar-Hard have identical decisions: relative to AR, both change \fcr by -0.200 (95\% CI -0.500 to 0.000) and \scr by -0.200 (-0.500 to 0.000). With GPT-4.1, AR-Text changes \fcr by -0.200 with no \scr change, whereas \evar-Hard changes both metrics by -0.100. Thus, this holdout provides no evidence that \evar-Hard dominates AR-Text.
 
+\subsection{Exploratory GPT-5.6 model extension}
+
+All 180 extension attempts completed, and the judge-free audit reported no inconsistency. Table~\ref{tab:extension} shows one run per model and protocol. Verified counts apply to the 20 \evar-Hard receipts; other protocols do not submit receipts. Standard token prices at the August 30, 2026 freeze came from the official OpenAI model comparison.\footnote{\url{https://developers.openai.com/api/docs/models/compare}}
+
+\begin{table}[h]
+\centering
+\caption{Exploratory extension on the unchanged Human PR 20 cases.}
+\label{tab:extension}
+\scriptsize
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Model & Protocol & \fcr\ (95\% CI) & \scr\ (95\% CI) & Verified & Cost (USD) \\
+\midrule
+Luna & AR & .100 (.000-.300) & .700 (.400-1.000) & -- & .015 \\
+Luna & AR-Text & .100 (.000-.300) & .700 (.400-1.000) & -- & .015 \\
+Luna & \evar-Hard & .000 (.000-.000) & .600 (.300-.900) & 17 & .016 \\
+Terra & AR & .100 (.000-.300) & .800 (.500-1.000) & -- & .149 \\
+Terra & AR-Text & .100 (.000-.300) & .600 (.300-.900) & -- & .155 \\
+Terra & \evar-Hard & .100 (.000-.300) & .800 (.500-1.000) & 18 & .158 \\
+Sol & AR & .100 (.000-.300) & .800 (.500-1.000) & -- & .292 \\
+Sol & AR-Text & .100 (.000-.300) & .700 (.400-1.000) & -- & .302 \\
+Sol & \evar-Hard & .100 (.000-.300) & .700 (.400-1.000) & 19 & .308 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Luna \evar-Hard exchanges a 0.100 \fcr{} reduction for a 0.100 \scr{} reduction relative to AR. Terra \evar-Hard exactly matches AR and retains two more supported claims than AR-Text. Sol \evar-Hard exactly matches AR-Text and retains one fewer supported claim than AR. Descriptively pooling repeated measurements on the same 20 cases gives AR 0.100/0.767, AR-Text 0.100/0.667, and \evar-Hard 0.067/0.700 for \fcr/\scr; this is not an independent-sample estimate. Total estimated token cost was \$1.411.
+
 \subsection{Earlier frozen External PR 50 experiment}
 
 The earlier study pooled two repetitions for each model and protocol. GPT-4.1 \evar-Hard reduced \fcr from 0.120 under both baselines to 0.060 while reducing \scr from 1.000 to 0.860. GPT-4.1-mini reduced \fcr from 0.160 under AR and 0.120 under AR-Text to 0.041, but reduced \scr from 0.980 to 0.420. One mini \evar output failed JSON parsing and remained an explicit failed row. The directionally favorable \fcr result therefore came with substantial missed supported claims.
@@ -121,15 +151,19 @@ The final holdout changes the headline from a safety-retention tradeoff to non-d
 
 The result does not show that \evar is inferior in a defined population. A one-case change moves either holdout metric by 0.100, and the intervals are correspondingly wide. It does show that requiring deterministic receipts is insufficient, by itself, to claim better review quality. The defensible benefit is procedural: every actionable \evar finding has an inspectable machine-checked receipt, and failed verification stops actionability.
 
+The extension strengthens the non-dominance interpretation. Its three model tiers produce three different comparisons: a safety-retention exchange with Luna, equality with AR for Terra, and equality with AR-Text for Sol. Receipt verification rises from 85\% to 95\% without a monotonic improvement in final outcomes. Model behavior, receipt relevance, critic decisions, and verifier coverage jointly determine the operating point.
+
 \section{Threats to Validity}
 
 Human PR 20 has only ten source comments, five repositories, and ten cases per label. Selection requires a clean temporal contrast and reconstructable context, favoring localized and explicit claims. Temporal pairs are related rather than independent. Ground truth follows the public review comment and subsequent code change but lacks independent expert adjudication. Benchmark builders inspected source comments to validate provenance and label direction, although evaluator tuning stopped before the frozen run. A public independent methodology review has been requested but was not complete at release time.
+
+The model extension is exploratory and reuses Human PR 20 after the original outcomes were known. Its model calls are repeated measurements on the same cases, not additional independent benchmark examples, and there is only one call per model-protocol-case cell. Reasoning effort \texttt{none} controls the configuration but may understate maximum model capability. Model aliases, availability, behavior, and pricing can change after the freeze date.
 
 The task evaluates pre-specified candidate claims, not end-to-end defect discovery or review utility. Focused excerpts omit repository-scale dependency graphs. The verifier is Python-specific and covers a limited set of structural and behavioral observations. API calls are not guaranteed deterministic; integer seeds are provenance labels. Model behavior and pricing can change. Finally, bootstrap intervals quantify resampling variability inside this artifact, not representativeness of software review in general.
 
 \section{Reproducibility and Availability}
 
-Release \texttt{v0.2.0} contains evaluator code, prompts, configs, benchmark snapshots, all 720 canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The public repository and project site are available at
+Release \texttt{v0.2.0} contains evaluator code, prompts, configs, benchmark snapshots, all 720 original canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The 180-decision GPT-5.6 extension is prepared locally for a later revision and is not part of that public release; its input freeze, run index, report, audit, transcripts, and results manifest preserve the extension artifact. The public repository and project site are available at
 \begin{center}
 \url{https://github.com/kishormorol/evar}\\
 \url{https://evar-research.elitelab-ai.chatgpt.site}
@@ -138,7 +172,7 @@ The release notes provide the archival DOI when the Zenodo deposit is complete.
 
 \section{Conclusion}
 
-\evar makes reviewer-critic agreement necessary but insufficient: a claim must survive an external evidence check. In the earlier frozen experiment, this gate lowered unsupported actionability while rejecting supported claims. After receipt-generation improvements on a separate split, the final human-comment holdout achieved high receipt verification but no advantage over AR-Text. Mechanically checked evidence creates an auditable boundary, but a valid receipt is not synonymous with a correct review decision. A larger, independently labeled and preregistered evaluation is needed before making a population-level performance claim.
+\evar makes reviewer-critic agreement necessary but insufficient: a claim must survive an external evidence check. In the earlier frozen experiment, this gate lowered unsupported actionability while rejecting supported claims. After receipt-generation improvements on a separate split, the final human-comment holdout achieved high receipt verification but no advantage over AR-Text. The exploratory three-model extension was heterogeneous rather than a universal win: \evar-Hard traded safety for retention with Luna, matched AR with Terra, and matched AR-Text with Sol. Mechanically checked evidence creates an auditable boundary, but a valid receipt is not synonymous with a correct review decision. A larger, independently labeled and preregistered evaluation is needed before making a population-level performance claim.
 
 \begin{thebibliography}{9}
 \bibitem{selfrefine}

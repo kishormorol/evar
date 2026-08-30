@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "    Unlike Path.samefile(), does not resolve symlinks.",
+        "falsification_condition": "The implementation detail is absent from the function docstring or is expressed as a code comment instead.",
+        "file": "context/target.py",
+        "line_end": 55,
+        "line_start": 55,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation detail is absent from the function docstring or is expressed as a code comment instead.",
+        "file": "context/target.py",
+        "line_end": 55,
+        "line_start": 55,
+        "quoted_or_paraphrased_support": "    Unlike Path.samefile(), does not resolve symlinks."
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_006",
+  "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "    Unlike Path.samefile(), does not resolve symlinks.",
+        "falsification_condition": "The implementation detail is absent from the function docstring or is expressed as a code comment instead.",
+        "file": "context/target.py",
+        "line_end": 55,
+        "line_start": 55,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation detail is absent from the function docstring or is expressed as a code comment instead.",
+        "file": "context/target.py",
+        "line_end": 55,
+        "line_start": 55,
+        "quoted_or_paraphrased_support": "    Unlike Path.samefile(), does not resolve symlinks."
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3774173657; exact merged snapshot d6f66d42df86624ed128b84ce57df3d173fe1b95.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T040321Z-a00acb41",
+    "seed": 41
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_006",
+  "run_id": "20260830T040321Z-a00acb41",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "    Unlike Path.samefile(), does not resolve symlinks.",
+        "falsification_condition": "The implementation detail is absent from the function docstring or is expressed as a code comment instead.",
+        "file": "context/target.py",
+        "line_end": 55,
+        "line_start": 55,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation detail is absent from the function docstring or is expressed as a code comment instead.",
+        "file": "context/target.py",
+        "line_end": 55,
+        "line_start": 55,
+        "quoted_or_paraphrased_support": "    Unlike Path.samefile(), does not resolve symlinks."
+      },
+      "timestamp": "2026-08-30T04:03:47.866908+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T04:03:49.041254+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T04:03:49.041294+00:00"
+    }
+  ]
+}

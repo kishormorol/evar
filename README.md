@@ -18,6 +18,7 @@ Current writeup:
 - [External PR 20 results](benchmarks/external_pr_20/RESULTS.md)
 - [Frozen External PR 50 results](benchmarks/external_pr_50/RESULTS.md)
 - [Untouched Human PR 20 results](benchmarks/human_pr_20/RESULTS.md)
+- [GPT-5.6 model extension results](benchmarks/human_pr_20/MODEL_EXTENSION_RESULTS.md)
 - [Independent review packet](review/INDEPENDENT_REVIEW.md)
 
 ## Protocols
@@ -115,6 +116,22 @@ Untouched `human_pr_20` holdout built from ten real human review comments across
 | `gpt-4.1-mini` | `evar_hard` | 0.200 | 0.700 |
 
 This final holdout does not establish that EVAR outperforms AR-Text. The full 120-record audit passed, and all intervals and costs are reported in the linked result artifact.
+
+Exploratory extension on the same Human PR 20 cases, using explicit reasoning effort `none` and one run per protocol:
+
+| Model | Protocol | FCR | SCR | EVAR receipts verified |
+| --- | --- | ---: | ---: | ---: |
+| `gpt-5.6-luna` | `ar` | 0.100 | 0.700 | — |
+| `gpt-5.6-luna` | `ar_text` | 0.100 | 0.700 | — |
+| `gpt-5.6-luna` | `evar_hard` | 0.000 | 0.600 | 17/20 |
+| `gpt-5.6-terra` | `ar` | 0.100 | 0.800 | — |
+| `gpt-5.6-terra` | `ar_text` | 0.100 | 0.600 | — |
+| `gpt-5.6-terra` | `evar_hard` | 0.100 | 0.800 | 18/20 |
+| `gpt-5.6-sol` | `ar` | 0.100 | 0.800 | — |
+| `gpt-5.6-sol` | `ar_text` | 0.100 | 0.700 | — |
+| `gpt-5.6-sol` | `evar_hard` | 0.100 | 0.700 | 19/20 |
+
+All 180 extension decisions completed and passed the judge-free audit. The outcomes are heterogeneous: EVAR-Hard trades FCR for SCR with Luna, matches AR with Terra, and matches AR-Text with Sol. The estimated standard token cost was $1.411; see the linked report for intervals, token counts, prices, and limitations.
 
 Held-out 50-case `gpt-4.1` result:
 

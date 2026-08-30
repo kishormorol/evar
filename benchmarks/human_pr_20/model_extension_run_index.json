@@ -1,0 +1,16 @@
+{
+  "benchmark": "human_pr_20_model_extension",
+  "evaluator_freeze_commit": "9a72f3620046ee9a375cd7947ab76160424ed18a",
+  "replicate_note": "Seed 41 is a provenance label. OpenAI Responses API sampling is not asserted to be deterministic.",
+  "canonical_runs": [
+    {"model": "gpt-5.6-luna", "seed": 41, "protocol": "ar", "result": "results/human_pr_20_model_extension/20260830T035421Z-12e59928_ar.jsonl"},
+    {"model": "gpt-5.6-luna", "seed": 41, "protocol": "ar_text", "result": "results/human_pr_20_model_extension/20260830T035540Z-682c97a2_ar_text.jsonl"},
+    {"model": "gpt-5.6-luna", "seed": 41, "protocol": "evar_hard", "result": "results/human_pr_20_model_extension/20260830T035658Z-2a0fd0e5_evar_hard.jsonl"},
+    {"model": "gpt-5.6-terra", "seed": 41, "protocol": "ar", "result": "results/human_pr_20_model_extension/20260830T035813Z-075d5fbf_ar.jsonl"},
+    {"model": "gpt-5.6-terra", "seed": 41, "protocol": "ar_text", "result": "results/human_pr_20_model_extension/20260830T035921Z-6317e4bd_ar_text.jsonl"},
+    {"model": "gpt-5.6-terra", "seed": 41, "protocol": "evar_hard", "result": "results/human_pr_20_model_extension/20260830T040034Z-32f1b9b9_evar_hard.jsonl"},
+    {"model": "gpt-5.6-sol", "seed": 41, "protocol": "ar", "result": "results/human_pr_20_model_extension/20260830T040153Z-527187a7_ar.jsonl"},
+    {"model": "gpt-5.6-sol", "seed": 41, "protocol": "ar_text", "result": "results/human_pr_20_model_extension/20260830T040321Z-a00acb41_ar_text.jsonl"},
+    {"model": "gpt-5.6-sol", "seed": 41, "protocol": "evar_hard", "result": "results/human_pr_20_model_extension/20260830T040452Z-aeef284b_evar_hard.jsonl"}
+  ]
+}

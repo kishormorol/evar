@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_017",
+  "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "windows-editable-gui-wrapper",
+      "critic_decision": "REQUEST_STRONGER_WITNESS",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "windows-editable-gui-wrapper",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "        scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )",
+        "falsification_condition": "GUI scripts are handled separately on Windows with a windowed launcher or pythonw.exe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "GUI scripts are handled separately on Windows with a windowed launcher or pythonw.exe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "        scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10973#discussion_r3621508821; exact reviewed snapshot 6208f6e1f5a6eb945c8d8c101b89def75a111d24.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T040321Z-a00acb41",
+    "seed": 41
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "windows-editable-gui-wrapper",
+      "critic_decision": "REQUEST_STRONGER_WITNESS",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "windows-editable-gui-wrapper",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "        scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )",
+        "falsification_condition": "GUI scripts are handled separately on Windows with a windowed launcher or pythonw.exe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "GUI scripts are handled separately on Windows with a windowed launcher or pythonw.exe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "        scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_017",
+  "run_id": "20260830T040321Z-a00acb41",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "windows-editable-gui-wrapper",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "windows-editable-gui-wrapper",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "        scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )",
+        "falsification_condition": "GUI scripts are handled separately on Windows with a windowed launcher or pythonw.exe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "GUI scripts are handled separately on Windows with a windowed launcher or pythonw.exe.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "        scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )"
+      },
+      "timestamp": "2026-08-30T04:04:28.412983+00:00"
+    },
+    {
+      "claim_id": "windows-editable-gui-wrapper",
+      "critic_decision": "REQUEST_STRONGER_WITNESS",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T04:04:29.887832+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "windows-editable-gui-wrapper",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T04:04:29.887937+00:00"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_014",
+  "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+      "claim_id": "behavior_inversion",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "alias = name if not self._config.validate_by_alias else field.get('validation_alias', name)",
+        "falsification_condition": "The target source uses `not self._config.validate_by_alias`, not an `is False` comparison.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The target source uses `not self._config.validate_by_alias`, not an `is False` comparison.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "alias = name if not self._config.validate_by_alias else field.get('validation_alias', name)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pydantic/pydantic/pull/13717#discussion_r3870567067; exact merged snapshot 22b6bcecdd2be748ff2567e4e83a853be84554e2.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T035540Z-682c97a2",
+    "seed": 41
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+      "claim_id": "behavior_inversion",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "alias = name if not self._config.validate_by_alias else field.get('validation_alias', name)",
+        "falsification_condition": "The target source uses `not self._config.validate_by_alias`, not an `is False` comparison.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The target source uses `not self._config.validate_by_alias`, not an `is False` comparison.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "alias = name if not self._config.validate_by_alias else field.get('validation_alias', name)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_014",
+  "run_id": "20260830T035540Z-682c97a2",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "behavior_inversion",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "alias = name if not self._config.validate_by_alias else field.get('validation_alias', name)",
+        "falsification_condition": "The target source uses `not self._config.validate_by_alias`, not an `is False` comparison.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "pydantic/json_schema.py checks validate_by_alias with 'is False' instead of the simpler 'not validate_by_alias' condition.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The target source uses `not self._config.validate_by_alias`, not an `is False` comparison.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "alias = name if not self._config.validate_by_alias else field.get('validation_alias', name)"
+      },
+      "timestamp": "2026-08-30T03:56:24.914153+00:00"
+    },
+    {
+      "claim_id": "behavior_inversion",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T03:56:25.804593+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "behavior_inversion",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T03:56:25.804613+00:00"
+    }
+  ]
+}

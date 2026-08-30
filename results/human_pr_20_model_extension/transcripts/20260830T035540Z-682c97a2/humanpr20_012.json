@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_012",
+  "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if currentframe is None:\n            import inspect\n\n            frame = inspect.currentframe()",
+        "falsification_condition": "The shown implementation imports inspect and calls inspect.currentframe(), with no sys._getframe call.",
+        "file": "context/target.py",
+        "line_end": 83,
+        "line_start": 78,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The shown implementation imports inspect and calls inspect.currentframe(), with no sys._getframe call.",
+        "file": "context/target.py",
+        "line_end": 83,
+        "line_start": 78,
+        "quoted_or_paraphrased_support": "if currentframe is None:\n            import inspect\n\n            frame = inspect.currentframe()"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/Textualize/rich/pull/4070#discussion_r3067345022; exact merged snapshot 7f40063da781f4990d21423f23f7ccb3165ce0bd.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T035540Z-682c97a2",
+    "seed": 41
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if currentframe is None:\n            import inspect\n\n            frame = inspect.currentframe()",
+        "falsification_condition": "The shown implementation imports inspect and calls inspect.currentframe(), with no sys._getframe call.",
+        "file": "context/target.py",
+        "line_end": 83,
+        "line_start": 78,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The shown implementation imports inspect and calls inspect.currentframe(), with no sys._getframe call.",
+        "file": "context/target.py",
+        "line_end": 83,
+        "line_start": 78,
+        "quoted_or_paraphrased_support": "if currentframe is None:\n            import inspect\n\n            frame = inspect.currentframe()"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_012",
+  "run_id": "20260830T035540Z-682c97a2",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "candidate_claim",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if currentframe is None:\n            import inspect\n\n            frame = inspect.currentframe()",
+        "falsification_condition": "The shown implementation imports inspect and calls inspect.currentframe(), with no sys._getframe call.",
+        "file": "context/target.py",
+        "line_end": 83,
+        "line_start": 78,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "rich/console.py uses the private sys._getframe API, which is not portable across Python implementations.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The shown implementation imports inspect and calls inspect.currentframe(), with no sys._getframe call.",
+        "file": "context/target.py",
+        "line_end": 83,
+        "line_start": 78,
+        "quoted_or_paraphrased_support": "if currentframe is None:\n            import inspect\n\n            frame = inspect.currentframe()"
+      },
+      "timestamp": "2026-08-30T03:56:18.930905+00:00"
+    },
+    {
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T03:56:19.849093+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "candidate_claim",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T03:56:19.849166+00:00"
+    }
+  ]
+}

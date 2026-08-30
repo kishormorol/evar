@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "On Windows st_ino is the file ID, which file systems are free to not\n        support, in which case it is 0 for every file -- WinFsp mounts such as\n        sshfs-win are one example. os.path.samestat() would then consider any two\n        files on the volume to be the same (python/cpython#78116), so a zero file\n        ID is treated as \"unknown\", leaving the caller with plain path comparison\n        like on the other platforms (#14864).",
+        "falsification_condition": "The Windows samefile_nofollow implementation detail is absent from the function docstring.",
+        "file": "context/target.py",
+        "line_end": 65,
+        "line_start": 60,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_005",
+  "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "On Windows st_ino is the file ID, which file systems are free to not\n        support, in which case it is 0 for every file -- WinFsp mounts such as\n        sshfs-win are one example. os.path.samestat() would then consider any two\n        files on the volume to be the same (python/cpython#78116), so a zero file\n        ID is treated as \"unknown\", leaving the caller with plain path comparison\n        like on the other platforms (#14864).",
+        "falsification_condition": "The Windows samefile_nofollow implementation detail is absent from the function docstring.",
+        "file": "context/target.py",
+        "line_end": 65,
+        "line_start": 60,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3774173657; exact reviewed snapshot e25d981ec0ca25a6bda1f5513d6df61e5240e69e.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T035813Z-075d5fbf",
+    "seed": 41
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_005",
+  "run_id": "20260830T035813Z-075d5fbf",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "candidate_claim",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "On Windows st_ino is the file ID, which file systems are free to not\n        support, in which case it is 0 for every file -- WinFsp mounts such as\n        sshfs-win are one example. os.path.samestat() would then consider any two\n        files on the volume to be the same (python/cpython#78116), so a zero file\n        ID is treated as \"unknown\", leaving the caller with plain path comparison\n        like on the other platforms (#14864).",
+        "falsification_condition": "The Windows samefile_nofollow implementation detail is absent from the function docstring.",
+        "file": "context/target.py",
+        "line_end": 65,
+        "line_start": 60,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T03:58:28.877336+00:00"
+    },
+    {
+      "claim_id": "candidate_claim",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T03:58:29.961304+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "candidate_claim",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T03:58:29.961377+00:00"
+    }
+  ]
+}

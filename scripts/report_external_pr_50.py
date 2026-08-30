@@ -14,6 +14,9 @@ from evar.eval.metrics import compute_efficiency_metrics, compute_fcr_scr
 PRICE_PER_MILLION = {
     "gpt-4.1-mini": {"input": 0.40, "output": 1.60},
     "gpt-4.1": {"input": 2.00, "output": 8.00},
+    "gpt-5.6-luna": {"input": 0.20, "output": 1.20},
+    "gpt-5.6-terra": {"input": 2.00, "output": 12.00},
+    "gpt-5.6-sol": {"input": 4.00, "output": 20.00},
 }
 
 

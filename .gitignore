@@ -12,6 +12,8 @@ results/*
 !results/development_external_pr_20/**
 !results/human_pr_20/
 !results/human_pr_20/**
+!results/human_pr_20_model_extension/
+!results/human_pr_20_model_extension/**
 .env
 .env.*
 !.env.example

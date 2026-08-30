@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_020",
+  "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "extra_dependencies = package.extras.get(extra, [])",
+        "falsification_condition": "The visible extra-dependency lookup uses get(), not setdefault().",
+        "file": "context/target.py",
+        "line_end": 54,
+        "line_start": 54,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The visible extra-dependency lookup uses get(), not setdefault().",
+        "file": "context/target.py",
+        "line_end": 54,
+        "line_start": 54,
+        "quoted_or_paraphrased_support": "extra_dependencies = package.extras.get(extra, [])"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10987#discussion_r3615603172; exact merged snapshot 62ffee2c98f36c065bc45f482837229ee142db06.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T035921Z-6317e4bd",
+    "seed": 41
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "extra_dependencies = package.extras.get(extra, [])",
+        "falsification_condition": "The visible extra-dependency lookup uses get(), not setdefault().",
+        "file": "context/target.py",
+        "line_end": 54,
+        "line_start": 54,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The visible extra-dependency lookup uses get(), not setdefault().",
+        "file": "context/target.py",
+        "line_end": 54,
+        "line_start": 54,
+        "quoted_or_paraphrased_support": "extra_dependencies = package.extras.get(extra, [])"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_020",
+  "run_id": "20260830T035921Z-6317e4bd",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "candidate_claim",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "extra_dependencies = package.extras.get(extra, [])",
+        "falsification_condition": "The visible extra-dependency lookup uses get(), not setdefault().",
+        "file": "context/target.py",
+        "line_end": 54,
+        "line_start": 54,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The visible extra-dependency lookup uses get(), not setdefault().",
+        "file": "context/target.py",
+        "line_end": 54,
+        "line_start": 54,
+        "quoted_or_paraphrased_support": "extra_dependencies = package.extras.get(extra, [])"
+      },
+      "timestamp": "2026-08-30T04:00:22.385050+00:00"
+    },
+    {
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T04:00:23.449626+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "candidate_claim",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T04:00:23.449678+00:00"
+    }
+  ]
+}

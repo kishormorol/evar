@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_007",
+  "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "from _pytest.pathlib import samefile_nofollow",
+        "falsification_condition": "The only visible context is a test module import; no changelog text is present.",
+        "file": "context/companion.py",
+        "line_end": 32,
+        "line_start": 32,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3789351958; exact reviewed snapshot e25d981ec0ca25a6bda1f5513d6df61e5240e69e.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T035813Z-075d5fbf",
+    "seed": 41
+  },
+  "protocol": "ar",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "from _pytest.pathlib import samefile_nofollow",
+        "falsification_condition": "The only visible context is a test module import; no changelog text is present.",
+        "file": "context/companion.py",
+        "line_end": 32,
+        "line_start": 32,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_007",
+  "run_id": "20260830T035813Z-075d5fbf",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "candidate_claim",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+        "claim_id": "candidate_claim",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "from _pytest.pathlib import samefile_nofollow",
+        "falsification_condition": "The only visible context is a test module import; no changelog text is present.",
+        "file": "context/companion.py",
+        "line_end": 32,
+        "line_start": 32,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T03:58:34.826744+00:00"
+    },
+    {
+      "claim_id": "candidate_claim",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T03:58:35.858936+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "candidate_claim",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T03:58:35.858980+00:00"
+    }
+  ]
+}
