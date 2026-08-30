@@ -38,6 +38,15 @@ python -m unittest discover -s tests
 
 `pytest` is optional for developer environments that install `.[dev]`.
 
+Model-backed runs load credentials from the process environment or the repository's ignored `.env` file:
+
+```text
+OPENAI_API_KEY=...       # OpenAI Responses API models
+OPENROUTER_API_KEY=...   # Claude, Gemini, Kimi, DeepSeek, Qwen, and other routed models
+```
+
+See `.env.example` for the supported variable names. Never commit the populated `.env` file.
+
 ## Benchmark JSONL
 
 Each benchmark fixture is one JSON object per line:
@@ -65,6 +74,14 @@ Run a protocol over a JSONL fixture file:
 python -m evar.run --protocol ar --cases cases.jsonl
 python -m evar.run --protocol ar_text --cases cases.jsonl
 python -m evar.run --protocol evar --cases cases.jsonl
+```
+
+Cross-provider runs use the same command with an `openrouter` config, for example:
+
+```bash
+python -m evar.run --protocol evar_hard \
+  --cases benchmarks/human_pr_20/cases.jsonl \
+  --config configs/cross_provider_human_pr_20/claude_sonnet5_seed53.yaml
 ```
 
 Each command writes JSONL results to stdout for later statistical analysis.

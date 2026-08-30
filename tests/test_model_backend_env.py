@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from unittest import mock
 
-from evar.model_backend import OpenAIResponsesBackend, _load_env_api_key
+from evar.model_backend import OpenAIResponsesBackend, OpenRouterChatBackend, _load_env_api_key
 
 
 class ModelBackendEnvTests(unittest.TestCase):
@@ -123,3 +123,68 @@ class ModelBackendEnvTests(unittest.TestCase):
             backend.generate("system", "user")
 
         self.assertEqual(captured["payload"]["reasoning"], {"effort": "none"})
+
+    def test_openrouter_backend_uses_dotenv_when_environment_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            env_path = Path(tmp) / ".env"
+            env_path.write_text("OPENROUTER_API_KEY=test-router-key\n", encoding="utf-8")
+            old_cwd = Path.cwd()
+            try:
+                os.chdir(tmp)
+                with mock.patch.dict(os.environ, {}, clear=True):
+                    backend = OpenRouterChatBackend(model_name="vendor/model")
+            finally:
+                os.chdir(old_cwd)
+
+        self.assertEqual(backend.api_key, "test-router-key")
+
+    def test_openrouter_backend_sends_structured_chat_request(self) -> None:
+        captured: dict[str, object] = {}
+
+        class FakeHTTPResponse:
+            def __enter__(self) -> "FakeHTTPResponse":
+                return self
+
+            def __exit__(self, *args: object) -> None:
+                return None
+
+            def read(self) -> bytes:
+                return (
+                    b'{"model":"vendor/model","choices":[{"message":{"content":"{\\"ok\\":true}"}}],'
+                    b'"usage":{"prompt_tokens":3,"completion_tokens":4}}'
+                )
+
+        def fake_urlopen(request: object, timeout: int) -> FakeHTTPResponse:
+            captured["timeout"] = timeout
+            captured["payload"] = json.loads(request.data.decode("utf-8"))
+            return FakeHTTPResponse()
+
+        backend = OpenRouterChatBackend(
+            model_name="vendor/model",
+            max_output_tokens=1200,
+            reasoning_effort="low",
+            api_key="test-key",
+        )
+        with mock.patch("urllib.request.urlopen", fake_urlopen):
+            response = backend.generate(
+                "system",
+                "user",
+                response_schema={
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["ok"],
+                    "properties": {"ok": {"type": "boolean"}},
+                },
+            )
+
+        payload = captured["payload"]
+        self.assertEqual(payload["model"], "vendor/model")
+        self.assertEqual(payload["max_tokens"], 1200)
+        self.assertEqual(payload["reasoning"], {"effort": "low"})
+        self.assertEqual(payload["response_format"]["type"], "json_schema")
+        self.assertTrue(payload["response_format"]["json_schema"]["strict"])
+        self.assertEqual(payload["provider"], {"require_parameters": True})
+        self.assertEqual(captured["timeout"], 120)
+        self.assertEqual(response.parsed_output, {"ok": True})
+        self.assertEqual(response.input_tokens, 3)
+        self.assertEqual(response.output_tokens, 4)

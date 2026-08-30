@@ -1,0 +1,14 @@
+model:
+  backend: openrouter
+  model: anthropic/claude-sonnet-5
+  temperature: null
+  max_output_tokens: 1200
+  reasoning_effort: low
+protocol:
+  critic_rounds: 1
+  verifier_timeout_seconds: 10
+  reviewer_prompt: reviewer_evar_v2.txt
+  reviewer_parse_retries: 1
+experiment:
+  seed: 53
+  repetitions: 1

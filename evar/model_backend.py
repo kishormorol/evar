@@ -161,6 +161,91 @@ class OpenAIResponsesBackend:
         )
 
 
+class OpenRouterChatBackend:
+    """OpenAI-compatible chat backend for reproducible cross-provider runs."""
+
+    endpoint = "https://openrouter.ai/api/v1/chat/completions"
+
+    def __init__(
+        self,
+        *,
+        model_name: str,
+        temperature: float | None = None,
+        max_output_tokens: int | None = None,
+        reasoning_effort: str | None = None,
+        api_key: str | None = None,
+    ) -> None:
+        self.model_name = model_name
+        self.temperature = temperature
+        self.max_output_tokens = max_output_tokens
+        self.reasoning_effort = reasoning_effort
+        self.api_key = (
+            api_key
+            or os.environ.get("OPENROUTER_API_KEY")
+            or _load_env_value(Path(".env"), "OPENROUTER_API_KEY")
+        )
+        if not self.api_key:
+            raise RuntimeError("OPENROUTER_API_KEY is required for the OpenRouter backend.")
+
+    def generate(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        *,
+        response_schema: object | None = None,
+    ) -> ModelResponse:
+        payload: dict[str, Any] = {
+            "model": self.model_name,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        }
+        if self.temperature is not None:
+            payload["temperature"] = self.temperature
+        if self.max_output_tokens is not None:
+            payload["max_tokens"] = self.max_output_tokens
+        if self.reasoning_effort is not None:
+            payload["reasoning"] = {"effort": self.reasoning_effort}
+        if response_schema is not None:
+            payload["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "evar_model_response",
+                    "schema": response_schema,
+                    "strict": True,
+                },
+            }
+            payload["provider"] = {"require_parameters": True}
+
+        request = urllib.request.Request(
+            self.endpoint,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com/kishormorol/evar",
+                "X-OpenRouter-Title": "EVAR Research Evaluation",
+            },
+            method="POST",
+        )
+        started = time.perf_counter()
+        with urllib.request.urlopen(request, timeout=120) as response:
+            raw = json.loads(response.read().decode("utf-8"))
+        latency = time.perf_counter() - started
+        text = _extract_chat_output_text(raw)
+        usage = raw.get("usage", {}) if isinstance(raw, dict) else {}
+        return ModelResponse(
+            text=text,
+            parsed_output=_try_parse_json(text),
+            model_name=self.model_name,
+            input_tokens=usage.get("prompt_tokens"),
+            output_tokens=usage.get("completion_tokens"),
+            latency_seconds=latency,
+            raw_metadata=raw if isinstance(raw, dict) else {"raw": raw},
+        )
+
+
 def _extract_output_text(raw: dict[str, Any]) -> str:
     if isinstance(raw.get("output_text"), str):
         return raw["output_text"]
@@ -174,6 +259,25 @@ def _extract_output_text(raw: dict[str, Any]) -> str:
     return "".join(chunks)
 
 
+def _extract_chat_output_text(raw: dict[str, Any]) -> str:
+    choices = raw.get("choices", [])
+    if not choices or not isinstance(choices[0], dict):
+        return ""
+    message = choices[0].get("message", {})
+    if not isinstance(message, dict):
+        return ""
+    content = message.get("content")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "".join(
+            part["text"]
+            for part in content
+            if isinstance(part, dict) and isinstance(part.get("text"), str)
+        )
+    return ""
+
+
 def _try_parse_json(text: str) -> object | None:
     try:
         return json.loads(text)
@@ -182,6 +286,10 @@ def _try_parse_json(text: str) -> object | None:
 
 
 def _load_env_api_key(path: Path) -> str | None:
+    return _load_env_value(path, "OPENAI_API_KEY")
+
+
+def _load_env_value(path: Path, variable: str) -> str | None:
     try:
         lines = path.read_text(encoding="utf-8-sig").splitlines()
     except OSError:
@@ -191,7 +299,7 @@ def _load_env_api_key(path: Path) -> str | None:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        if key.strip() == "OPENAI_API_KEY":
+        if key.strip() == variable:
             stripped = value.strip().strip('"').strip("'")
             return stripped or None
     return None

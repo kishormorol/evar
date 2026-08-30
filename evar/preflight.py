@@ -109,7 +109,7 @@ def _check_config(config: PilotConfig, issues: list[PreflightIssue]) -> None:
                 f"Unsupported reasoning effort: {config.model.reasoning_effort}",
             )
         )
-    if config.model.backend not in {"dry_run", "openai"}:
+    if config.model.backend not in {"dry_run", "openai", "openrouter"}:
         issues.append(
             PreflightIssue("error", "UNKNOWN_BACKEND", f"Unsupported backend: {config.model.backend}")
         )

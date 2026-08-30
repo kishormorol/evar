@@ -19,7 +19,12 @@ from evar.benchmark.loader import BenchmarkValidationError, load_jsonl_cases
 from evar.benchmark.schema import BenchmarkCase
 from evar.config import PilotConfig, load_config
 from evar.eval.metrics import compute_metrics
-from evar.model_backend import DryRunBackend, ModelBackend, OpenAIResponsesBackend
+from evar.model_backend import (
+    DryRunBackend,
+    ModelBackend,
+    OpenAIResponsesBackend,
+    OpenRouterChatBackend,
+)
 from evar.protocols.ar import ARProtocol
 from evar.protocols.ar_text import ARTextProtocol
 from evar.protocols.base import AgentConfig, ProtocolBudget, BaseProtocol
@@ -196,6 +201,13 @@ def _build_backend(config: PilotConfig, *, dry_run: bool) -> ModelBackend:
         return DryRunBackend(model_name=config.model.model)
     if config.model.backend == "openai":
         return OpenAIResponsesBackend(
+            model_name=config.model.model,
+            temperature=config.model.temperature,
+            max_output_tokens=config.model.max_output_tokens,
+            reasoning_effort=config.model.reasoning_effort,
+        )
+    if config.model.backend == "openrouter":
+        return OpenRouterChatBackend(
             model_name=config.model.model,
             temperature=config.model.temperature,
             max_output_tokens=config.model.max_output_tokens,
