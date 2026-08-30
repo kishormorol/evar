@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+        "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "operator.ne",
+        "falsification_condition": "The function ne does not construct _NumberValidator with operator.ne",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_025_incorrect_call_relationship_supported",
+  "claim": "attrs.validators.ne constructs _NumberValidator with operator.ne.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+        "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "operator.ne",
+        "falsification_condition": "The function ne does not construct _NumberValidator with operator.ne",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "ne returns _NumberValidator(val, '!=', operator.ne).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T014353Z-aba74b37",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_025",
+  "run_id": "20260830T014353Z-aba74b37",
+  "task_description": "Review the attrs ne validator after commit 5aa76a4.",
+  "transcript": [
+    {
+      "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+        "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "operator.ne",
+        "falsification_condition": "The function ne does not construct _NumberValidator with operator.ne",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:45:06.937946+00:00"
+    },
+    {
+      "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:45:07.684287+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "attrs.validators.ne constructs _NumberValidator with operator.ne",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:45:07.684337+00:00"
+    }
+  ]
+}

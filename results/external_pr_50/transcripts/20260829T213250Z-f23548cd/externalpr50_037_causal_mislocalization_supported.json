@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_037_causal_mislocalization_supported",
+  "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()\n\ns.append((index, value))\n\nyield s[0][1]",
+        "falsification_condition": "If the code used < instead of <= in the while condition, it would not keep earlier equal values, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": " def _windowed_running_min(iterator, maxlen):\n-    sis = deque()  # Strictly increasing subsequence\n+    # Monotonically increasing subsequence of potential minimums,\n+    # ordered by arrival time, with the window minimum at s[0]\n+    # and the newest value at s[-1].\n+    s = deque()\n+\n     for index, value in enumerate(iterator):\n-        if sis and sis[0][0] == index - maxlen:\n-            sis.popleft()\n-        while sis and not sis[-1][1] < value:  # Remove non-increasing values\n-            sis.pop()\n-        sis.append((index, value))  # Most recent value at position -1\n-        yield sis[0][1]  # Window minimum at position 0\n+        # Has the current minimum aged out?\n+        if s and s[0][0] == index - maxlen:\n+            s.popleft()\n+\n+        # Remove decreasing values\n+        while s and not s[-1][1] <= value:\n+            s.pop()\n+\n+        # Place newest value at the end\n+        s.append((index, value))\n+\n+        # Current minimum is at position zero\n+        yield s[0][1]"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Its pruning loop retains the prior tail while tail_value <= value, preserving the earlier equal value.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260829T213250Z-f23548cd",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()\n\ns.append((index, value))\n\nyield s[0][1]",
+        "falsification_condition": "If the code used < instead of <= in the while condition, it would not keep earlier equal values, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": " def _windowed_running_min(iterator, maxlen):\n-    sis = deque()  # Strictly increasing subsequence\n+    # Monotonically increasing subsequence of potential minimums,\n+    # ordered by arrival time, with the window minimum at s[0]\n+    # and the newest value at s[-1].\n+    s = deque()\n+\n     for index, value in enumerate(iterator):\n-        if sis and sis[0][0] == index - maxlen:\n-            sis.popleft()\n-        while sis and not sis[-1][1] < value:  # Remove non-increasing values\n-            sis.pop()\n-        sis.append((index, value))  # Most recent value at position -1\n-        yield sis[0][1]  # Window minimum at position 0\n+        # Has the current minimum aged out?\n+        if s and s[0][0] == index - maxlen:\n+            s.popleft()\n+\n+        # Remove decreasing values\n+        while s and not s[-1][1] <= value:\n+            s.pop()\n+\n+        # Place newest value at the end\n+        s.append((index, value))\n+\n+        # Current minimum is at position zero\n+        yield s[0][1]"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_037",
+  "run_id": "20260829T213250Z-f23548cd",
+  "task_description": "Review running_min stability after commit d992be0.",
+  "transcript": [
+    {
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()\n\ns.append((index, value))\n\nyield s[0][1]",
+        "falsification_condition": "If the code used < instead of <= in the while condition, it would not keep earlier equal values, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:34:51.520241+00:00"
+    },
+    {
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-29T21:34:51.521825+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": " def _windowed_running_min(iterator, maxlen):\n-    sis = deque()  # Strictly increasing subsequence\n+    # Monotonically increasing subsequence of potential minimums,\n+    # ordered by arrival time, with the window minimum at s[0]\n+    # and the newest value at s[-1].\n+    s = deque()\n+\n     for index, value in enumerate(iterator):\n-        if sis and sis[0][0] == index - maxlen:\n-            sis.popleft()\n-        while sis and not sis[-1][1] < value:  # Remove non-increasing values\n-            sis.pop()\n-        sis.append((index, value))  # Most recent value at position -1\n-        yield sis[0][1]  # Window minimum at position 0\n+        # Has the current minimum aged out?\n+        if s and s[0][0] == index - maxlen:\n+            s.popleft()\n+\n+        # Remove decreasing values\n+        while s and not s[-1][1] <= value:\n+            s.pop()\n+\n+        # Place newest value at the end\n+        s.append((index, value))\n+\n+        # Current minimum is at position zero\n+        yield s[0][1]"
+      }
+    },
+    {
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:34:52.439769+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:34:52.439843+00:00"
+    }
+  ]
+}

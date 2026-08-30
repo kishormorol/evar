@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_021_behavior_inversion_supported",
+  "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+  "claim_family": "behavior_inversion",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "For a non-type whose type has __attrs_attrs__, fields returns fields(type_).",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_021",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review attrs.fields input handling after commit 48b8611."
+}

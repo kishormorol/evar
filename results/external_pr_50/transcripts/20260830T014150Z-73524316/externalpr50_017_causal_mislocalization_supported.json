@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+      "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if is_bound or \".\" in qualname:",
+        "falsification_condition": "If the code only checked for a dot in qualname and not is_bound, it would not strip self from bound methods with no dot in qualname.",
+        "file": "upstream.patch",
+        "line_end": 26,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    if args and args[0] in _IMPLICIT_NAMES:\n+        if is_bound or \".\" in qualname:\n+            args = args[1:]"
+      }
+    }
+  ],
+  "case_id": "externalpr50_017_causal_mislocalization_supported",
+  "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+      "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if is_bound or \".\" in qualname:",
+        "falsification_condition": "If the code only checked for a dot in qualname and not is_bound, it would not strip self from bound methods with no dot in qualname.",
+        "file": "upstream.patch",
+        "line_end": 26,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    if args and args[0] in _IMPLICIT_NAMES:\n+        if is_bound or \".\" in qualname:\n+            args = args[1:]"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It records inspect.ismethod(func) in is_bound before unwrapping and uses is_bound in the stripping condition.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014150Z-73524316",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_017",
+  "run_id": "20260830T014150Z-73524316",
+  "task_description": "Review pluggy bound-method argument discovery after commit 0b7790e.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if is_bound or \".\" in qualname:",
+        "falsification_condition": "If the code only checked for a dot in qualname and not is_bound, it would not strip self from bound methods with no dot in qualname.",
+        "file": "upstream.patch",
+        "line_end": 26,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:42:28.832912+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:42:28.834339+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    if args and args[0] in _IMPLICIT_NAMES:\n+        if is_bound or \".\" in qualname:\n+            args = args[1:]"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:42:29.572752+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization.varnames.bound_method_self_strip_no_dot",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:42:29.572803+00:00"
+    }
+  ]
+}

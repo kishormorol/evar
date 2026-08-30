@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_037_causal_mislocalization_supported",
+  "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the condition would use '<' instead of '<=' in the while loop, causing equal values to remove the earlier one. Here, '<=' means equal values do not cause removal, so the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+        while s and not s[-1][1] <= value:\n+            s.pop()"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Its pruning loop retains the prior tail while tail_value <= value, preserving the earlier equal value.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014150Z-73524316",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the condition would use '<' instead of '<=' in the while loop, causing equal values to remove the earlier one. Here, '<=' means equal values do not cause removal, so the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+        while s and not s[-1][1] <= value:\n+            s.pop()"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_037",
+  "run_id": "20260830T014150Z-73524316",
+  "task_description": "Review running_min stability after commit d992be0.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the condition would use '<' instead of '<=' in the while loop, causing equal values to remove the earlier one. Here, '<=' means equal values do not cause removal, so the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:43:11.419996+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:43:11.420933+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+        while s and not s[-1][1] <= value:\n+            s.pop()"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:43:12.260879+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_when_later_compares_equal",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:43:12.260938+00:00"
+    }
+  ]
+}

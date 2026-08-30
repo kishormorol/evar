@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames silently accepts a legacy hookspec method missing self.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames silently accepts a legacy hookspec method missing self.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "FutureWarning: is a method but its first parameter is not 'self'. Add 'self' as the first parameter or use @staticmethod. This will become an error in a future version of pluggy.",
+        "falsification_condition": "The code in varnames function includes a legacy_noself flag that when True, allows a method missing 'self' parameter with only a FutureWarning emitted, thus silently accepting such legacy hookspec methods.",
+        "file": "upstream.patch",
+        "line_end": 86,
+        "line_start": 19,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_014_missing_guard_unsupported",
+  "claim": "varnames silently accepts a legacy hookspec method missing self.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames silently accepts a legacy hookspec method missing self.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames silently accepts a legacy hookspec method missing self.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "FutureWarning: is a method but its first parameter is not 'self'. Add 'self' as the first parameter or use @staticmethod. This will become an error in a future version of pluggy.",
+        "falsification_condition": "The code in varnames function includes a legacy_noself flag that when True, allows a method missing 'self' parameter with only a FutureWarning emitted, thus silently accepting such legacy hookspec methods.",
+        "file": "upstream.patch",
+        "line_end": 86,
+        "line_start": 19,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated legacy_noself branch warns instead of silently accepting that shape.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T213601Z-200308f4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_014",
+  "run_id": "20260829T213601Z-200308f4",
+  "task_description": "Review pluggy legacy hookspec method handling after commit dd20a85.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames silently accepts a legacy hookspec method missing self.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "FutureWarning: is a method but its first parameter is not 'self'. Add 'self' as the first parameter or use @staticmethod. This will become an error in a future version of pluggy.",
+        "falsification_condition": "The code in varnames function includes a legacy_noself flag that when True, allows a method missing 'self' parameter with only a FutureWarning emitted, thus silently accepting such legacy hookspec methods.",
+        "file": "upstream.patch",
+        "line_end": 86,
+        "line_start": 19,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:36:41.833157+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:36:42.612544+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:36:42.612591+00:00"
+    }
+  ]
+}

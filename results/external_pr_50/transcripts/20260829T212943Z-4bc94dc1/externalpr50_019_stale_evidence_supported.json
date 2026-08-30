@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames derives positional parameter names directly from the callable's code object.",
+      "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "args: tuple[str, ...] = code.co_varnames[: code.co_argcount]",
+        "falsification_condition": "The code shows that varnames extracts positional parameter names by accessing the code object's co_varnames and co_argcount attributes, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code shows that varnames extracts positional parameter names by accessing the code object's co_varnames and co_argcount attributes, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "quoted_or_paraphrased_support": "args: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_019_stale_evidence_supported",
+  "claim": "varnames derives positional parameter names directly from the callable's code object.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames derives positional parameter names directly from the callable's code object.",
+      "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "args: tuple[str, ...] = code.co_varnames[: code.co_argcount]",
+        "falsification_condition": "The code shows that varnames extracts positional parameter names by accessing the code object's co_varnames and co_argcount attributes, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code shows that varnames extracts positional parameter names by accessing the code object's co_varnames and co_argcount attributes, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "quoted_or_paraphrased_support": "args: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It reads func.__code__.co_varnames up to co_argcount and partitions defaults.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_019",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review pluggy parameter discovery after commit c4e254c.",
+  "transcript": [
+    {
+      "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "args: tuple[str, ...] = code.co_varnames[: code.co_argcount]",
+        "falsification_condition": "The code shows that varnames extracts positional parameter names by accessing the code object's co_varnames and co_argcount attributes, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code shows that varnames extracts positional parameter names by accessing the code object's co_varnames and co_argcount attributes, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "quoted_or_paraphrased_support": "args: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      },
+      "timestamp": "2026-08-29T21:30:49.984578+00:00"
+    },
+    {
+      "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:30:50.648133+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "varnames derives positional parameter names directly from the callable's code object.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:30:50.648207+00:00"
+    }
+  ]
+}

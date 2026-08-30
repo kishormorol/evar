@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_013_missing_guard_supported",
+  "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+  "claim_family": "missing_guard",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The legacy_noself branch calls warnings.warn with FutureWarning when the first argument is not an implicit name.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_013",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy legacy hookspec method handling after commit dd20a85."
+}

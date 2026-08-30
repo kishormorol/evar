@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_022_behavior_inversion_unsupported",
+  "claim": "attrs.fields rejects every non-class input with TypeError.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "attrs.fields rejects every non-class input with TypeError.",
+      "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "attrs.fields rejects every non-class input with TypeError.",
+        "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if generic_base is None and not isinstance(cls, type):\n    type_ = type(cls)\n    if getattr(type_, \"__attrs_attrs__\", None) is None:\n        msg = \"Passed object must be a class or attrs instance.\"\n        raise TypeError(msg)\n\n    return fields(type_)",
+        "falsification_condition": "The implementation allows non-class inputs that are instances of attrs classes (i.e., objects whose type has __attrs_attrs__). Only non-class, non-attrs-instance inputs are rejected with TypeError, contradicting the claim that every non-class input is rejected.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "attrs.fields rejects every non-class input with TypeError.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation allows non-class inputs that are instances of attrs classes (i.e., objects whose type has __attrs_attrs__). Only non-class, non-attrs-instance inputs are rejected with TypeError, contradicting the claim that every non-class input is rejected.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "quoted_or_paraphrased_support": "if generic_base is None and not isinstance(cls, type):\n    type_ = type(cls)\n    if getattr(type_, \"__attrs_attrs__\", None) is None:\n        msg = \"Passed object must be a class or attrs instance.\"\n        raise TypeError(msg)\n\n    return fields(type_)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation accepts non-class inputs when their type is an attrs class.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T015422Z-47c996b7",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "attrs.fields rejects every non-class input with TypeError.",
+      "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "attrs.fields rejects every non-class input with TypeError.",
+        "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if generic_base is None and not isinstance(cls, type):\n    type_ = type(cls)\n    if getattr(type_, \"__attrs_attrs__\", None) is None:\n        msg = \"Passed object must be a class or attrs instance.\"\n        raise TypeError(msg)\n\n    return fields(type_)",
+        "falsification_condition": "The implementation allows non-class inputs that are instances of attrs classes (i.e., objects whose type has __attrs_attrs__). Only non-class, non-attrs-instance inputs are rejected with TypeError, contradicting the claim that every non-class input is rejected.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "attrs.fields rejects every non-class input with TypeError.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation allows non-class inputs that are instances of attrs classes (i.e., objects whose type has __attrs_attrs__). Only non-class, non-attrs-instance inputs are rejected with TypeError, contradicting the claim that every non-class input is rejected.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "quoted_or_paraphrased_support": "if generic_base is None and not isinstance(cls, type):\n    type_ = type(cls)\n    if getattr(type_, \"__attrs_attrs__\", None) is None:\n        msg = \"Passed object must be a class or attrs instance.\"\n        raise TypeError(msg)\n\n    return fields(type_)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_022",
+  "run_id": "20260830T015422Z-47c996b7",
+  "task_description": "Review attrs.fields input handling after commit 48b8611.",
+  "transcript": [
+    {
+      "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs.fields rejects every non-class input with TypeError.",
+        "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if generic_base is None and not isinstance(cls, type):\n    type_ = type(cls)\n    if getattr(type_, \"__attrs_attrs__\", None) is None:\n        msg = \"Passed object must be a class or attrs instance.\"\n        raise TypeError(msg)\n\n    return fields(type_)",
+        "falsification_condition": "The implementation allows non-class inputs that are instances of attrs classes (i.e., objects whose type has __attrs_attrs__). Only non-class, non-attrs-instance inputs are rejected with TypeError, contradicting the claim that every non-class input is rejected.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "attrs.fields rejects every non-class input with TypeError.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The implementation allows non-class inputs that are instances of attrs classes (i.e., objects whose type has __attrs_attrs__). Only non-class, non-attrs-instance inputs are rejected with TypeError, contradicting the claim that every non-class input is rejected.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "quoted_or_paraphrased_support": "if generic_base is None and not isinstance(cls, type):\n    type_ = type(cls)\n    if getattr(type_, \"__attrs_attrs__\", None) is None:\n        msg = \"Passed object must be a class or attrs instance.\"\n        raise TypeError(msg)\n\n    return fields(type_)"
+      },
+      "timestamp": "2026-08-30T01:55:06.905518+00:00"
+    },
+    {
+      "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:55:07.776748+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "attrs.fields rejects every non-class input with TypeError.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:55:07.776838+00:00"
+    }
+  ]
+}

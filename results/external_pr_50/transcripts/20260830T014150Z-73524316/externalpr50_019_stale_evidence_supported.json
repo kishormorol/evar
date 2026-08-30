@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames derives positional parameter names directly from the callable's code object.",
+      "claim_id": "pluggy_varnames_code_object",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "pluggy_varnames_code_object",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "code: types.CodeType = func.__code__",
+        "falsification_condition": "If varnames used inspect.signature or another method to derive positional parameter names instead of directly accessing func.__code__, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        code: types.CodeType = func.__code__  # type: ignore[attr-defined]\n+        defaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\n+        qualname: str = func.__qualname__  # type: ignore[attr-defined]\n+    except AttributeError:  # pragma: no cover\n         return (), ()\n \n-    _valid_param_kinds = (\n-        inspect.Parameter.POSITIONAL_ONLY,\n-        inspect.Parameter.POSITIONAL_OR_KEYWORD,\n-    )\n-    _valid_params = {\n-        name: param\n-        for name, param in sig.parameters.items()\n-        if param.kind in _valid_param_kinds\n-    }\n-    args = tuple(_valid_params)\n-    defaults = (\n-        tuple(\n-            param.default\n-            for param in _valid_params.values()\n-            if param.default is not param.empty\n-        )\n-        or None\n-    )\n+    # Get positional argument names (positional-only + positional-or-keyword)\n+    args: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      }
+    }
+  ],
+  "case_id": "externalpr50_019_stale_evidence_supported",
+  "claim": "varnames derives positional parameter names directly from the callable's code object.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames derives positional parameter names directly from the callable's code object.",
+      "claim_id": "pluggy_varnames_code_object",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "pluggy_varnames_code_object",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "code: types.CodeType = func.__code__",
+        "falsification_condition": "If varnames used inspect.signature or another method to derive positional parameter names instead of directly accessing func.__code__, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        code: types.CodeType = func.__code__  # type: ignore[attr-defined]\n+        defaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\n+        qualname: str = func.__qualname__  # type: ignore[attr-defined]\n+    except AttributeError:  # pragma: no cover\n         return (), ()\n \n-    _valid_param_kinds = (\n-        inspect.Parameter.POSITIONAL_ONLY,\n-        inspect.Parameter.POSITIONAL_OR_KEYWORD,\n-    )\n-    _valid_params = {\n-        name: param\n-        for name, param in sig.parameters.items()\n-        if param.kind in _valid_param_kinds\n-    }\n-    args = tuple(_valid_params)\n-    defaults = (\n-        tuple(\n-            param.default\n-            for param in _valid_params.values()\n-            if param.default is not param.empty\n-        )\n-        or None\n-    )\n+    # Get positional argument names (positional-only + positional-or-keyword)\n+    args: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It reads func.__code__.co_varnames up to co_argcount and partitions defaults.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014150Z-73524316",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_019",
+  "run_id": "20260830T014150Z-73524316",
+  "task_description": "Review pluggy parameter discovery after commit c4e254c.",
+  "transcript": [
+    {
+      "claim_id": "pluggy_varnames_code_object",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "pluggy_varnames_code_object",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "code: types.CodeType = func.__code__",
+        "falsification_condition": "If varnames used inspect.signature or another method to derive positional parameter names instead of directly accessing func.__code__, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:42:33.319710+00:00"
+    },
+    {
+      "claim_id": "pluggy_varnames_code_object",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:42:33.320649+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        code: types.CodeType = func.__code__  # type: ignore[attr-defined]\n+        defaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\n+        qualname: str = func.__qualname__  # type: ignore[attr-defined]\n+    except AttributeError:  # pragma: no cover\n         return (), ()\n \n-    _valid_param_kinds = (\n-        inspect.Parameter.POSITIONAL_ONLY,\n-        inspect.Parameter.POSITIONAL_OR_KEYWORD,\n-    )\n-    _valid_params = {\n-        name: param\n-        for name, param in sig.parameters.items()\n-        if param.kind in _valid_param_kinds\n-    }\n-    args = tuple(_valid_params)\n-    defaults = (\n-        tuple(\n-            param.default\n-            for param in _valid_params.values()\n-            if param.default is not param.empty\n-        )\n-        or None\n-    )\n+    # Get positional argument names (positional-only + positional-or-keyword)\n+    args: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      }
+    },
+    {
+      "claim_id": "pluggy_varnames_code_object",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:42:34.054166+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "pluggy_varnames_code_object",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:42:34.054228+00:00"
+    }
+  ]
+}

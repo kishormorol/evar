@@ -37,3 +37,18 @@ Leakage policy:
 - prompts, verifier implementation, cases, configs, and snapshots are hashed before runs;
 - ground-truth fields are scoring metadata and are not included in model prompts;
 - runs are audited without a judge model.
+
+Frozen artifacts:
+
+- `freeze_manifest.json` hashes 105 pre-run inputs at evaluator freeze commit `69697c1`;
+- `run_index.json` identifies the 12 canonical runs and four preserved infrastructure-invalid attempts;
+- `audit_report.json` contains the judge-free 600-record transcript audit;
+- `report.json` and `RESULTS.md` contain aggregate, paired, per-family, token, latency, and cost results;
+- `results_manifest.json` hashes 820 output artifacts, including 600 canonical transcripts.
+
+Regenerate the analysis from the canonical index:
+
+```bash
+PYTHONPATH=. python scripts/report_external_pr_50.py
+python scripts/freeze_external_pr_50_results.py
+```

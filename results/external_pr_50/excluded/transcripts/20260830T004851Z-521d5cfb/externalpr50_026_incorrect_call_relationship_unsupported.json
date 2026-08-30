@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_026_incorrect_call_relationship_unsupported",
+  "claim": "attrs.validators.ne delegates comparison to operator.eq.",
+  "claim_family": "incorrect_call_relationship",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The new validator passes operator.ne, not operator.eq.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_026",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review the attrs ne validator after commit 5aa76a4."
+}

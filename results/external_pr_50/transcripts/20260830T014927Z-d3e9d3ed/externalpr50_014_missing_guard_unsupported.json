@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_014_missing_guard_unsupported",
+  "claim": "varnames silently accepts a legacy hookspec method missing self.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "varnames silently accepts a legacy hookspec method missing self.",
+      "claim_id": "missing_guard",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "varnames silently accepts a legacy hookspec method missing self.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "warnings.warn(f\"{qualname} is a method but its first parameter\" f\" {args[0]!r} is not 'self'.\" f\" Add 'self' as the first parameter or use @staticmethod.\" f\" This will become an error in a future version of pluggy.\", FutureWarning, stacklevel=2,)",
+        "falsification_condition": "If varnames raised an error or did not accept a method missing self, the warning and legacy_noself logic would not be present.",
+        "file": "upstream.patch",
+        "line_end": 84,
+        "line_start": 69,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+    _tail = qualname.rsplit(\"<locals>.\", maxsplit=1)[-1]\n+    _is_class_method = \".\" in _tail\n+    if args:\n+        if is_bound:\n             args = args[1:]\n+        elif _is_class_method and args[0] in _IMPLICIT_NAMES:\n+            args = args[1:]\n+        elif _is_class_method and legacy_noself:\n+            warnings.warn(\n+                f\"{qualname} is a method but its first parameter\"\n+                f\" {args[0]!r} is not 'self'.\"\n+                f\" Add 'self' as the first parameter or use @staticmethod.\"\n+                f\" This will become an error in a future version of pluggy.\",\n+                FutureWarning,\n+                stacklevel=2,\n+            )"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated legacy_noself branch warns instead of silently accepting that shape.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014927Z-d3e9d3ed",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "varnames silently accepts a legacy hookspec method missing self.",
+      "claim_id": "missing_guard",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "varnames silently accepts a legacy hookspec method missing self.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "warnings.warn(f\"{qualname} is a method but its first parameter\" f\" {args[0]!r} is not 'self'.\" f\" Add 'self' as the first parameter or use @staticmethod.\" f\" This will become an error in a future version of pluggy.\", FutureWarning, stacklevel=2,)",
+        "falsification_condition": "If varnames raised an error or did not accept a method missing self, the warning and legacy_noself logic would not be present.",
+        "file": "upstream.patch",
+        "line_end": 84,
+        "line_start": 69,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+    _tail = qualname.rsplit(\"<locals>.\", maxsplit=1)[-1]\n+    _is_class_method = \".\" in _tail\n+    if args:\n+        if is_bound:\n             args = args[1:]\n+        elif _is_class_method and args[0] in _IMPLICIT_NAMES:\n+            args = args[1:]\n+        elif _is_class_method and legacy_noself:\n+            warnings.warn(\n+                f\"{qualname} is a method but its first parameter\"\n+                f\" {args[0]!r} is not 'self'.\"\n+                f\" Add 'self' as the first parameter or use @staticmethod.\"\n+                f\" This will become an error in a future version of pluggy.\",\n+                FutureWarning,\n+                stacklevel=2,\n+            )"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_014",
+  "run_id": "20260830T014927Z-d3e9d3ed",
+  "task_description": "Review pluggy legacy hookspec method handling after commit dd20a85.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames silently accepts a legacy hookspec method missing self.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "warnings.warn(f\"{qualname} is a method but its first parameter\" f\" {args[0]!r} is not 'self'.\" f\" Add 'self' as the first parameter or use @staticmethod.\" f\" This will become an error in a future version of pluggy.\", FutureWarning, stacklevel=2,)",
+        "falsification_condition": "If varnames raised an error or did not accept a method missing self, the warning and legacy_noself logic would not be present.",
+        "file": "upstream.patch",
+        "line_end": 84,
+        "line_start": 69,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:50:09.788641+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:50:09.789891+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+    _tail = qualname.rsplit(\"<locals>.\", maxsplit=1)[-1]\n+    _is_class_method = \".\" in _tail\n+    if args:\n+        if is_bound:\n             args = args[1:]\n+        elif _is_class_method and args[0] in _IMPLICIT_NAMES:\n+            args = args[1:]\n+        elif _is_class_method and legacy_noself:\n+            warnings.warn(\n+                f\"{qualname} is a method but its first parameter\"\n+                f\" {args[0]!r} is not 'self'.\"\n+                f\" Add 'self' as the first parameter or use @staticmethod.\"\n+                f\" This will become an error in a future version of pluggy.\",\n+                FutureWarning,\n+                stacklevel=2,\n+            )"
+      }
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:50:10.629283+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:50:10.629352+00:00"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_040_stale_evidence_unsupported",
+  "claim": "sliced still passes a negative slice size directly into count.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "sliced still passes a negative slice size directly into count.",
+      "claim_id": "stale_evidence",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "sliced still passes a negative slice size directly into count.",
+        "claim_id": "stale_evidence",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if n < 0:\n    raise ValueError('n must be at least 0')",
+        "falsification_condition": "The presence of a ValueError raised when n < 0 means sliced does not pass a negative slice size directly into count.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+    if n < 0:\n+        raise ValueError('n must be at least 0')\n+"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The new negative-size guard runs before the count-based iterator is created.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260829T213250Z-f23548cd",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "sliced still passes a negative slice size directly into count.",
+      "claim_id": "stale_evidence",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "sliced still passes a negative slice size directly into count.",
+        "claim_id": "stale_evidence",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if n < 0:\n    raise ValueError('n must be at least 0')",
+        "falsification_condition": "The presence of a ValueError raised when n < 0 means sliced does not pass a negative slice size directly into count.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+    if n < 0:\n+        raise ValueError('n must be at least 0')\n+"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_040",
+  "run_id": "20260829T213250Z-f23548cd",
+  "task_description": "Review more-itertools sliced validation after commit 958990e.",
+  "transcript": [
+    {
+      "claim_id": "stale_evidence",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "sliced still passes a negative slice size directly into count.",
+        "claim_id": "stale_evidence",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if n < 0:\n    raise ValueError('n must be at least 0')",
+        "falsification_condition": "The presence of a ValueError raised when n < 0 means sliced does not pass a negative slice size directly into count.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:35:00.230865+00:00"
+    },
+    {
+      "claim_id": "stale_evidence",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-29T21:35:00.232086+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+    if n < 0:\n+        raise ValueError('n must be at least 0')\n+"
+      }
+    },
+    {
+      "claim_id": "stale_evidence",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:35:00.841711+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "stale_evidence",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:35:00.841780+00:00"
+    }
+  ]
+}

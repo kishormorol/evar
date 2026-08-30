@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if param and (idx := param.find(\"=\")) != -1:",
+        "falsification_condition": "If the code processed nonempty parameter tokens without an equals sign, there would be logic handling such tokens outside the equals-check conditional.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 32,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        if param and (idx := param.find(\"=\")) != -1:\n+            key = param[:idx].strip(strip_chars)\n+            value = param[idx + 1 :].strip(strip_chars)"
+      }
+    }
+  ],
+  "case_id": "externalpr50_043_missing_guard_supported",
+  "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if param and (idx := param.find(\"=\")) != -1:",
+        "falsification_condition": "If the code processed nonempty parameter tokens without an equals sign, there would be logic handling such tokens outside the equals-check conditional.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 32,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        if param and (idx := param.find(\"=\")) != -1:\n+            key = param[:idx].strip(strip_chars)\n+            value = param[idx + 1 :].strip(strip_chars)"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The loop only adds a parameter when param is nonempty and param.find('=') is not -1.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014150Z-73524316",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_043",
+  "run_id": "20260830T014150Z-73524316",
+  "task_description": "Review Requests Content-Type parsing after commit f0198e6.",
+  "transcript": [
+    {
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if param and (idx := param.find(\"=\")) != -1:",
+        "falsification_condition": "If the code processed nonempty parameter tokens without an equals sign, there would be logic handling such tokens outside the equals-check conditional.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 32,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:43:24.246954+00:00"
+    },
+    {
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:43:24.248232+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        if param and (idx := param.find(\"=\")) != -1:\n+            key = param[:idx].strip(strip_chars)\n+            value = param[idx + 1 :].strip(strip_chars)"
+      }
+    },
+    {
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:43:24.946908+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:43:24.947018+00:00"
+    }
+  ]
+}

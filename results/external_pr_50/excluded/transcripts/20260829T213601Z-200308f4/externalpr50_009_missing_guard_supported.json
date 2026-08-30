@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": null,
+        "falsification_condition": "The regex pattern does not match the ECMA-48 grammar for CSI sequences with parameter bytes (0x30-0x3F), intermediate bytes (0x20-0x2F), and final byte (0x40-0x7E).",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_009_missing_guard_supported",
+  "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": null,
+        "falsification_condition": "The regex pattern does not match the ECMA-48 grammar for CSI sequences with parameter bytes (0x30-0x3F), intermediate bytes (0x20-0x2F), and final byte (0x40-0x7E).",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "_ansi_re is compiled from the pattern \\033\\[[0-?]*[ -/]*[@-~].",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T213601Z-200308f4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_009",
+  "run_id": "20260829T213601Z-200308f4",
+  "task_description": "Review Click ANSI stripping after commit 71f2baf.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": null,
+        "falsification_condition": "The regex pattern does not match the ECMA-48 grammar for CSI sequences with parameter bytes (0x30-0x3F), intermediate bytes (0x20-0x2F), and final byte (0x40-0x7E).",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:36:27.207151+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:36:28.175554+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:36:28.175614+00:00"
+    }
+  ]
+}

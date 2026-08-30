@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 0,
+        "expected_stdout_contains": "EVAR_WITNESS_PASS",
+        "falsification_condition": "If attrs.fields did not accept an instance, it would raise TypeError instead of returning fields of the instance's class.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": "python3 -c \"import attr; cls = attr.make_class('C', ['x']); instance = cls(1); print('EVAR_WITNESS_PASS' if attr.fields(instance) == attr.fields(cls) else 'EVAR_WITNESS_FAIL')\""
+      },
+      "text_evidence": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If attrs.fields did not accept an instance, it would raise TypeError instead of returning fields of the instance's class.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "quoted_or_paraphrased_support": "EVAR_WITNESS_PASS"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_021_behavior_inversion_supported",
+  "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 0,
+        "expected_stdout_contains": "EVAR_WITNESS_PASS",
+        "falsification_condition": "If attrs.fields did not accept an instance, it would raise TypeError instead of returning fields of the instance's class.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": "python3 -c \"import attr; cls = attr.make_class('C', ['x']); instance = cls(1); print('EVAR_WITNESS_PASS' if attr.fields(instance) == attr.fields(cls) else 'EVAR_WITNESS_FAIL')\""
+      },
+      "text_evidence": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If attrs.fields did not accept an instance, it would raise TypeError instead of returning fields of the instance's class.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "quoted_or_paraphrased_support": "EVAR_WITNESS_PASS"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "For a non-type whose type has __attrs_attrs__, fields returns fields(type_).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_021",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review attrs.fields input handling after commit 48b8611.",
+  "transcript": [
+    {
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 0,
+        "expected_stdout_contains": "EVAR_WITNESS_PASS",
+        "falsification_condition": "If attrs.fields did not accept an instance, it would raise TypeError instead of returning fields of the instance's class.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": "python3 -c \"import attr; cls = attr.make_class('C', ['x']); instance = cls(1); print('EVAR_WITNESS_PASS' if attr.fields(instance) == attr.fields(cls) else 'EVAR_WITNESS_FAIL')\""
+      },
+      "text_evidence": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If attrs.fields did not accept an instance, it would raise TypeError instead of returning fields of the instance's class.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "quoted_or_paraphrased_support": "EVAR_WITNESS_PASS"
+      },
+      "timestamp": "2026-08-29T21:30:56.385754+00:00"
+    },
+    {
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:30:57.080065+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:30:57.080234+00:00"
+    }
+  ]
+}

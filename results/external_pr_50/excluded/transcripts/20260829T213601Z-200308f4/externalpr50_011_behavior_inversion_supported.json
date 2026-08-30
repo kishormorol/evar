@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+      "claim_id": "behavior_inversion",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"Remove all hook implementations registered by the given plugin.\"",
+        "falsification_condition": "The code uses a list comprehension to filter out all implementations where impl.plugin == plugin, then replaces the _hookimpls list with this filtered list, effectively removing all hook implementations registered by the plugin. No early return is used, so all matching implementations are removed.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_011_behavior_inversion_supported",
+  "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+      "claim_id": "behavior_inversion",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"Remove all hook implementations registered by the given plugin.\"",
+        "falsification_condition": "The code uses a list comprehension to filter out all implementations where impl.plugin == plugin, then replaces the _hookimpls list with this filtered list, effectively removing all hook implementations registered by the plugin. No early return is used, so all matching implementations are removed.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It filters _hookimpls and replaces the list with all entries whose plugin differs.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T213601Z-200308f4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_011",
+  "run_id": "20260829T213601Z-200308f4",
+  "task_description": "Review pluggy hook implementation removal after commit 20d8143.",
+  "transcript": [
+    {
+      "claim_id": "behavior_inversion",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"Remove all hook implementations registered by the given plugin.\"",
+        "falsification_condition": "The code uses a list comprehension to filter out all implementations where impl.plugin == plugin, then replaces the _hookimpls list with this filtered list, effectively removing all hook implementations registered by the plugin. No early return is used, so all matching implementations are removed.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:36:33.399768+00:00"
+    },
+    {
+      "claim_id": "behavior_inversion",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:36:34.207906+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "behavior_inversion",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:36:34.207991+00:00"
+    }
+  ]
+}

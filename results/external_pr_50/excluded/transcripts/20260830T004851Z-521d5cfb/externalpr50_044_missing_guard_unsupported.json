@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_044_missing_guard_unsupported",
+  "claim": "_parse_content_type_header stores a parameter without an equals sign with the value True.",
+  "claim_family": "missing_guard",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated condition excludes malformed tokens instead of assigning True.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_044",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Requests Content-Type parsing after commit f0198e6."
+}

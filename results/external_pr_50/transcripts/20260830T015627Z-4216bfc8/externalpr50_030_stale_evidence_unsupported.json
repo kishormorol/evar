@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var immediately converts the annotation object itself to text.",
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = str(annot)",
+        "falsification_condition": "If the code did not immediately convert the annotation object to text, there would be no direct call to str(annot) at the start of the function.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     annot = str(annot)"
+      }
+    }
+  ],
+  "case_id": "externalpr50_030_stale_evidence_unsupported",
+  "claim": "_is_class_var immediately converts the annotation object itself to text.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var immediately converts the annotation object itself to text.",
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = str(annot)",
+        "falsification_condition": "If the code did not immediately convert the annotation object to text, there would be no direct call to str(annot) at the start of the function.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     annot = str(annot)"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated code first extracts __forward_arg__ when present.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T015627Z-4216bfc8",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_030",
+  "run_id": "20260830T015627Z-4216bfc8",
+  "task_description": "Review attrs ClassVar forward-reference detection after commit 97f8d17.",
+  "transcript": [
+    {
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = str(annot)",
+        "falsification_condition": "If the code did not immediately convert the annotation object to text, there would be no direct call to str(annot) at the start of the function.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:57:33.816417+00:00"
+    },
+    {
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:57:33.817285+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     annot = str(annot)"
+      }
+    },
+    {
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:57:34.454555+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:57:34.454604+00:00"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_003_incorrect_call_relationship_supported",
+  "claim": "_tempfilepager forwards parsed PAGER command parameters to subprocess.call.",
+  "claim_family": "incorrect_call_relationship",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The subprocess argument list is [str(cmd_path), *cmd_params, f.name].",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_003",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Click temporary pager invocation after commit a6256bf."
+}

@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "sliced raises ValueError for a negative slice size.",
+      "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "raise ValueError('n must be at least 0')",
+        "falsification_condition": "If there were no raise ValueError for n < 0 in the implementation, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    if n < 0:\n+        raise ValueError('n must be at least 0')"
+      }
+    }
+  ],
+  "case_id": "externalpr50_039_stale_evidence_supported",
+  "claim": "sliced raises ValueError for a negative slice size.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "sliced raises ValueError for a negative slice size.",
+      "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "raise ValueError('n must be at least 0')",
+        "falsification_condition": "If there were no raise ValueError for n < 0 in the implementation, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    if n < 0:\n+        raise ValueError('n must be at least 0')"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The function now starts with if n < 0: raise ValueError.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T015627Z-4216bfc8",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_039",
+  "run_id": "20260830T015627Z-4216bfc8",
+  "task_description": "Review more-itertools sliced validation after commit 958990e.",
+  "transcript": [
+    {
+      "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "raise ValueError('n must be at least 0')",
+        "falsification_condition": "If there were no raise ValueError for n < 0 in the implementation, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:57:52.380524+00:00"
+    },
+    {
+      "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:57:52.381879+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    if n < 0:\n+        raise ValueError('n must be at least 0')"
+      }
+    },
+    {
+      "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:57:52.965491+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "sliced-raises-ValueError-for-negative-slice-size",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:57:52.965582+00:00"
+    }
+  ]
+}

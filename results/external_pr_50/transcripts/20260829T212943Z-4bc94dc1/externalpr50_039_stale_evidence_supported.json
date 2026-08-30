@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "sliced raises ValueError for a negative slice size.",
+      "claim_id": "stale_evidence",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "claim_id": "stale_evidence",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "ValueError: n must be at least 0",
+        "falsification_condition": "If sliced does not raise ValueError when called with a negative slice size, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": "python3 -c \"from more_itertools.more import sliced; sliced([1,2,3], -1)\""
+      },
+      "text_evidence": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If sliced does not raise ValueError when called with a negative slice size, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "quoted_or_paraphrased_support": "ValueError: n must be at least 0"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_039_stale_evidence_supported",
+  "claim": "sliced raises ValueError for a negative slice size.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "sliced raises ValueError for a negative slice size.",
+      "claim_id": "stale_evidence",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "claim_id": "stale_evidence",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "ValueError: n must be at least 0",
+        "falsification_condition": "If sliced does not raise ValueError when called with a negative slice size, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": "python3 -c \"from more_itertools.more import sliced; sliced([1,2,3], -1)\""
+      },
+      "text_evidence": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If sliced does not raise ValueError when called with a negative slice size, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "quoted_or_paraphrased_support": "ValueError: n must be at least 0"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The function now starts with if n < 0: raise ValueError.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_039",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review more-itertools sliced validation after commit 958990e.",
+  "transcript": [
+    {
+      "claim_id": "stale_evidence",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "claim_id": "stale_evidence",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "ValueError: n must be at least 0",
+        "falsification_condition": "If sliced does not raise ValueError when called with a negative slice size, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": "python3 -c \"from more_itertools.more import sliced; sliced([1,2,3], -1)\""
+      },
+      "text_evidence": {
+        "claim": "sliced raises ValueError for a negative slice size.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If sliced does not raise ValueError when called with a negative slice size, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "quoted_or_paraphrased_support": "ValueError: n must be at least 0"
+      },
+      "timestamp": "2026-08-29T21:31:57.699914+00:00"
+    },
+    {
+      "claim_id": "stale_evidence",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:31:58.418851+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "stale_evidence",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:31:58.418896+00:00"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+        "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)",
+        "falsification_condition": "If the code does not unwrap __forward_arg__ before converting to string, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 5,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "@@ -297,6 +297,7 @@ def _is_class_var(annot):\n     annotations which would put attrs-based classes at a performance\n     disadvantage compared to plain old classes.\n     \"\"\"\n+    annot = getattr(annot, \"__forward_arg__\", annot)\n     annot = str(annot)"
+      }
+    }
+  ],
+  "case_id": "externalpr50_029_stale_evidence_supported",
+  "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+        "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)",
+        "falsification_condition": "If the code does not unwrap __forward_arg__ before converting to string, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 5,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "@@ -297,6 +297,7 @@ def _is_class_var(annot):\n     annotations which would put attrs-based classes at a performance\n     disadvantage compared to plain old classes.\n     \"\"\"\n+    annot = getattr(annot, \"__forward_arg__\", annot)\n     annot = str(annot)"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The first assignment replaces annot with getattr(annot, '__forward_arg__', annot).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260829T213250Z-f23548cd",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_029",
+  "run_id": "20260829T213250Z-f23548cd",
+  "task_description": "Review attrs ClassVar forward-reference detection after commit 97f8d17.",
+  "transcript": [
+    {
+      "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+        "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)",
+        "falsification_condition": "If the code does not unwrap __forward_arg__ before converting to string, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 5,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:34:27.112313+00:00"
+    },
+    {
+      "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-29T21:34:27.113466+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "@@ -297,6 +297,7 @@ def _is_class_var(annot):\n     annotations which would put attrs-based classes at a performance\n     disadvantage compared to plain old classes.\n     \"\"\"\n+    annot = getattr(annot, \"__forward_arg__\", annot)\n     annot = str(annot)"
+      }
+    },
+    {
+      "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:34:27.841019+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:34:27.841058+00:00"
+    }
+  ]
+}

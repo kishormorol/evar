@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_020_stale_evidence_unsupported",
+  "claim": "varnames still calls inspect.signature to discover positional parameters.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "varnames still calls inspect.signature to discover positional parameters.",
+      "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "varnames still calls inspect.signature to discover positional parameters.",
+        "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "func = inspect.unwrap(func)  # type: ignore[arg-type]\nif inspect.ismethod(func):\n    func = func.__func__\n\ncode: types.CodeType = func.__code__  # type: ignore[attr-defined]\ndefaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\nqualname: str = func.__qualname__  # type: ignore[attr-defined]\n\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]\n\nif defaults:\n    index = -len(defaults)\n    args, kwargs = args[:index], args[index:]\nelse:\n    kwargs = ()\n\nif args and \".\" in qualname and args[0] in _IMPLICIT_NAMES:\n    args = args[1:]\n\nreturn args, kwargs",
+        "falsification_condition": "The code no longer calls inspect.signature in varnames; instead, it uses func.__code__ and func.__defaults__ to discover positional parameters.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames still calls inspect.signature to discover positional parameters.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code no longer calls inspect.signature in varnames; instead, it uses func.__code__ and func.__defaults__ to discover positional parameters.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "quoted_or_paraphrased_support": "func = inspect.unwrap(func)  # type: ignore[arg-type]\nif inspect.ismethod(func):\n    func = func.__func__\n\ncode: types.CodeType = func.__code__  # type: ignore[attr-defined]\ndefaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\nqualname: str = func.__qualname__  # type: ignore[attr-defined]\n\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]\n\nif defaults:\n    index = -len(defaults)\n    args, kwargs = args[:index], args[index:]\nelse:\n    kwargs = ()\n\nif args and \".\" in qualname and args[0] in _IMPLICIT_NAMES:\n    args = args[1:]\n\nreturn args, kwargs"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation reads __code__ and __defaults__ instead of inspect.signature.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T014638Z-a7b30b03",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "varnames still calls inspect.signature to discover positional parameters.",
+      "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "varnames still calls inspect.signature to discover positional parameters.",
+        "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "func = inspect.unwrap(func)  # type: ignore[arg-type]\nif inspect.ismethod(func):\n    func = func.__func__\n\ncode: types.CodeType = func.__code__  # type: ignore[attr-defined]\ndefaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\nqualname: str = func.__qualname__  # type: ignore[attr-defined]\n\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]\n\nif defaults:\n    index = -len(defaults)\n    args, kwargs = args[:index], args[index:]\nelse:\n    kwargs = ()\n\nif args and \".\" in qualname and args[0] in _IMPLICIT_NAMES:\n    args = args[1:]\n\nreturn args, kwargs",
+        "falsification_condition": "The code no longer calls inspect.signature in varnames; instead, it uses func.__code__ and func.__defaults__ to discover positional parameters.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames still calls inspect.signature to discover positional parameters.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code no longer calls inspect.signature in varnames; instead, it uses func.__code__ and func.__defaults__ to discover positional parameters.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "quoted_or_paraphrased_support": "func = inspect.unwrap(func)  # type: ignore[arg-type]\nif inspect.ismethod(func):\n    func = func.__func__\n\ncode: types.CodeType = func.__code__  # type: ignore[attr-defined]\ndefaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\nqualname: str = func.__qualname__  # type: ignore[attr-defined]\n\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]\n\nif defaults:\n    index = -len(defaults)\n    args, kwargs = args[:index], args[index:]\nelse:\n    kwargs = ()\n\nif args and \".\" in qualname and args[0] in _IMPLICIT_NAMES:\n    args = args[1:]\n\nreturn args, kwargs"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_020",
+  "run_id": "20260830T014638Z-a7b30b03",
+  "task_description": "Review pluggy parameter discovery after commit c4e254c.",
+  "transcript": [
+    {
+      "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames still calls inspect.signature to discover positional parameters.",
+        "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "func = inspect.unwrap(func)  # type: ignore[arg-type]\nif inspect.ismethod(func):\n    func = func.__func__\n\ncode: types.CodeType = func.__code__  # type: ignore[attr-defined]\ndefaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\nqualname: str = func.__qualname__  # type: ignore[attr-defined]\n\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]\n\nif defaults:\n    index = -len(defaults)\n    args, kwargs = args[:index], args[index:]\nelse:\n    kwargs = ()\n\nif args and \".\" in qualname and args[0] in _IMPLICIT_NAMES:\n    args = args[1:]\n\nreturn args, kwargs",
+        "falsification_condition": "The code no longer calls inspect.signature in varnames; instead, it uses func.__code__ and func.__defaults__ to discover positional parameters.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames still calls inspect.signature to discover positional parameters.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code no longer calls inspect.signature in varnames; instead, it uses func.__code__ and func.__defaults__ to discover positional parameters.",
+        "file": "upstream.patch",
+        "line_end": 107,
+        "line_start": 42,
+        "quoted_or_paraphrased_support": "func = inspect.unwrap(func)  # type: ignore[arg-type]\nif inspect.ismethod(func):\n    func = func.__func__\n\ncode: types.CodeType = func.__code__  # type: ignore[attr-defined]\ndefaults: tuple[object, ...] | None = func.__defaults__  # type: ignore[attr-defined]\nqualname: str = func.__qualname__  # type: ignore[attr-defined]\n\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]\n\nif defaults:\n    index = -len(defaults)\n    args, kwargs = args[:index], args[index:]\nelse:\n    kwargs = ()\n\nif args and \".\" in qualname and args[0] in _IMPLICIT_NAMES:\n    args = args[1:]\n\nreturn args, kwargs"
+      },
+      "timestamp": "2026-08-30T01:47:43.590835+00:00"
+    },
+    {
+      "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:47:44.340912+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "varnames still calls inspect.signature to discover positional parameters",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:47:44.340980+00:00"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_020_stale_evidence_unsupported",
+  "claim": "varnames still calls inspect.signature to discover positional parameters.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation reads __code__ and __defaults__ instead of inspect.signature.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_020",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy parameter discovery after commit c4e254c."
+}

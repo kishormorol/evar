@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "claim_id": "numeric_range_step_equality_nonempty",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "claim_id": "numeric_range_step_equality_nonempty",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self._step == other._step",
+        "falsification_condition": "If there were a code path for nonempty ranges where equality could be True despite differing _step values, the claim would be false. However, the final return in __eq__ for nonempty, length > 1 ranges is 'return self._step == other._step', so equal step is required.",
+        "file": "upstream.patch",
+        "line_end": 43,
+        "line_start": 43,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If there were a code path for nonempty ranges where equality could be True despite differing _step values, the claim would be false. However, the final return in __eq__ for nonempty, length > 1 ranges is 'return self._step == other._step', so equal step is required.",
+        "file": "upstream.patch",
+        "line_end": 43,
+        "line_start": 43,
+        "quoted_or_paraphrased_support": "return self._step == other._step"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_032_behavior_inversion_unsupported",
+  "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "claim_id": "numeric_range_step_equality_nonempty",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "claim_id": "numeric_range_step_equality_nonempty",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self._step == other._step",
+        "falsification_condition": "If there were a code path for nonempty ranges where equality could be True despite differing _step values, the claim would be false. However, the final return in __eq__ for nonempty, length > 1 ranges is 'return self._step == other._step', so equal step is required.",
+        "file": "upstream.patch",
+        "line_end": 43,
+        "line_start": 43,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If there were a code path for nonempty ranges where equality could be True despite differing _step values, the claim would be false. However, the final return in __eq__ for nonempty, length > 1 ranges is 'return self._step == other._step', so equal step is required.",
+        "file": "upstream.patch",
+        "line_end": 43,
+        "line_start": 43,
+        "quoted_or_paraphrased_support": "return self._step == other._step"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated length-one branch returns True without comparing steps.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T015422Z-47c996b7",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_032",
+  "run_id": "20260830T015422Z-47c996b7",
+  "task_description": "Review numeric_range equality after commit 069b300.",
+  "transcript": [
+    {
+      "claim_id": "numeric_range_step_equality_nonempty",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "claim_id": "numeric_range_step_equality_nonempty",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self._step == other._step",
+        "falsification_condition": "If there were a code path for nonempty ranges where equality could be True despite differing _step values, the claim would be false. However, the final return in __eq__ for nonempty, length > 1 ranges is 'return self._step == other._step', so equal step is required.",
+        "file": "upstream.patch",
+        "line_end": 43,
+        "line_start": 43,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If there were a code path for nonempty ranges where equality could be True despite differing _step values, the claim would be false. However, the final return in __eq__ for nonempty, length > 1 ranges is 'return self._step == other._step', so equal step is required.",
+        "file": "upstream.patch",
+        "line_end": 43,
+        "line_start": 43,
+        "quoted_or_paraphrased_support": "return self._step == other._step"
+      },
+      "timestamp": "2026-08-30T01:55:32.051475+00:00"
+    },
+    {
+      "claim_id": "numeric_range_step_equality_nonempty",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:55:32.718627+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "numeric_range_step_equality_nonempty",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:55:32.718674+00:00"
+    }
+  ]
+}

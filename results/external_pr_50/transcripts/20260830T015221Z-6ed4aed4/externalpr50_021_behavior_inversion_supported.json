@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+      "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "        type_ = type(cls)\n        if getattr(type_, \"__attrs_attrs__\", None) is None:\n            msg = \"Passed object must be a class or attrs instance.\"\n            raise TypeError(msg)\n\n        return fields(type_)",
+        "falsification_condition": "If the code did not check for an attrs instance and delegate to fields(type(cls)), the claim would be false. However, the patch adds logic to accept an instance and introspect its type, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_021_behavior_inversion_supported",
+  "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+      "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "        type_ = type(cls)\n        if getattr(type_, \"__attrs_attrs__\", None) is None:\n            msg = \"Passed object must be a class or attrs instance.\"\n            raise TypeError(msg)\n\n        return fields(type_)",
+        "falsification_condition": "If the code did not check for an attrs instance and delegate to fields(type(cls)), the claim would be false. However, the patch adds logic to accept an instance and introspect its type, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "For a non-type whose type has __attrs_attrs__, fields returns fields(type_).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_021",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review attrs.fields input handling after commit 48b8611.",
+  "transcript": [
+    {
+      "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "        type_ = type(cls)\n        if getattr(type_, \"__attrs_attrs__\", None) is None:\n            msg = \"Passed object must be a class or attrs instance.\"\n            raise TypeError(msg)\n\n        return fields(type_)",
+        "falsification_condition": "If the code did not check for an attrs instance and delegate to fields(type(cls)), the claim would be false. However, the patch adds logic to accept an instance and introspect its type, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:53:09.647541+00:00"
+    },
+    {
+      "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:53:10.319402+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "behavior_inversion_attrs_fields_accepts_instance",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:53:10.319457+00:00"
+    }
+  ]
+}

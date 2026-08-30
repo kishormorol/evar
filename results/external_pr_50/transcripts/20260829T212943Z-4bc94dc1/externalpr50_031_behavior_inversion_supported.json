@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+      "claim_id": "claim",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+        "claim_id": "claim",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return True when len_self == 1 even if steps differ",
+        "falsification_condition": "If the code required step values to be equal for one-element numeric_range objects, the claim would be false. However, line 41 returns True for one-element ranges regardless of step.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 40,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code required step values to be equal for one-element numeric_range objects, the claim would be false. However, line 41 returns True for one-element ranges regardless of step.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 40,
+        "quoted_or_paraphrased_support": "return True when len_self == 1 even if steps differ"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_031_behavior_inversion_supported",
+  "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+      "claim_id": "claim",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+        "claim_id": "claim",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return True when len_self == 1 even if steps differ",
+        "falsification_condition": "If the code required step values to be equal for one-element numeric_range objects, the claim would be false. However, line 41 returns True for one-element ranges regardless of step.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 40,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code required step values to be equal for one-element numeric_range objects, the claim would be false. However, line 41 returns True for one-element ranges regardless of step.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 40,
+        "quoted_or_paraphrased_support": "return True when len_self == 1 even if steps differ"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "After confirming equal length and start, __eq__ returns True immediately when length is one.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_031",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review numeric_range equality after commit 069b300.",
+  "transcript": [
+    {
+      "claim_id": "claim",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+        "claim_id": "claim",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return True when len_self == 1 even if steps differ",
+        "falsification_condition": "If the code required step values to be equal for one-element numeric_range objects, the claim would be false. However, line 41 returns True for one-element ranges regardless of step.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 40,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "Two one-element numeric_range objects can be equal even when their step values differ.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code required step values to be equal for one-element numeric_range objects, the claim would be false. However, line 41 returns True for one-element ranges regardless of step.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 40,
+        "quoted_or_paraphrased_support": "return True when len_self == 1 even if steps differ"
+      },
+      "timestamp": "2026-08-29T21:31:29.963928+00:00"
+    },
+    {
+      "claim_id": "claim",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:31:31.543898+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "claim",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:31:31.543979+00:00"
+    }
+  ]
+}

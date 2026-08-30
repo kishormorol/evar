@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_002_behavior_inversion_unsupported",
+  "claim": "click.edit treats a pathlib.Path filename as a generic iterable of path components.",
+  "claim_family": "behavior_inversion",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated type check recognizes os.PathLike and wraps the Path object as a single filename.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_002",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Click edit filename handling after commit a1d8785."
+}

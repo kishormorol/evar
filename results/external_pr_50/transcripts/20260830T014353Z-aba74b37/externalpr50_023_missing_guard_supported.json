@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Generator on_setattr hook yielded more than once.",
+        "falsification_condition": "The code explicitly raises RuntimeError with message 'Generator on_setattr hook yielded more than once.' if the generator hook yields more than once, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_023_missing_guard_supported",
+  "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Generator on_setattr hook yielded more than once.",
+        "falsification_condition": "The code explicitly raises RuntimeError with message 'Generator on_setattr hook yielded more than once.' if the generator hook yields more than once, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "After assigning the first yielded value, __setattr__ advances again, closes the generator, and raises RuntimeError if it yields.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T014353Z-aba74b37",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_023",
+  "run_id": "20260830T014353Z-aba74b37",
+  "task_description": "Review attrs generator on_setattr hooks after commit 4b5b295.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Generator on_setattr hook yielded more than once.",
+        "falsification_condition": "The code explicitly raises RuntimeError with message 'Generator on_setattr hook yielded more than once.' if the generator hook yields more than once, confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:44:59.059066+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:44:59.666958+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:44:59.667003+00:00"
+    }
+  ]
+}

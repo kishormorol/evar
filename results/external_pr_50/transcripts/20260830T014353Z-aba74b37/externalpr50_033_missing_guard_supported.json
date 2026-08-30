@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "chunked raises ValueError when n is a negative integer.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "chunked raises ValueError when n is a negative integer.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "ValueError: n must be at least 0",
+        "falsification_condition": "If chunked does not raise ValueError when n is negative, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": "python3 -c \"from more_itertools.more import chunked; chunked([], -1)\""
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_033_missing_guard_supported",
+  "claim": "chunked raises ValueError when n is a negative integer.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "chunked raises ValueError when n is a negative integer.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "chunked raises ValueError when n is a negative integer.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "ValueError: n must be at least 0",
+        "falsification_condition": "If chunked does not raise ValueError when n is negative, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": "python3 -c \"from more_itertools.more import chunked; chunked([], -1)\""
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The function begins with a guard for n is not None and n < 0.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T014353Z-aba74b37",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_033",
+  "run_id": "20260830T014353Z-aba74b37",
+  "task_description": "Review more-itertools chunked validation after commit 0e6acdf.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "chunked raises ValueError when n is a negative integer.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "ValueError: n must be at least 0",
+        "falsification_condition": "If chunked does not raise ValueError when n is negative, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 11,
+        "line_start": 9,
+        "verification_command": "python3 -c \"from more_itertools.more import chunked; chunked([], -1)\""
+      },
+      "timestamp": "2026-08-30T01:45:28.526773+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:45:29.215267+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:45:29.215321+00:00"
+    }
+  ]
+}

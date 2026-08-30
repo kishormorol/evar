@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_012_behavior_inversion_unsupported",
+  "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+  "claim_family": "behavior_inversion",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation performs a full list filter and has no early return after one match.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_012",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy hook implementation removal after commit 20d8143."
+}

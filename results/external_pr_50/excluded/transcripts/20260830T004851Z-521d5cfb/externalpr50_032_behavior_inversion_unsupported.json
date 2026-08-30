@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_032_behavior_inversion_unsupported",
+  "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+  "claim_family": "behavior_inversion",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated length-one branch returns True without comparing steps.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_032",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review numeric_range equality after commit 069b300."
+}

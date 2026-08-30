@@ -1,0 +1,49 @@
+{
+  "case_id": "externalpr50_041_behavior_inversion_supported",
+  "claim": "HTTPAdapter.request_url preserves multiple leading slashes in request.path_url for a direct request.",
+  "claim_family": "behavior_inversion",
+  "critic_model": {
+    "input_tokens": 458,
+    "latency_seconds": 0.8666024589911103,
+    "model_name": "gpt-4.1-mini",
+    "output_tokens": 9,
+    "parsed_output": {
+      "decision": "COUNTEREXAMPLE"
+    },
+    "text": "{\"decision\":\"COUNTEREXAMPLE\"}"
+  },
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "request_url initializes url from request.path_url and no longer collapses a leading double slash.",
+  "protocol": "ar",
+  "repo_path": "benchmarks/external_pr_50/repos/case_041",
+  "reviewer_model": {
+    "input_tokens": 684,
+    "latency_seconds": 1.9138063749996945,
+    "model_name": "gpt-4.1-mini",
+    "output_tokens": 142,
+    "parsed_output": {
+      "receipts": [
+        {
+          "claim": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+          "claim_id": "_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.",
+          "evidence_role": "supports_claim",
+          "evidence_type": "structural",
+          "expected_exit_code": null,
+          "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)",
+          "falsification_condition": "The code explicitly shows that the annotation is unwrapped by accessing __forward_arg__ before converting it to string, confirming the claim.",
+          "file": "upstream.patch",
+          "line_end": 9,
+          "line_start": 9,
+          "verification_command": null
+        }
+      ]
+    },
+    "text": "{\"receipts\":[{\"claim_id\":\"_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.\",\"claim\":\"_is_class_var unwraps an annotation's __forward_arg__ before converting it to text.\",\"evidence_type\":\"structural\",\"evidence_role\":\"supports_claim\",\"file\":\"upstream.patch\",\"line_start\":9,\"line_end\":9,\"verification_command\":null,\"expected_exit_code\":null,\"expected_stdout_contains\":\"annot = getattr(annot, \\\"__forward_arg__\\\", annot)\",\"falsification_condition\":\"The code explicitly shows that the annotation is unwrapped by accessing __forward_arg__ before converting it to string, confirming the claim.\"}]}"
+  },
+  "run_id": "20260829T213601Z-200308f4",
+  "task_description": "Review Requests adapter path handling after commit fd62809."
+}

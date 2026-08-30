@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_009_missing_guard_supported",
+  "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+  "claim_family": "missing_guard",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "_ansi_re is compiled from the pattern \\033\\[[0-?]*[ -/]*[@-~].",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_009",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Click ANSI stripping after commit 71f2baf."
+}

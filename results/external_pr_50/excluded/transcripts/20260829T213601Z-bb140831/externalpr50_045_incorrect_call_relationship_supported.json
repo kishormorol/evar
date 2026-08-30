@@ -1,0 +1,49 @@
+{
+  "case_id": "externalpr50_045_incorrect_call_relationship_supported",
+  "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+  "claim_family": "incorrect_call_relationship",
+  "critic_model": {
+    "input_tokens": 706,
+    "latency_seconds": 0.892536667000968,
+    "model_name": "gpt-4.1",
+    "output_tokens": 9,
+    "parsed_output": {
+      "decision": "COUNTEREXAMPLE"
+    },
+    "text": "{\"decision\":\"COUNTEREXAMPLE\"}"
+  },
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The read branch accepts either _SupportsRead instances or objects for which hasattr(fp, 'read') succeeds.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_045",
+  "reviewer_model": {
+    "input_tokens": 1062,
+    "latency_seconds": 1.5097368329879828,
+    "model_name": "gpt-4.1",
+    "output_tokens": 171,
+    "parsed_output": {
+      "receipts": [
+        {
+          "claim": "nth_permutation still calls factorial(n) when r is smaller than n.",
+          "claim_id": "nth_permutation_factorial_call",
+          "evidence_role": "contradicts_claim",
+          "evidence_type": "structural",
+          "expected_exit_code": null,
+          "expected_stdout_contains": "from math import comb, e, exp, floor, fsum, log, log1p, perm, tau",
+          "falsification_condition": "If factorial is still called in nth_permutation when r < n, 'factorial' would appear in the function body or imports. However, line 10 shows 'factorial' has been removed from the imports, and the function body (lines 18-25) no longer calls factorial.",
+          "file": "upstream.patch",
+          "line_end": 10,
+          "line_start": 10,
+          "verification_command": null
+        }
+      ]
+    },
+    "text": "{\"receipts\":[{\"claim_id\":\"nth_permutation_factorial_call\",\"claim\":\"nth_permutation still calls factorial(n) when r is smaller than n.\",\"evidence_type\":\"structural\",\"evidence_role\":\"contradicts_claim\",\"file\":\"upstream.patch\",\"line_start\":10,\"line_end\":10,\"verification_command\":null,\"expected_exit_code\":null,\"expected_stdout_contains\":\"from math import comb, e, exp, floor, fsum, log, log1p, perm, tau\",\"falsification_condition\":\"If factorial is still called in nth_permutation when r < n, 'factorial' would appear in the function body or imports. However, line 10 shows 'factorial' has been removed from the imports, and the function body (lines 18-25) no longer calls factorial.\"}]}"
+  },
+  "run_id": "20260829T213601Z-bb140831",
+  "task_description": "Review Requests multipart file-wrapper handling after commit 6f205ff."
+}

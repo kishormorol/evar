@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return fields(type_)",
+        "falsification_condition": "The code checks if the input is not a type and then verifies if it has __attrs_attrs__ attribute, indicating it is an attrs instance, then calls fields on its type, thus supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_021_behavior_inversion_supported",
+  "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return fields(type_)",
+        "falsification_condition": "The code checks if the input is not a type and then verifies if it has __attrs_attrs__ attribute, indicating it is an attrs instance, then calls fields on its type, thus supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "For a non-type whose type has __attrs_attrs__, fields returns fields(type_).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T014353Z-aba74b37",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_021",
+  "run_id": "20260830T014353Z-aba74b37",
+  "task_description": "Review attrs.fields input handling after commit 48b8611.",
+  "transcript": [
+    {
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs.fields accepts an attrs instance and introspects its type.",
+        "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return fields(type_)",
+        "falsification_condition": "The code checks if the input is not a type and then verifies if it has __attrs_attrs__ attribute, indicating it is an attrs instance, then calls fields on its type, thus supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 41,
+        "line_start": 33,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:44:53.676165+00:00"
+    },
+    {
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:44:54.445079+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "attrs.fields accepts an attrs instance and introspects its type.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:44:54.445119+00:00"
+    }
+  ]
+}

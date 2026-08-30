@@ -1,0 +1,186 @@
+{
+  "expected_cases_per_run": 50,
+  "issue_counts": {
+    "FAILED_RUN": 1,
+    "MIXED_RUN": 1
+  },
+  "issues": [
+    {
+      "code": "MIXED_RUN",
+      "location": "results/external_pr_50/20260829T213250Z-f23548cd_evar_hard.jsonl",
+      "message": "found 2 run signatures"
+    },
+    {
+      "code": "FAILED_RUN",
+      "location": "results/external_pr_50/20260829T213250Z-f23548cd_evar_hard.jsonl:24",
+      "message": "{'reason': 'Reviewer output is not valid JSON: Unterminated string starting at: line 1 column 298 (char 297)', 'type': 'ModelOutputError'}"
+    }
+  ],
+  "ok": false,
+  "records": 600,
+  "result_files": 12,
+  "run_summaries": [
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260829T212641Z-388f8f39_ar.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "ar",
+          "records": 50,
+          "seed": "7"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260829T212943Z-4bc94dc1_ar_text.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "ar_text",
+          "records": 50,
+          "seed": "7"
+        }
+      ]
+    },
+    {
+      "failed_records": 1,
+      "path": "results/external_pr_50/20260829T213250Z-f23548cd_evar_hard.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "evar_hard",
+          "records": 49,
+          "seed": "7"
+        },
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "evar_hard",
+          "records": 1,
+          "seed": "None"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T014353Z-aba74b37_ar.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "ar",
+          "records": 50,
+          "seed": "17"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T014638Z-a7b30b03_ar_text.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "ar_text",
+          "records": 50,
+          "seed": "17"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T014927Z-d3e9d3ed_evar_hard.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1-mini",
+          "protocol": "evar_hard",
+          "records": 50,
+          "seed": "17"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260829T212943Z-1f073d5c_ar.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1",
+          "protocol": "ar",
+          "records": 50,
+          "seed": "7"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260829T213250Z-fe8e6ca2_ar_text.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1",
+          "protocol": "ar_text",
+          "records": 50,
+          "seed": "7"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T014150Z-73524316_evar_hard.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1",
+          "protocol": "evar_hard",
+          "records": 50,
+          "seed": "7"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T015221Z-6ed4aed4_ar.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1",
+          "protocol": "ar",
+          "records": 50,
+          "seed": "17"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T015422Z-47c996b7_ar_text.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1",
+          "protocol": "ar_text",
+          "records": 50,
+          "seed": "17"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/external_pr_50/20260830T015627Z-4216bfc8_evar_hard.jsonl",
+      "records": 50,
+      "run_signatures": [
+        {
+          "model": "gpt-4.1",
+          "protocol": "evar_hard",
+          "records": 50,
+          "seed": "17"
+        }
+      ]
+    }
+  ]
+}

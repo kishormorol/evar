@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_040_stale_evidence_unsupported",
+  "claim": "sliced still passes a negative slice size directly into count.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The new negative-size guard runs before the count-based iterator is created.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_040",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review more-itertools sliced validation after commit 958990e."
+}

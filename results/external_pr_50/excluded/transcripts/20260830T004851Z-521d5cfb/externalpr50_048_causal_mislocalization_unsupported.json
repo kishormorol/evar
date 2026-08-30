@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_048_causal_mislocalization_unsupported",
+  "claim": "resolve_redirects appends resp before copying history into resp.history.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated order assigns the copy first, preventing resp from appearing in its own history.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_048",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Requests redirect history construction after commit ef439eb."
+}

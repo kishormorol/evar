@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_027_causal_mislocalization_supported",
+  "claim": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy.",
+      "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy.",
+        "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\n\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The method __replace__ is not defined locally or the dunders are not attached to a local __replace__ proxy.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "     def add_replace(self):\n-        self._cls_dict[\"__replace__\"] = self._add_method_dunders(evolve)\n+        # We create a local `evolve` proxy because it gets modified in place.\n+        def __replace__(*args, **changes):\n+            return evolve(*args, **changes)\n+\n+        self._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)\n         return self"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "add_replace defines a local proxy around evolve and passes that proxy to _add_method_dunders.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014927Z-d3e9d3ed",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy.",
+      "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy.",
+        "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\n\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The method __replace__ is not defined locally or the dunders are not attached to a local __replace__ proxy.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "     def add_replace(self):\n-        self._cls_dict[\"__replace__\"] = self._add_method_dunders(evolve)\n+        # We create a local `evolve` proxy because it gets modified in place.\n+        def __replace__(*args, **changes):\n+            return evolve(*args, **changes)\n+\n+        self._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)\n         return self"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_027",
+  "run_id": "20260830T014927Z-d3e9d3ed",
+  "task_description": "Review attrs __replace__ generation after commit f53fc54.",
+  "transcript": [
+    {
+      "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy.",
+        "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\n\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The method __replace__ is not defined locally or the dunders are not attached to a local __replace__ proxy.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:50:50.694496+00:00"
+    },
+    {
+      "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:50:50.694945+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "     def add_replace(self):\n-        self._cls_dict[\"__replace__\"] = self._add_method_dunders(evolve)\n+        # We create a local `evolve` proxy because it gets modified in place.\n+        def __replace__(*args, **changes):\n+            return evolve(*args, **changes)\n+\n+        self._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)\n         return self"
+      }
+    },
+    {
+      "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:50:51.413192+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "_ClassBuilder.add_replace attaches generated method dunders to a local __replace__ proxy",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:50:51.413210+00:00"
+    }
+  ]
+}

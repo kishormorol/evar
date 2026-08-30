@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self._step == other._step",
+        "falsification_condition": "The equality method returns False if the step values differ for nonempty ranges, confirming that equal step values are required for equality.",
+        "file": "upstream.patch",
+        "line_end": 44,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_032_behavior_inversion_unsupported",
+  "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self._step == other._step",
+        "falsification_condition": "The equality method returns False if the step values differ for nonempty ranges, confirming that equal step values are required for equality.",
+        "file": "upstream.patch",
+        "line_end": 44,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated length-one branch returns True without comparing steps.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T212641Z-388f8f39",
+    "seed": 7
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_032",
+  "run_id": "20260829T212641Z-388f8f39",
+  "task_description": "Review numeric_range equality after commit 069b300.",
+  "transcript": [
+    {
+      "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self._step == other._step",
+        "falsification_condition": "The equality method returns False if the step values differ for nonempty ranges, confirming that equal step values are required for equality.",
+        "file": "upstream.patch",
+        "line_end": 44,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:28:22.412961+00:00"
+    },
+    {
+      "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:28:23.063590+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "numeric_range equality always requires equal step values for nonempty ranges.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:28:23.063662+00:00"
+    }
+  ]
+}

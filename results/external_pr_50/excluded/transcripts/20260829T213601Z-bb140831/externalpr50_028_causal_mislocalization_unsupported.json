@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_028_causal_mislocalization_unsupported",
+  "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+      "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\n\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The code shows that a local __replace__ function is defined and passed to _add_method_dunders, not the global evolve function directly.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+        # We create a local `evolve` proxy because it gets modified in place.\n+        def __replace__(*args, **changes):\n+            return evolve(*args, **changes)\n+\n+        self._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation passes the local __replace__ proxy rather than evolve itself.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260829T213601Z-bb140831",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+      "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\n\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The code shows that a local __replace__ function is defined and passed to _add_method_dunders, not the global evolve function directly.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+        # We create a local `evolve` proxy because it gets modified in place.\n+        def __replace__(*args, **changes):\n+            return evolve(*args, **changes)\n+\n+        self._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_028",
+  "run_id": "20260829T213601Z-bb140831",
+  "task_description": "Review attrs __replace__ generation after commit f53fc54.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\n\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The code shows that a local __replace__ function is defined and passed to _add_method_dunders, not the global evolve function directly.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:37:09.495225+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-29T21:37:09.496380+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+        # We create a local `evolve` proxy because it gets modified in place.\n+        def __replace__(*args, **changes):\n+            return evolve(*args, **changes)\n+\n+        self._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:37:10.428300+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization/_ClassBuilder.add_replace_attaches_generated_method_dunders_directly_to_the_global_evolve_function",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:37:10.428362+00:00"
+    }
+  ]
+}

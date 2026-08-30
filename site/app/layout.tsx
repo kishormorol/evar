@@ -5,17 +5,17 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://evar-research.elitelab-ai.chatgpt.site'),
   title: 'EVAR — Evidence-Verified Adversarial Review',
   description:
-    'A research harness testing whether deterministic evidence verification can reduce false consensus in AI code review.',
+    'Frozen evidence from 600 code-review decisions testing how deterministic verification trades false-consensus reduction for supported-claim retention.',
   openGraph: {
     title: 'EVAR — Agreement is not evidence',
-    description: 'Executable evidence for more reliable reviewer–critic code review.',
+    description: 'Frozen results: less false consensus, with a measurable supported-claim retention cost.',
     type: 'website',
     images: ['/og.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'EVAR — Agreement is not evidence',
-    description: 'Executable evidence for more reliable reviewer–critic code review.',
+    description: 'Frozen results: less false consensus, with a measurable supported-claim retention cost.',
     images: ['/og.png'],
   },
 };

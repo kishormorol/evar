@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_039_stale_evidence_supported",
+  "claim": "sliced raises ValueError for a negative slice size.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The function now starts with if n < 0: raise ValueError.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_039",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review more-itertools sliced validation after commit 958990e."
+}

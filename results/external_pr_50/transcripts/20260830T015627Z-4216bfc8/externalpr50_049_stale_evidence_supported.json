@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "claim_id": "prepare_body_iterable_check",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "claim_id": "prepare_body_iterable_check",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")",
+        "falsification_condition": "If the code did not use both isinstance(data, Iterable) or hasattr(data, '__iter__') to determine iterability, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        # data that proxies attributes to underlying objects needs hasattr\n+        is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")\n+        if is_iterable and not isinstance(data, (str, bytes, list, tuple, Mapping)):"
+      }
+    }
+  ],
+  "case_id": "externalpr50_049_stale_evidence_supported",
+  "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "claim_id": "prepare_body_iterable_check",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "claim_id": "prepare_body_iterable_check",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")",
+        "falsification_condition": "If the code did not use both isinstance(data, Iterable) or hasattr(data, '__iter__') to determine iterability, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        # data that proxies attributes to underlying objects needs hasattr\n+        is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")\n+        if is_iterable and not isinstance(data, (str, bytes, list, tuple, Mapping)):"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The is_iterable variable combines the protocol isinstance check with an __iter__ attribute check.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T015627Z-4216bfc8",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_049",
+  "run_id": "20260830T015627Z-4216bfc8",
+  "task_description": "Review Requests request-body stream detection after commit 6404f34.",
+  "transcript": [
+    {
+      "claim_id": "prepare_body_iterable_check",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "claim_id": "prepare_body_iterable_check",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")",
+        "falsification_condition": "If the code did not use both isinstance(data, Iterable) or hasattr(data, '__iter__') to determine iterability, the claim would be contradicted.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:58:13.075547+00:00"
+    },
+    {
+      "claim_id": "prepare_body_iterable_check",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:58:13.076327+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+        # data that proxies attributes to underlying objects needs hasattr\n+        is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")\n+        if is_iterable and not isinstance(data, (str, bytes, list, tuple, Mapping)):"
+      }
+    },
+    {
+      "claim_id": "prepare_body_iterable_check",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:58:13.725432+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "prepare_body_iterable_check",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:58:13.725484+00:00"
+    }
+  ]
+}

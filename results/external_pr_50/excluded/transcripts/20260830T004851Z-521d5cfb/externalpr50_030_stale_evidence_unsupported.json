@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_030_stale_evidence_unsupported",
+  "claim": "_is_class_var immediately converts the annotation object itself to text.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated code first extracts __forward_arg__ when present.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_030",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review attrs ClassVar forward-reference detection after commit 97f8d17."
+}

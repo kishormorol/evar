@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_008_stale_evidence_unsupported",
+  "claim": "get_help_option_names still converts help option names to an unordered set.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "get_help_option_names still converts help option names to an unordered set.",
+      "claim_id": "get_help_option_names still converts help option names to an unordered set",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "get_help_option_names still converts help option names to an unordered set.",
+        "claim_id": "get_help_option_names still converts help option names to an unordered set",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names)",
+        "falsification_condition": "The code uses dict.fromkeys to preserve order, not a set, thus it does not convert help option names to an unordered set.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     def get_help_option_names(self, ctx: Context) -> list[str]:\n-        \"\"\"Returns the names for the help option.\"\"\"\n-        all_names = set(ctx.help_option_names)\n+        \"\"\"Returns the names for the help option.\n+\n+        Drops duplicates and names already reserved by another parameter. Order of\n+        :attr:`Context.help_option_names` is preserved, so the result is stable.\n+\n+        .. versionchanged:: 8.5.0\n+            Names keep their declaration order.\n+        \"\"\"\n+        all_names = dict.fromkeys(ctx.help_option_names)\n         for param in self.params:\n-            all_names.difference_update(param.opts)\n-            all_names.difference_update(param.secondary_opts)\n+            for name in (*param.opts, *param.secondary_opts):\n+                all_names.pop(name, None)\n         return list(all_names)"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The set-based implementation was replaced by an insertion-ordered dict.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014927Z-d3e9d3ed",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "get_help_option_names still converts help option names to an unordered set.",
+      "claim_id": "get_help_option_names still converts help option names to an unordered set",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "get_help_option_names still converts help option names to an unordered set.",
+        "claim_id": "get_help_option_names still converts help option names to an unordered set",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names)",
+        "falsification_condition": "The code uses dict.fromkeys to preserve order, not a set, thus it does not convert help option names to an unordered set.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     def get_help_option_names(self, ctx: Context) -> list[str]:\n-        \"\"\"Returns the names for the help option.\"\"\"\n-        all_names = set(ctx.help_option_names)\n+        \"\"\"Returns the names for the help option.\n+\n+        Drops duplicates and names already reserved by another parameter. Order of\n+        :attr:`Context.help_option_names` is preserved, so the result is stable.\n+\n+        .. versionchanged:: 8.5.0\n+            Names keep their declaration order.\n+        \"\"\"\n+        all_names = dict.fromkeys(ctx.help_option_names)\n         for param in self.params:\n-            all_names.difference_update(param.opts)\n-            all_names.difference_update(param.secondary_opts)\n+            for name in (*param.opts, *param.secondary_opts):\n+                all_names.pop(name, None)\n         return list(all_names)"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_008",
+  "run_id": "20260830T014927Z-d3e9d3ed",
+  "task_description": "Review Click help-option selection after commit 047adef.",
+  "transcript": [
+    {
+      "claim_id": "get_help_option_names still converts help option names to an unordered set",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "get_help_option_names still converts help option names to an unordered set.",
+        "claim_id": "get_help_option_names still converts help option names to an unordered set",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names)",
+        "falsification_condition": "The code uses dict.fromkeys to preserve order, not a set, thus it does not convert help option names to an unordered set.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:49:49.118681+00:00"
+    },
+    {
+      "claim_id": "get_help_option_names still converts help option names to an unordered set",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:49:49.119900+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     def get_help_option_names(self, ctx: Context) -> list[str]:\n-        \"\"\"Returns the names for the help option.\"\"\"\n-        all_names = set(ctx.help_option_names)\n+        \"\"\"Returns the names for the help option.\n+\n+        Drops duplicates and names already reserved by another parameter. Order of\n+        :attr:`Context.help_option_names` is preserved, so the result is stable.\n+\n+        .. versionchanged:: 8.5.0\n+            Names keep their declaration order.\n+        \"\"\"\n+        all_names = dict.fromkeys(ctx.help_option_names)\n         for param in self.params:\n-            all_names.difference_update(param.opts)\n-            all_names.difference_update(param.secondary_opts)\n+            for name in (*param.opts, *param.secondary_opts):\n+                all_names.pop(name, None)\n         return list(all_names)"
+      }
+    },
+    {
+      "claim_id": "get_help_option_names still converts help option names to an unordered set",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:49:49.943610+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "get_help_option_names still converts help option names to an unordered set",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:49:49.943686+00:00"
+    }
+  ]
+}

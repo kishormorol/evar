@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_040_stale_evidence_unsupported",
+  "claim": "sliced still passes a negative slice size directly into count.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "<urlopen error [Errno 8] nodename nor servname provided, or not known>",
+    "type": "URLError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The new negative-size guard runs before the count-based iterator is created.",
+  "protocol": "ar",
+  "repo_path": "benchmarks/external_pr_50/repos/case_040",
+  "reviewer_model": null,
+  "run_id": "20260829T212626Z-03905aa0",
+  "task_description": "Review more-itertools sliced validation after commit 958990e."
+}

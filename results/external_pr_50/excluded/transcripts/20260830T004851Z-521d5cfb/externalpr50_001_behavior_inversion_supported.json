@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_001_behavior_inversion_supported",
+  "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+  "claim_family": "behavior_inversion",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "edit checks for both str and os.PathLike before deciding whether to wrap filename in a one-item tuple.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_001",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Click edit filename handling after commit a1d8785."
+}

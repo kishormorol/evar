@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_018_causal_mislocalization_unsupported",
+  "claim": "varnames relies only on a dot in __qualname__ to strip a bound method's self argument.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated condition also uses the separately captured is_bound flag.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_018",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy bound-method argument discovery after commit 0b7790e."
+}

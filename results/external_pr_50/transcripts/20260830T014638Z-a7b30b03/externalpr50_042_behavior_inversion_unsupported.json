@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_042_behavior_inversion_unsupported",
+  "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "url = request.path_url\n# Removed code that collapsed multiple leading slashes:\n# if url.startswith(\"//\"):\n#     url = f\"/{url.lstrip('/')}\"",
+        "falsification_condition": "The code previously contained logic to collapse multiple leading slashes in request.path_url to a single slash, but this logic was removed in the commit, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code previously contained logic to collapse multiple leading slashes in request.path_url to a single slash, but this logic was removed in the commit, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "url = request.path_url\n# Removed code that collapsed multiple leading slashes:\n# if url.startswith(\"//\"):\n#     url = f\"/{url.lstrip('/')}\""
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The slash-collapsing block was removed from the updated implementation.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T014638Z-a7b30b03",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "url = request.path_url\n# Removed code that collapsed multiple leading slashes:\n# if url.startswith(\"//\"):\n#     url = f\"/{url.lstrip('/')}\"",
+        "falsification_condition": "The code previously contained logic to collapse multiple leading slashes in request.path_url to a single slash, but this logic was removed in the commit, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code previously contained logic to collapse multiple leading slashes in request.path_url to a single slash, but this logic was removed in the commit, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "url = request.path_url\n# Removed code that collapsed multiple leading slashes:\n# if url.startswith(\"//\"):\n#     url = f\"/{url.lstrip('/')}\""
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_042",
+  "run_id": "20260830T014638Z-a7b30b03",
+  "task_description": "Review Requests adapter path handling after commit fd62809.",
+  "transcript": [
+    {
+      "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "url = request.path_url\n# Removed code that collapsed multiple leading slashes:\n# if url.startswith(\"//\"):\n#     url = f\"/{url.lstrip('/')}\"",
+        "falsification_condition": "The code previously contained logic to collapse multiple leading slashes in request.path_url to a single slash, but this logic was removed in the commit, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code previously contained logic to collapse multiple leading slashes in request.path_url to a single slash, but this logic was removed in the commit, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "url = request.path_url\n# Removed code that collapsed multiple leading slashes:\n# if url.startswith(\"//\"):\n#     url = f\"/{url.lstrip('/')}\""
+      },
+      "timestamp": "2026-08-30T01:48:48.575190+00:00"
+    },
+    {
+      "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:48:49.383147+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:48:49.383194+00:00"
+    }
+  ]
+}

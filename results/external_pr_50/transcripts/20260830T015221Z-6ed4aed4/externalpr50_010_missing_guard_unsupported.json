@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_010_missing_guard_unsupported",
+  "claim": "Click's ANSI matcher only recognizes numeric parameters separated by semicolons.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "Click's ANSI matcher only recognizes numeric parameters separated by semicolons.",
+      "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "Click's ANSI matcher only recognizes numeric parameters separated by semicolons.",
+        "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "_ansi_re = re.compile(r\"\\033\\[[0-?]*[ -/]*[@-~]\")",
+        "falsification_condition": "The updated regular expression in line 14 matches ANSI escape sequences with parameter bytes in the range 0x30-0x3F (which includes digits, semicolon, and question mark), as well as intermediate bytes (0x20-0x2F, which includes space and punctuation), and a final byte in the range 0x40-0x7E. This is broader than only numeric parameters separated by semicolons, as it also matches sequences with question marks, spaces, and other punctuation, not just digits and semicolons.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 14,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated regex uses the broader ECMA-48 byte ranges rather than the older numeric-only form.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "Click's ANSI matcher only recognizes numeric parameters separated by semicolons.",
+      "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "Click's ANSI matcher only recognizes numeric parameters separated by semicolons.",
+        "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "_ansi_re = re.compile(r\"\\033\\[[0-?]*[ -/]*[@-~]\")",
+        "falsification_condition": "The updated regular expression in line 14 matches ANSI escape sequences with parameter bytes in the range 0x30-0x3F (which includes digits, semicolon, and question mark), as well as intermediate bytes (0x20-0x2F, which includes space and punctuation), and a final byte in the range 0x40-0x7E. This is broader than only numeric parameters separated by semicolons, as it also matches sequences with question marks, spaces, and other punctuation, not just digits and semicolons.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 14,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_010",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review Click ANSI stripping after commit 71f2baf.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Click's ANSI matcher only recognizes numeric parameters separated by semicolons.",
+        "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "_ansi_re = re.compile(r\"\\033\\[[0-?]*[ -/]*[@-~]\")",
+        "falsification_condition": "The updated regular expression in line 14 matches ANSI escape sequences with parameter bytes in the range 0x30-0x3F (which includes digits, semicolon, and question mark), as well as intermediate bytes (0x20-0x2F, which includes space and punctuation), and a final byte in the range 0x40-0x7E. This is broader than only numeric parameters separated by semicolons, as it also matches sequences with question marks, spaces, and other punctuation, not just digits and semicolons.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 14,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:52:46.227993+00:00"
+    },
+    {
+      "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:52:46.859281+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "missing_guard_Click_ANSI_matcher_numeric_semicolon",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:52:46.859325+00:00"
+    }
+  ]
+}

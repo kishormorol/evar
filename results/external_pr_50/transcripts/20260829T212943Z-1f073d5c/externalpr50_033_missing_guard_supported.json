@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "chunked raises ValueError when n is a negative integer.",
+      "claim_id": "chunked-raises-ValueError-negative-n",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "chunked raises ValueError when n is a negative integer.",
+        "claim_id": "chunked-raises-ValueError-negative-n",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if n is not None and n < 0:\n    raise ValueError('n must be at least 0')",
+        "falsification_condition": "If the code did not check for n < 0 and raise ValueError, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_033_missing_guard_supported",
+  "claim": "chunked raises ValueError when n is a negative integer.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "chunked raises ValueError when n is a negative integer.",
+      "claim_id": "chunked-raises-ValueError-negative-n",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "chunked raises ValueError when n is a negative integer.",
+        "claim_id": "chunked-raises-ValueError-negative-n",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if n is not None and n < 0:\n    raise ValueError('n must be at least 0')",
+        "falsification_condition": "If the code did not check for n < 0 and raise ValueError, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The function begins with a guard for n is not None and n < 0.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T212943Z-1f073d5c",
+    "seed": 7
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_033",
+  "run_id": "20260829T212943Z-1f073d5c",
+  "task_description": "Review more-itertools chunked validation after commit 0e6acdf.",
+  "transcript": [
+    {
+      "claim_id": "chunked-raises-ValueError-negative-n",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "chunked raises ValueError when n is a negative integer.",
+        "claim_id": "chunked-raises-ValueError-negative-n",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if n is not None and n < 0:\n    raise ValueError('n must be at least 0')",
+        "falsification_condition": "If the code did not check for n < 0 and raise ValueError, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:31:00.817619+00:00"
+    },
+    {
+      "claim_id": "chunked-raises-ValueError-negative-n",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:31:01.541303+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "chunked-raises-ValueError-negative-n",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:31:01.541376+00:00"
+    }
+  ]
+}

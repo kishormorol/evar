@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+        "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return [(plugin, DistFacade(dist)) for plugin, dist in self._plugin_distinfo]",
+        "falsification_condition": "The method list_plugin_distinfo does not wrap distributions with DistFacade before returning them.",
+        "file": "upstream.patch",
+        "line_end": 125,
+        "line_start": 112,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     def list_plugin_distinfo(self) -> list[tuple[_Plugin, DistFacade]]:\n         \"\"\"Return a list of (plugin, distinfo) pairs for all\n-        setuptools-registered plugins.\"\"\"\n+        setuptools-registered plugins.\n+\n+        .. note::\n+            The distinfo objects are wrapped with :class:`~pluggy._compat.DistFacade`\n+            for backward compatibility with the legacy pkg_resources API.\n+            Prefer :meth:`list_plugin_distributions` for raw\n+            :class:`importlib.metadata.Distribution` objects.\n+        \"\"\"\n+        from ._compat import DistFacade\n+\n+        return [(plugin, DistFacade(dist)) for plugin, dist in self._plugin_distinfo]"
+      }
+    }
+  ],
+  "case_id": "externalpr50_015_incorrect_call_relationship_supported",
+  "claim": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+        "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return [(plugin, DistFacade(dist)) for plugin, dist in self._plugin_distinfo]",
+        "falsification_condition": "The method list_plugin_distinfo does not wrap distributions with DistFacade before returning them.",
+        "file": "upstream.patch",
+        "line_end": 125,
+        "line_start": 112,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     def list_plugin_distinfo(self) -> list[tuple[_Plugin, DistFacade]]:\n         \"\"\"Return a list of (plugin, distinfo) pairs for all\n-        setuptools-registered plugins.\"\"\"\n+        setuptools-registered plugins.\n+\n+        .. note::\n+            The distinfo objects are wrapped with :class:`~pluggy._compat.DistFacade`\n+            for backward compatibility with the legacy pkg_resources API.\n+            Prefer :meth:`list_plugin_distributions` for raw\n+            :class:`importlib.metadata.Distribution` objects.\n+        \"\"\"\n+        from ._compat import DistFacade\n+\n+        return [(plugin, DistFacade(dist)) for plugin, dist in self._plugin_distinfo]"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The method returns a comprehension containing DistFacade(dist) for each stored distribution.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260829T213250Z-f23548cd",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_015",
+  "run_id": "20260829T213250Z-f23548cd",
+  "task_description": "Review pluggy distribution listing after commit 53eeddf.",
+  "transcript": [
+    {
+      "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+        "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return [(plugin, DistFacade(dist)) for plugin, dist in self._plugin_distinfo]",
+        "falsification_condition": "The method list_plugin_distinfo does not wrap distributions with DistFacade before returning them.",
+        "file": "upstream.patch",
+        "line_end": 125,
+        "line_start": 112,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:33:37.125133+00:00"
+    },
+    {
+      "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-29T21:33:37.126448+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "     def list_plugin_distinfo(self) -> list[tuple[_Plugin, DistFacade]]:\n         \"\"\"Return a list of (plugin, distinfo) pairs for all\n-        setuptools-registered plugins.\"\"\"\n+        setuptools-registered plugins.\n+\n+        .. note::\n+            The distinfo objects are wrapped with :class:`~pluggy._compat.DistFacade`\n+            for backward compatibility with the legacy pkg_resources API.\n+            Prefer :meth:`list_plugin_distributions` for raw\n+            :class:`importlib.metadata.Distribution` objects.\n+        \"\"\"\n+        from ._compat import DistFacade\n+\n+        return [(plugin, DistFacade(dist)) for plugin, dist in self._plugin_distinfo]"
+      }
+    },
+    {
+      "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:33:37.936786+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "list_plugin_distinfo wraps stored distributions with DistFacade before returning them.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:33:37.936869+00:00"
+    }
+  ]
+}

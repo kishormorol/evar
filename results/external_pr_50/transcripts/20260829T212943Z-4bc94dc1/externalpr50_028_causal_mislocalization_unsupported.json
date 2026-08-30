@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_028_causal_mislocalization_unsupported",
+  "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)",
+        "falsification_condition": "The method __replace__ is defined locally inside add_replace as a proxy that calls the global evolve function, and this local __replace__ is passed to _add_method_dunders and attached as __replace__, not the global evolve function itself.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The method __replace__ is defined locally inside add_replace as a proxy that calls the global evolve function, and this local __replace__ is passed to _add_method_dunders and attached as __replace__, not the global evolve function itself.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation passes the local __replace__ proxy rather than evolve itself.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)",
+        "falsification_condition": "The method __replace__ is defined locally inside add_replace as a proxy that calls the global evolve function, and this local __replace__ is passed to _add_method_dunders and attached as __replace__, not the global evolve function itself.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The method __replace__ is defined locally inside add_replace as a proxy that calls the global evolve function, and this local __replace__ is passed to _add_method_dunders and attached as __replace__, not the global evolve function itself.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_028",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review attrs __replace__ generation after commit f53fc54.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)",
+        "falsification_condition": "The method __replace__ is defined locally inside add_replace as a proxy that calls the global evolve function, and this local __replace__ is passed to _add_method_dunders and attached as __replace__, not the global evolve function itself.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The method __replace__ is defined locally inside add_replace as a proxy that calls the global evolve function, and this local __replace__ is passed to _add_method_dunders and attached as __replace__, not the global evolve function itself.",
+        "file": "upstream.patch",
+        "line_end": 15,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)"
+      },
+      "timestamp": "2026-08-29T21:31:20.464801+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:31:21.098464+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:31:21.098531+00:00"
+    }
+  ]
+}

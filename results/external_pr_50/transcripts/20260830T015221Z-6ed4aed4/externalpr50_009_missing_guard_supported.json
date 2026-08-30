@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+      "claim_id": "click-ansi-matcher-ecma48-ranges",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+        "claim_id": "click-ansi-matcher-ecma48-ranges",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "_ansi_re = re.compile(r\"\\033\\[[0-?]*[ -/]*[@-~]\")",
+        "falsification_condition": "If the regular expression did not match parameter bytes (0x30-0x3F), intermediate bytes (0x20-0x2F), and a final byte (0x40-0x7E), the claim would be false. However, the regex '[0-?]*[ -/]*[@-~]' directly encodes these ECMA-48 ranges.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_009_missing_guard_supported",
+  "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+      "claim_id": "click-ansi-matcher-ecma48-ranges",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+        "claim_id": "click-ansi-matcher-ecma48-ranges",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "_ansi_re = re.compile(r\"\\033\\[[0-?]*[ -/]*[@-~]\")",
+        "falsification_condition": "If the regular expression did not match parameter bytes (0x30-0x3F), intermediate bytes (0x20-0x2F), and a final byte (0x40-0x7E), the claim would be false. However, the regex '[0-?]*[ -/]*[@-~]' directly encodes these ECMA-48 ranges.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "_ansi_re is compiled from the pattern \\033\\[[0-?]*[ -/]*[@-~].",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_009",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review Click ANSI stripping after commit 71f2baf.",
+  "transcript": [
+    {
+      "claim_id": "click-ansi-matcher-ecma48-ranges",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Click's ANSI matcher accepts parameter bytes, intermediate bytes, and a final byte in the ECMA-48 ranges.",
+        "claim_id": "click-ansi-matcher-ecma48-ranges",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "_ansi_re = re.compile(r\"\\033\\[[0-?]*[ -/]*[@-~]\")",
+        "falsification_condition": "If the regular expression did not match parameter bytes (0x30-0x3F), intermediate bytes (0x20-0x2F), and a final byte (0x40-0x7E), the claim would be false. However, the regex '[0-?]*[ -/]*[@-~]' directly encodes these ECMA-48 ranges.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:52:43.917747+00:00"
+    },
+    {
+      "claim_id": "click-ansi-matcher-ecma48-ranges",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:52:44.582260+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "click-ansi-matcher-ecma48-ranges",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:52:44.582332+00:00"
+    }
+  ]
+}

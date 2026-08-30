@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the while condition would use '<' instead of '<=' and would pop the earlier value. Here, '<=' ensures that when a later value is equal, the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the while condition would use '<' instead of '<=' and would pop the earlier value. Here, '<=' ensures that when a later value is equal, the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "quoted_or_paraphrased_support": "while s and not s[-1][1] <= value:\n    s.pop()"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_037_causal_mislocalization_supported",
+  "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the while condition would use '<' instead of '<=' and would pop the earlier value. Here, '<=' ensures that when a later value is equal, the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the while condition would use '<' instead of '<=' and would pop the earlier value. Here, '<=' ensures that when a later value is equal, the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "quoted_or_paraphrased_support": "while s and not s[-1][1] <= value:\n    s.pop()"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Its pruning loop retains the prior tail while tail_value <= value, preserving the earlier equal value.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T213250Z-fe8e6ca2",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_037",
+  "run_id": "20260829T213250Z-fe8e6ca2",
+  "task_description": "Review running_min stability after commit d992be0.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the while condition would use '<' instead of '<=' and would pop the earlier value. Here, '<=' ensures that when a later value is equal, the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code removed earlier values when a later value compared equal, the while condition would use '<' instead of '<=' and would pop the earlier value. Here, '<=' ensures that when a later value is equal, the earlier value is kept.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "quoted_or_paraphrased_support": "while s and not s[-1][1] <= value:\n    s.pop()"
+      },
+      "timestamp": "2026-08-29T21:34:23.449190+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:34:24.064351+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization/_windowed_running_min/keeps_earlier_value_on_equal",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:34:24.064388+00:00"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_038_causal_mislocalization_unsupported",
+  "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated <= condition stops pruning on equality.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_038",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review running_min stability after commit d992be0."
+}

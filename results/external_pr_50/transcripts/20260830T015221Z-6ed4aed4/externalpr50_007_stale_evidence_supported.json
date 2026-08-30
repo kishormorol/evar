@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "get_help_option_names preserves the declaration order of help option names.",
+      "claim_id": "get_help_option_names_order",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "get_help_option_names preserves the declaration order of help option names.",
+        "claim_id": "get_help_option_names_order",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names)\n...\nreturn list(all_names)",
+        "falsification_condition": "If get_help_option_names did not use an order-preserving structure (like dict.fromkeys) or returned a set, the order would not be preserved. Here, dict.fromkeys(ctx.help_option_names) creates an ordered dictionary (since Python 3.7+ dicts preserve insertion order), and returning list(all_names) preserves that order, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 19,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_007_stale_evidence_supported",
+  "claim": "get_help_option_names preserves the declaration order of help option names.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "get_help_option_names preserves the declaration order of help option names.",
+      "claim_id": "get_help_option_names_order",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "get_help_option_names preserves the declaration order of help option names.",
+        "claim_id": "get_help_option_names_order",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names)\n...\nreturn list(all_names)",
+        "falsification_condition": "If get_help_option_names did not use an order-preserving structure (like dict.fromkeys) or returned a set, the order would not be preserved. Here, dict.fromkeys(ctx.help_option_names) creates an ordered dictionary (since Python 3.7+ dicts preserve insertion order), and returning list(all_names) preserves that order, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 19,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The implementation uses dict.fromkeys and pop, whose iteration order follows declaration order.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_007",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review Click help-option selection after commit 047adef.",
+  "transcript": [
+    {
+      "claim_id": "get_help_option_names_order",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "get_help_option_names preserves the declaration order of help option names.",
+        "claim_id": "get_help_option_names_order",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names)\n...\nreturn list(all_names)",
+        "falsification_condition": "If get_help_option_names did not use an order-preserving structure (like dict.fromkeys) or returned a set, the order would not be preserved. Here, dict.fromkeys(ctx.help_option_names) creates an ordered dictionary (since Python 3.7+ dicts preserve insertion order), and returning list(all_names) preserves that order, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 19,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:52:39.739747+00:00"
+    },
+    {
+      "claim_id": "get_help_option_names_order",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:52:40.426566+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "get_help_option_names_order",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:52:40.426643+00:00"
+    }
+  ]
+}

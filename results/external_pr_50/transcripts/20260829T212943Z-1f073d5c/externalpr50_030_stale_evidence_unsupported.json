@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var immediately converts the annotation object itself to text.",
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = str(annot)",
+        "falsification_condition": "If the code did not immediately convert the annotation object to text, this line would not appear or would be conditional. The presence of 'annot = str(annot)' as an unconditional statement supports the claim.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_030_stale_evidence_unsupported",
+  "claim": "_is_class_var immediately converts the annotation object itself to text.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var immediately converts the annotation object itself to text.",
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = str(annot)",
+        "falsification_condition": "If the code did not immediately convert the annotation object to text, this line would not appear or would be conditional. The presence of 'annot = str(annot)' as an unconditional statement supports the claim.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated code first extracts __forward_arg__ when present.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T212943Z-1f073d5c",
+    "seed": 7
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_030",
+  "run_id": "20260829T212943Z-1f073d5c",
+  "task_description": "Review attrs ClassVar forward-reference detection after commit 97f8d17.",
+  "transcript": [
+    {
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = str(annot)",
+        "falsification_condition": "If the code did not immediately convert the annotation object to text, this line would not appear or would be conditional. The presence of 'annot = str(annot)' as an unconditional statement supports the claim.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:30:55.362187+00:00"
+    },
+    {
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:30:55.958993+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "stale_evidence/_is_class_var_immediately_converts_the_annotation_object_itself_to_text",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:30:55.959057+00:00"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if args and args[0] in _IMPLICIT_NAMES:\n    if is_bound or \".\" in qualname:\n        args = args[1:]",
+        "falsification_condition": "The code explicitly checks if the function is a bound method (is_bound) or if the qualname contains a dot before stripping the first argument. This means it can strip the implicit self argument even when the qualname has no dot, as long as is_bound is True.",
+        "file": "upstream.patch",
+        "line_end": 27,
+        "line_start": 21,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code explicitly checks if the function is a bound method (is_bound) or if the qualname contains a dot before stripping the first argument. This means it can strip the implicit self argument even when the qualname has no dot, as long as is_bound is True.",
+        "file": "upstream.patch",
+        "line_end": 27,
+        "line_start": 21,
+        "quoted_or_paraphrased_support": "if args and args[0] in _IMPLICIT_NAMES:\n    if is_bound or \".\" in qualname:\n        args = args[1:]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_017_causal_mislocalization_supported",
+  "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if args and args[0] in _IMPLICIT_NAMES:\n    if is_bound or \".\" in qualname:\n        args = args[1:]",
+        "falsification_condition": "The code explicitly checks if the function is a bound method (is_bound) or if the qualname contains a dot before stripping the first argument. This means it can strip the implicit self argument even when the qualname has no dot, as long as is_bound is True.",
+        "file": "upstream.patch",
+        "line_end": 27,
+        "line_start": 21,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code explicitly checks if the function is a bound method (is_bound) or if the qualname contains a dot before stripping the first argument. This means it can strip the implicit self argument even when the qualname has no dot, as long as is_bound is True.",
+        "file": "upstream.patch",
+        "line_end": 27,
+        "line_start": 21,
+        "quoted_or_paraphrased_support": "if args and args[0] in _IMPLICIT_NAMES:\n    if is_bound or \".\" in qualname:\n        args = args[1:]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It records inspect.ismethod(func) in is_bound before unwrapping and uses is_bound in the stripping condition.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T014638Z-a7b30b03",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_017",
+  "run_id": "20260830T014638Z-a7b30b03",
+  "task_description": "Review pluggy bound-method argument discovery after commit 0b7790e.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if args and args[0] in _IMPLICIT_NAMES:\n    if is_bound or \".\" in qualname:\n        args = args[1:]",
+        "falsification_condition": "The code explicitly checks if the function is a bound method (is_bound) or if the qualname contains a dot before stripping the first argument. This means it can strip the implicit self argument even when the qualname has no dot, as long as is_bound is True.",
+        "file": "upstream.patch",
+        "line_end": 27,
+        "line_start": 21,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames can strip an implicit self argument from a bound method even when its qualname has no dot.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code explicitly checks if the function is a bound method (is_bound) or if the qualname contains a dot before stripping the first argument. This means it can strip the implicit self argument even when the qualname has no dot, as long as is_bound is True.",
+        "file": "upstream.patch",
+        "line_end": 27,
+        "line_start": 21,
+        "quoted_or_paraphrased_support": "if args and args[0] in _IMPLICIT_NAMES:\n    if is_bound or \".\" in qualname:\n        args = args[1:]"
+      },
+      "timestamp": "2026-08-30T01:47:33.971521+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:47:34.700797+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:47:34.700862+00:00"
+    }
+  ]
+}

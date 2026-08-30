@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_050_stale_evidence_unsupported",
+  "claim": "prepare_body still relies exclusively on isinstance(data, Iterable) to detect streams.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation adds hasattr(data, '__iter__') as an alternative.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_050",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review Requests request-body stream detection after commit 6404f34."
+}

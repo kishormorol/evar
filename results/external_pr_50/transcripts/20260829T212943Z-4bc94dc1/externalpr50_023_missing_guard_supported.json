@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "RuntimeError: Generator on_setattr hook yielded more than once.",
+        "falsification_condition": "If the generator on_setattr hook yields more than once, no RuntimeError is raised, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": "python -c \"class C: pass; import attr; @attr.s class C: x = attr.ib(on_setattr=lambda self, a, v: (yield v) or (yield v)); c = C(); c.x = 1\""
+      },
+      "text_evidence": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the generator on_setattr hook yields more than once, no RuntimeError is raised, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "quoted_or_paraphrased_support": "RuntimeError: Generator on_setattr hook yielded more than once."
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_023_missing_guard_supported",
+  "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "RuntimeError: Generator on_setattr hook yielded more than once.",
+        "falsification_condition": "If the generator on_setattr hook yields more than once, no RuntimeError is raised, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": "python -c \"class C: pass; import attr; @attr.s class C: x = attr.ib(on_setattr=lambda self, a, v: (yield v) or (yield v)); c = C(); c.x = 1\""
+      },
+      "text_evidence": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the generator on_setattr hook yields more than once, no RuntimeError is raised, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "quoted_or_paraphrased_support": "RuntimeError: Generator on_setattr hook yielded more than once."
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "After assigning the first yielded value, __setattr__ advances again, closes the generator, and raises RuntimeError if it yields.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_023",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review attrs generator on_setattr hooks after commit 4b5b295.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 1,
+        "expected_stdout_contains": "RuntimeError: Generator on_setattr hook yielded more than once.",
+        "falsification_condition": "If the generator on_setattr hook yields more than once, no RuntimeError is raised, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": "python -c \"class C: pass; import attr; @attr.s class C: x = attr.ib(on_setattr=lambda self, a, v: (yield v) or (yield v)); c = C(); c.x = 1\""
+      },
+      "text_evidence": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the generator on_setattr hook yields more than once, no RuntimeError is raised, contradicting the claim.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "quoted_or_paraphrased_support": "RuntimeError: Generator on_setattr hook yielded more than once."
+      },
+      "timestamp": "2026-08-29T21:31:02.029692+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:31:03.129251+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:31:03.129296+00:00"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 0,
+        "expected_stdout_contains": "FutureWarning",
+        "falsification_condition": "If varnames does not emit a FutureWarning when legacy_noself=True and the first parameter is not an implicit name for a class-like method, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 84,
+        "line_start": 76,
+        "verification_command": "python -c \"import warnings; import pluggy._hooks as hooks; class C: def m(): pass; warnings.simplefilter('always', FutureWarning); hooks.varnames(C.m, legacy_noself=True)\""
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_013_missing_guard_supported",
+  "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 0,
+        "expected_stdout_contains": "FutureWarning",
+        "falsification_condition": "If varnames does not emit a FutureWarning when legacy_noself=True and the first parameter is not an implicit name for a class-like method, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 84,
+        "line_start": 76,
+        "verification_command": "python -c \"import warnings; import pluggy._hooks as hooks; class C: def m(): pass; warnings.simplefilter('always', FutureWarning); hooks.varnames(C.m, legacy_noself=True)\""
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The legacy_noself branch calls warnings.warn with FutureWarning when the first argument is not an implicit name.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T014353Z-aba74b37",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_013",
+  "run_id": "20260830T014353Z-aba74b37",
+  "task_description": "Review pluggy legacy hookspec method handling after commit dd20a85.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames emits a FutureWarning for a class-like method missing self when legacy_noself is enabled.",
+        "claim_id": "missing_guard",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": 0,
+        "expected_stdout_contains": "FutureWarning",
+        "falsification_condition": "If varnames does not emit a FutureWarning when legacy_noself=True and the first parameter is not an implicit name for a class-like method, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 84,
+        "line_start": 76,
+        "verification_command": "python -c \"import warnings; import pluggy._hooks as hooks; class C: def m(): pass; warnings.simplefilter('always', FutureWarning); hooks.varnames(C.m, legacy_noself=True)\""
+      },
+      "timestamp": "2026-08-30T01:44:31.110621+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:44:31.874066+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:44:31.874132+00:00"
+    }
+  ]
+}

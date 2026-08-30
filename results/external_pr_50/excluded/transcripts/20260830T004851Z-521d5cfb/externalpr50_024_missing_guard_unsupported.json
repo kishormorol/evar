@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_024_missing_guard_unsupported",
+  "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+  "claim_family": "missing_guard",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation explicitly rejects a second yield.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_024",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review attrs generator on_setattr hooks after commit 4b5b295."
+}

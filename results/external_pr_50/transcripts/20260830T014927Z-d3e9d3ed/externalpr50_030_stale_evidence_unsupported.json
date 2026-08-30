@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var immediately converts the annotation object itself to text.",
+      "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)\n    annot = str(annot)",
+        "falsification_condition": "If the code does not convert the annotation object to text immediately, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    annot = getattr(annot, \"__forward_arg__\", annot)\n     annot = str(annot)"
+      }
+    }
+  ],
+  "case_id": "externalpr50_030_stale_evidence_unsupported",
+  "claim": "_is_class_var immediately converts the annotation object itself to text.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_is_class_var immediately converts the annotation object itself to text.",
+      "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)\n    annot = str(annot)",
+        "falsification_condition": "If the code does not convert the annotation object to text immediately, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    annot = getattr(annot, \"__forward_arg__\", annot)\n     annot = str(annot)"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated code first extracts __forward_arg__ when present.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014927Z-d3e9d3ed",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_030",
+  "run_id": "20260830T014927Z-d3e9d3ed",
+  "task_description": "Review attrs ClassVar forward-reference detection after commit 97f8d17.",
+  "transcript": [
+    {
+      "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_is_class_var immediately converts the annotation object itself to text.",
+        "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "annot = getattr(annot, \"__forward_arg__\", annot)\n    annot = str(annot)",
+        "falsification_condition": "If the code does not convert the annotation object to text immediately, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:51:00.671348+00:00"
+    },
+    {
+      "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:51:00.672173+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+    annot = getattr(annot, \"__forward_arg__\", annot)\n     annot = str(annot)"
+      }
+    },
+    {
+      "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:51:01.635384+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "_is_class_var immediately converts the annotation object itself to text.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:51:01.635426+00:00"
+    }
+  ]
+}

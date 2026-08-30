@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_016_incorrect_call_relationship_unsupported",
+  "claim": "list_plugin_distinfo returns the raw importlib.metadata distributions stored by the manager.",
+  "claim_family": "incorrect_call_relationship",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Raw distributions are returned by list_plugin_distributions; list_plugin_distinfo applies DistFacade.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_016",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy distribution listing after commit 53eeddf."
+}

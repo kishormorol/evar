@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_012_behavior_inversion_unsupported",
+  "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+      "claim_id": "behavior_inversion",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"\"\"Remove all hook implementations registered by the given plugin.\"\"\"\n        remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\n        if len(remaining) == len(self._hookimpls):\n            raise ValueError(f\"plugin {plugin!r} not found\")\n        self._hookimpls[:] = remaining",
+        "falsification_condition": "The method _remove_plugin no longer returns after deleting the first matching hook implementation; instead, it removes all hook implementations registered by the given plugin by filtering the list and replacing it entirely.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The method _remove_plugin no longer returns after deleting the first matching hook implementation; instead, it removes all hook implementations registered by the given plugin by filtering the list and replacing it entirely.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "\"\"\"Remove all hook implementations registered by the given plugin.\"\"\"\n        remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\n        if len(remaining) == len(self._hookimpls):\n            raise ValueError(f\"plugin {plugin!r} not found\")\n        self._hookimpls[:] = remaining"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation performs a full list filter and has no early return after one match.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T014638Z-a7b30b03",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+      "claim_id": "behavior_inversion",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"\"\"Remove all hook implementations registered by the given plugin.\"\"\"\n        remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\n        if len(remaining) == len(self._hookimpls):\n            raise ValueError(f\"plugin {plugin!r} not found\")\n        self._hookimpls[:] = remaining",
+        "falsification_condition": "The method _remove_plugin no longer returns after deleting the first matching hook implementation; instead, it removes all hook implementations registered by the given plugin by filtering the list and replacing it entirely.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The method _remove_plugin no longer returns after deleting the first matching hook implementation; instead, it removes all hook implementations registered by the given plugin by filtering the list and replacing it entirely.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "\"\"\"Remove all hook implementations registered by the given plugin.\"\"\"\n        remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\n        if len(remaining) == len(self._hookimpls):\n            raise ValueError(f\"plugin {plugin!r} not found\")\n        self._hookimpls[:] = remaining"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_012",
+  "run_id": "20260830T014638Z-a7b30b03",
+  "task_description": "Review pluggy hook implementation removal after commit 20d8143.",
+  "transcript": [
+    {
+      "claim_id": "behavior_inversion",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+        "claim_id": "behavior_inversion",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"\"\"Remove all hook implementations registered by the given plugin.\"\"\"\n        remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\n        if len(remaining) == len(self._hookimpls):\n            raise ValueError(f\"plugin {plugin!r} not found\")\n        self._hookimpls[:] = remaining",
+        "falsification_condition": "The method _remove_plugin no longer returns after deleting the first matching hook implementation; instead, it removes all hook implementations registered by the given plugin by filtering the list and replacing it entirely.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "HookCaller._remove_plugin returns after deleting the first matching hook implementation.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The method _remove_plugin no longer returns after deleting the first matching hook implementation; instead, it removes all hook implementations registered by the given plugin by filtering the list and replacing it entirely.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "\"\"\"Remove all hook implementations registered by the given plugin.\"\"\"\n        remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\n        if len(remaining) == len(self._hookimpls):\n            raise ValueError(f\"plugin {plugin!r} not found\")\n        self._hookimpls[:] = remaining"
+      },
+      "timestamp": "2026-08-30T01:47:14.749949+00:00"
+    },
+    {
+      "claim_id": "behavior_inversion",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:47:15.462497+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "behavior_inversion",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:47:15.462570+00:00"
+    }
+  ]
+}

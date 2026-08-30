@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "varnames derives positional parameter names directly from the callable's code object.",
+      "claim_id": "claim1",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "claim1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "code: types.CodeType = func.__code__\n...\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]",
+        "falsification_condition": "If varnames did not use func.__code__ and code.co_varnames to derive positional parameter names, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If varnames did not use func.__code__ and code.co_varnames to derive positional parameter names, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "quoted_or_paraphrased_support": "code: types.CodeType = func.__code__\n...\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_019_stale_evidence_supported",
+  "claim": "varnames derives positional parameter names directly from the callable's code object.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "varnames derives positional parameter names directly from the callable's code object.",
+      "claim_id": "claim1",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "claim1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "code: types.CodeType = func.__code__\n...\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]",
+        "falsification_condition": "If varnames did not use func.__code__ and code.co_varnames to derive positional parameter names, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If varnames did not use func.__code__ and code.co_varnames to derive positional parameter names, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "quoted_or_paraphrased_support": "code: types.CodeType = func.__code__\n...\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It reads func.__code__.co_varnames up to co_argcount and partitions defaults.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260830T015422Z-47c996b7",
+    "seed": 17
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_019",
+  "run_id": "20260830T015422Z-47c996b7",
+  "task_description": "Review pluggy parameter discovery after commit c4e254c.",
+  "transcript": [
+    {
+      "claim_id": "claim1",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "claim_id": "claim1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "code: types.CodeType = func.__code__\n...\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]",
+        "falsification_condition": "If varnames did not use func.__code__ and code.co_varnames to derive positional parameter names, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "varnames derives positional parameter names directly from the callable's code object.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If varnames did not use func.__code__ and code.co_varnames to derive positional parameter names, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 81,
+        "line_start": 56,
+        "quoted_or_paraphrased_support": "code: types.CodeType = func.__code__\n...\nargs: tuple[str, ...] = code.co_varnames[: code.co_argcount]"
+      },
+      "timestamp": "2026-08-30T01:55:00.376814+00:00"
+    },
+    {
+      "claim_id": "claim1",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:55:01.064534+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "claim1",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:55:01.064572+00:00"
+    }
+  ]
+}

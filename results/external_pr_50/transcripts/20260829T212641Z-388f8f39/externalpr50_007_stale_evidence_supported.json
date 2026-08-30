@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "get_help_option_names preserves the declaration order of help option names.",
+      "claim_id": "get_help_option_names preserves the declaration order of help option names",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "get_help_option_names preserves the declaration order of help option names.",
+        "claim_id": "get_help_option_names preserves the declaration order of help option names",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names) ... return list(all_names) preserves order",
+        "falsification_condition": "The use of dict.fromkeys on ctx.help_option_names preserves the order of help option names, and the subsequent removal of names via pop does not reorder the remaining keys, thus the declaration order is preserved.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_007_stale_evidence_supported",
+  "claim": "get_help_option_names preserves the declaration order of help option names.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "get_help_option_names preserves the declaration order of help option names.",
+      "claim_id": "get_help_option_names preserves the declaration order of help option names",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "get_help_option_names preserves the declaration order of help option names.",
+        "claim_id": "get_help_option_names preserves the declaration order of help option names",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names) ... return list(all_names) preserves order",
+        "falsification_condition": "The use of dict.fromkeys on ctx.help_option_names preserves the order of help option names, and the subsequent removal of names via pop does not reorder the remaining keys, thus the declaration order is preserved.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The implementation uses dict.fromkeys and pop, whose iteration order follows declaration order.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T212641Z-388f8f39",
+    "seed": 7
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_007",
+  "run_id": "20260829T212641Z-388f8f39",
+  "task_description": "Review Click help-option selection after commit 047adef.",
+  "transcript": [
+    {
+      "claim_id": "get_help_option_names preserves the declaration order of help option names",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "get_help_option_names preserves the declaration order of help option names.",
+        "claim_id": "get_help_option_names preserves the declaration order of help option names",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "all_names = dict.fromkeys(ctx.help_option_names) ... return list(all_names) preserves order",
+        "falsification_condition": "The use of dict.fromkeys on ctx.help_option_names preserves the order of help option names, and the subsequent removal of names via pop does not reorder the remaining keys, thus the declaration order is preserved.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:27:05.372275+00:00"
+    },
+    {
+      "claim_id": "get_help_option_names preserves the declaration order of help option names",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:27:06.114714+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "get_help_option_names preserves the declaration order of help option names",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:27:06.114780+00:00"
+    }
+  ]
+}

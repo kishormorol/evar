@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_036_incorrect_call_relationship_unsupported",
+  "claim": "nth_permutation still calls factorial(n) when r is smaller than n.",
+  "claim_family": "incorrect_call_relationship",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated code no longer imports or calls factorial.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_036",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review nth_permutation index calculation after commit 237388c."
+}

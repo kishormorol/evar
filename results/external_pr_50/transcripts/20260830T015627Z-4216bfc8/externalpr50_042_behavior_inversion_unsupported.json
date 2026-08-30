@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_042_behavior_inversion_unsupported",
+  "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+      "critic_decision": "REQUEST_STRONGER_WITNESS",
+      "evidence_receipt": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if url.startswith(\"//\"):  # Don't confuse urllib3\n    url = f\"/{url.lstrip('/')}\"",
+        "falsification_condition": "The code that collapses multiple leading slashes in request.path_url to one slash has been removed in this patch, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The slash-collapsing block was removed from the updated implementation.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T015627Z-4216bfc8",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+      "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+      "critic_decision": "REQUEST_STRONGER_WITNESS",
+      "evidence_receipt": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if url.startswith(\"//\"):  # Don't confuse urllib3\n    url = f\"/{url.lstrip('/')}\"",
+        "falsification_condition": "The code that collapses multiple leading slashes in request.path_url to one slash has been removed in this patch, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_042",
+  "run_id": "20260830T015627Z-4216bfc8",
+  "task_description": "Review Requests adapter path handling after commit fd62809.",
+  "transcript": [
+    {
+      "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "HTTPAdapter.request_url collapses multiple leading slashes in request.path_url to one slash.",
+        "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if url.startswith(\"//\"):  # Don't confuse urllib3\n    url = f\"/{url.lstrip('/')}\"",
+        "falsification_condition": "The code that collapses multiple leading slashes in request.path_url to one slash has been removed in this patch, so HTTPAdapter.request_url no longer performs this collapsing.",
+        "file": "upstream.patch",
+        "line_end": 10,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:57:59.649929+00:00"
+    },
+    {
+      "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:57:59.650969+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "-        if url.startswith(\"//\"):  # Don't confuse urllib3\n-            url = f\"/{url.lstrip('/')}\""
+      }
+    },
+    {
+      "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+      "critic_decision": "REQUEST_STRONGER_WITNESS",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:58:00.264696+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "behavior_inversion_HTTPAdapter.request_url_slash_collapse",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:58:00.264739+00:00"
+    }
+  ]
+}

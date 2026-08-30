@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_028_causal_mislocalization_unsupported",
+  "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+      "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The code defines a local __replace__ function that wraps the global evolve, and attaches dunders to this local proxy, not directly to the global evolve function. Therefore, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation passes the local __replace__ proxy rather than evolve itself.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+      "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The code defines a local __replace__ function that wraps the global evolve, and attaches dunders to this local proxy, not directly to the global evolve function. Therefore, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_028",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review attrs __replace__ generation after commit f53fc54.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_ClassBuilder.add_replace attaches generated method dunders directly to the global evolve function.",
+        "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "def __replace__(*args, **changes):\n    return evolve(*args, **changes)\nself._cls_dict[\"__replace__\"] = self._add_method_dunders(__replace__)",
+        "falsification_condition": "The code defines a local __replace__ function that wraps the global evolve, and attaches dunders to this local proxy, not directly to the global evolve function. Therefore, the claim is false.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 10,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:53:24.958936+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:53:25.674762+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization-_ClassBuilder.add_replace-attaches-generated-method-dunders-directly-to-global-evolve",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:53:25.674805+00:00"
+    }
+  ]
+}

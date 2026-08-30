@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+      "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "gen.close()\nmsg = \"Generator on_setattr hook yielded more than once.\"\nraise RuntimeError(msg)",
+        "falsification_condition": "If the code did not raise RuntimeError after a generator on_setattr hook yields more than once, the claim would be false. However, the implementation explicitly raises RuntimeError with the specified message in this case.",
+        "file": "upstream.patch",
+        "line_end": 61,
+        "line_start": 50,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_023_missing_guard_supported",
+  "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+      "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "gen.close()\nmsg = \"Generator on_setattr hook yielded more than once.\"\nraise RuntimeError(msg)",
+        "falsification_condition": "If the code did not raise RuntimeError after a generator on_setattr hook yields more than once, the claim would be false. However, the implementation explicitly raises RuntimeError with the specified message in this case.",
+        "file": "upstream.patch",
+        "line_end": 61,
+        "line_start": 50,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "After assigning the first yielded value, __setattr__ advances again, closes the generator, and raises RuntimeError if it yields.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_023",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review attrs generator on_setattr hooks after commit 4b5b295.",
+  "transcript": [
+    {
+      "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs raises RuntimeError when a generator on_setattr hook yields more than once.",
+        "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "gen.close()\nmsg = \"Generator on_setattr hook yielded more than once.\"\nraise RuntimeError(msg)",
+        "falsification_condition": "If the code did not raise RuntimeError after a generator on_setattr hook yields more than once, the claim would be false. However, the implementation explicitly raises RuntimeError with the specified message in this case.",
+        "file": "upstream.patch",
+        "line_end": 61,
+        "line_start": 50,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:53:14.097901+00:00"
+    },
+    {
+      "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:53:14.772352+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "attrs-generator-on_setattr-multi-yield-runtimeerror",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:53:14.772415+00:00"
+    }
+  ]
+}

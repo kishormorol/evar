@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_035_incorrect_call_relationship_supported",
+  "claim": "nth_permutation computes its index digits without calling math.factorial.",
+  "claim_family": "incorrect_call_relationship",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The factorial import and factorial-based q expression were removed; q starts as index.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_035",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review nth_permutation index calculation after commit 237388c."
+}

@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "nth_permutation computes its index digits without calling math.factorial.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "nth_permutation computes its index digits without calling math.factorial.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "q = index\nfor d in range(n - r + 1, n + 1):\n    q, i = divmod(q, d)\n    result[n - d] = i",
+        "falsification_condition": "The code no longer calls math.factorial in the index digit computation; instead, it uses a loop with divmod and a range without factorial.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 18,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_035_incorrect_call_relationship_supported",
+  "claim": "nth_permutation computes its index digits without calling math.factorial.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "nth_permutation computes its index digits without calling math.factorial.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "nth_permutation computes its index digits without calling math.factorial.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "q = index\nfor d in range(n - r + 1, n + 1):\n    q, i = divmod(q, d)\n    result[n - d] = i",
+        "falsification_condition": "The code no longer calls math.factorial in the index digit computation; instead, it uses a loop with divmod and a range without factorial.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 18,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The factorial import and factorial-based q expression were removed; q starts as index.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T014353Z-aba74b37",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_035",
+  "run_id": "20260830T014353Z-aba74b37",
+  "task_description": "Review nth_permutation index calculation after commit 237388c.",
+  "transcript": [
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "nth_permutation computes its index digits without calling math.factorial.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "q = index\nfor d in range(n - r + 1, n + 1):\n    q, i = divmod(q, d)\n    result[n - d] = i",
+        "falsification_condition": "The code no longer calls math.factorial in the index digit computation; instead, it uses a loop with divmod and a range without factorial.",
+        "file": "upstream.patch",
+        "line_end": 25,
+        "line_start": 18,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:45:33.824607+00:00"
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:45:34.683522+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:45:34.683600+00:00"
+    }
+  ]
+}

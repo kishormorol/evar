@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_024_missing_guard_unsupported",
+  "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+      "claim_id": "missing_guard",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+        "claim_id": "missing_guard",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if is_gen():\n    gen = hook(self, a, val)\n    nval = next(gen)\n    _OBJ_SETATTR(self, name, nval)\n    try:\n        next(gen)\n    except StopIteration:\n        return\n    gen.close()\n    msg = \"Generator on_setattr hook yielded more than once.\"\n    raise RuntimeError(msg)",
+        "falsification_condition": "The code explicitly raises RuntimeError if the generator yields more than once, thus limiting the number of yields to one.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "         def __setattr__(self, name, val):\n             try:\n-                a, hook = sa_attrs[name]\n+                a, hook, is_gen = sa_attrs[name]\n             except KeyError:\n-                nval = val\n-            else:\n-                nval = hook(self, a, val)\n+                _OBJ_SETATTR(self, name, val)\n \n+                return\n+\n+            if is_gen():\n+                gen = hook(self, a, val)\n+                nval = next(gen)\n+                _OBJ_SETATTR(self, name, nval)\n+                try:\n+                    next(gen)\n+                except StopIteration:\n+                    return\n+\n+                gen.close()\n+                msg = \"Generator on_setattr hook yielded more than once.\"\n+                raise RuntimeError(msg)\n+\n+            nval = hook(self, a, val)\n             _OBJ_SETATTR(self, name, nval)\n \n+            return"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation explicitly rejects a second yield.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014927Z-d3e9d3ed",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+      "claim_id": "missing_guard",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+        "claim_id": "missing_guard",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if is_gen():\n    gen = hook(self, a, val)\n    nval = next(gen)\n    _OBJ_SETATTR(self, name, nval)\n    try:\n        next(gen)\n    except StopIteration:\n        return\n    gen.close()\n    msg = \"Generator on_setattr hook yielded more than once.\"\n    raise RuntimeError(msg)",
+        "falsification_condition": "The code explicitly raises RuntimeError if the generator yields more than once, thus limiting the number of yields to one.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "         def __setattr__(self, name, val):\n             try:\n-                a, hook = sa_attrs[name]\n+                a, hook, is_gen = sa_attrs[name]\n             except KeyError:\n-                nval = val\n-            else:\n-                nval = hook(self, a, val)\n+                _OBJ_SETATTR(self, name, val)\n \n+                return\n+\n+            if is_gen():\n+                gen = hook(self, a, val)\n+                nval = next(gen)\n+                _OBJ_SETATTR(self, name, nval)\n+                try:\n+                    next(gen)\n+                except StopIteration:\n+                    return\n+\n+                gen.close()\n+                msg = \"Generator on_setattr hook yielded more than once.\"\n+                raise RuntimeError(msg)\n+\n+            nval = hook(self, a, val)\n             _OBJ_SETATTR(self, name, nval)\n \n+            return"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_024",
+  "run_id": "20260830T014927Z-d3e9d3ed",
+  "task_description": "Review attrs generator on_setattr hooks after commit 4b5b295.",
+  "transcript": [
+    {
+      "claim_id": "missing_guard",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+        "claim_id": "missing_guard",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if is_gen():\n    gen = hook(self, a, val)\n    nval = next(gen)\n    _OBJ_SETATTR(self, name, nval)\n    try:\n        next(gen)\n    except StopIteration:\n        return\n    gen.close()\n    msg = \"Generator on_setattr hook yielded more than once.\"\n    raise RuntimeError(msg)",
+        "falsification_condition": "The code explicitly raises RuntimeError if the generator yields more than once, thus limiting the number of yields to one.",
+        "file": "upstream.patch",
+        "line_end": 66,
+        "line_start": 38,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:50:41.597974+00:00"
+    },
+    {
+      "claim_id": "missing_guard",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:50:41.599230+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "         def __setattr__(self, name, val):\n             try:\n-                a, hook = sa_attrs[name]\n+                a, hook, is_gen = sa_attrs[name]\n             except KeyError:\n-                nval = val\n-            else:\n-                nval = hook(self, a, val)\n+                _OBJ_SETATTR(self, name, val)\n \n+                return\n+\n+            if is_gen():\n+                gen = hook(self, a, val)\n+                nval = next(gen)\n+                _OBJ_SETATTR(self, name, nval)\n+                try:\n+                    next(gen)\n+                except StopIteration:\n+                    return\n+\n+                gen.close()\n+                msg = \"Generator on_setattr hook yielded more than once.\"\n+                raise RuntimeError(msg)\n+\n+            nval = hook(self, a, val)\n             _OBJ_SETATTR(self, name, nval)\n \n+            return"
+      }
+    },
+    {
+      "claim_id": "missing_guard",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:50:42.296859+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "missing_guard",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:50:42.296904+00:00"
+    }
+  ]
+}

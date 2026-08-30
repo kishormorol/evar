@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+      "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+        "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\nif len(remaining) == len(self._hookimpls):\n    raise ValueError(f\"plugin {plugin!r} not found\")\nself._hookimpls[:] = remaining",
+        "falsification_condition": "If any hook implementation registered by the plugin remained in self._hookimpls after _remove_plugin, the claim would be false. The code replaces self._hookimpls with only those not belonging to the plugin, ensuring all are removed.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 14,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_011_behavior_inversion_supported",
+  "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+      "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+        "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\nif len(remaining) == len(self._hookimpls):\n    raise ValueError(f\"plugin {plugin!r} not found\")\nself._hookimpls[:] = remaining",
+        "falsification_condition": "If any hook implementation registered by the plugin remained in self._hookimpls after _remove_plugin, the claim would be false. The code replaces self._hookimpls with only those not belonging to the plugin, ensuring all are removed.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 14,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It filters _hookimpls and replaces the list with all entries whose plugin differs.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_011",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review pluggy hook implementation removal after commit 20d8143.",
+  "transcript": [
+    {
+      "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "HookCaller._remove_plugin removes every hook implementation registered by the plugin.",
+        "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "remaining = [impl for impl in self._hookimpls if impl.plugin != plugin]\nif len(remaining) == len(self._hookimpls):\n    raise ValueError(f\"plugin {plugin!r} not found\")\nself._hookimpls[:] = remaining",
+        "falsification_condition": "If any hook implementation registered by the plugin remained in self._hookimpls after _remove_plugin, the claim would be false. The code replaces self._hookimpls with only those not belonging to the plugin, ensuring all are removed.",
+        "file": "upstream.patch",
+        "line_end": 18,
+        "line_start": 14,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:52:48.569170+00:00"
+    },
+    {
+      "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:52:49.192699+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "behavior_inversion_HookCaller._remove_plugin_removes_every_hook_implementation_registered_by_the_plugin",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:52:49.192736+00:00"
+    }
+  ]
+}

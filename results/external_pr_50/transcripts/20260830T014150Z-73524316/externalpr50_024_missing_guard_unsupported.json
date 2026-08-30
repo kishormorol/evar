@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr50_024_missing_guard_unsupported",
+  "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+      "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+        "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "gen = hook(self, a, val)\nnval = next(gen)\n_OBJ_SETATTR(self, name, nval)\ntry:\n    next(gen)\nexcept StopIteration:\n    return\n\ngen.close()\nmsg = \"Generator on_setattr hook yielded more than once.\"\nraise RuntimeError(msg)",
+        "falsification_condition": "The code explicitly raises a RuntimeError if the generator on_setattr hook yields more than once, thus limiting the number of yields to one.",
+        "file": "upstream.patch",
+        "line_end": 61,
+        "line_start": 50,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+            if is_gen():\n+                gen = hook(self, a, val)\n+                nval = next(gen)\n+                _OBJ_SETATTR(self, name, nval)\n+                try:\n+                    next(gen)\n+                except StopIteration:\n+                    return\n+\n+                gen.close()\n+                msg = \"Generator on_setattr hook yielded more than once.\"\n+                raise RuntimeError(msg)"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated implementation explicitly rejects a second yield.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T014150Z-73524316",
+    "seed": 7
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+      "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+        "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "gen = hook(self, a, val)\nnval = next(gen)\n_OBJ_SETATTR(self, name, nval)\ntry:\n    next(gen)\nexcept StopIteration:\n    return\n\ngen.close()\nmsg = \"Generator on_setattr hook yielded more than once.\"\nraise RuntimeError(msg)",
+        "falsification_condition": "The code explicitly raises a RuntimeError if the generator on_setattr hook yields more than once, thus limiting the number of yields to one.",
+        "file": "upstream.patch",
+        "line_end": 61,
+        "line_start": 50,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+            if is_gen():\n+                gen = hook(self, a, val)\n+                nval = next(gen)\n+                _OBJ_SETATTR(self, name, nval)\n+                try:\n+                    next(gen)\n+                except StopIteration:\n+                    return\n+\n+                gen.close()\n+                msg = \"Generator on_setattr hook yielded more than once.\"\n+                raise RuntimeError(msg)"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_50/repos/case_024",
+  "run_id": "20260830T014150Z-73524316",
+  "task_description": "Review attrs generator on_setattr hooks after commit 4b5b295.",
+  "transcript": [
+    {
+      "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "attrs accepts every value yielded by a generator on_setattr hook without limiting the number of yields.",
+        "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "gen = hook(self, a, val)\nnval = next(gen)\n_OBJ_SETATTR(self, name, nval)\ntry:\n    next(gen)\nexcept StopIteration:\n    return\n\ngen.close()\nmsg = \"Generator on_setattr hook yielded more than once.\"\nraise RuntimeError(msg)",
+        "falsification_condition": "The code explicitly raises a RuntimeError if the generator on_setattr hook yields more than once, thus limiting the number of yields to one.",
+        "file": "upstream.patch",
+        "line_end": 61,
+        "line_start": 50,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:42:44.339913+00:00"
+    },
+    {
+      "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:42:44.342997+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "+            if is_gen():\n+                gen = hook(self, a, val)\n+                nval = next(gen)\n+                _OBJ_SETATTR(self, name, nval)\n+                try:\n+                    next(gen)\n+                except StopIteration:\n+                    return\n+\n+                gen.close()\n+                msg = \"Generator on_setattr hook yielded more than once.\"\n+                raise RuntimeError(msg)"
+      }
+    },
+    {
+      "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:42:45.081393+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "attrs-accepts-every-yielded-value-generator-on_setattr-no-limit",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:42:45.081462+00:00"
+    }
+  ]
+}

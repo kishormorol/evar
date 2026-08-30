@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")",
+        "falsification_condition": "The code explicitly sets is_iterable using isinstance(data, Iterable) or hasattr(data, '__iter__'), confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_049_stale_evidence_supported",
+  "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+  "claim_family": "stale_evidence",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")",
+        "falsification_condition": "The code explicitly sets is_iterable using isinstance(data, Iterable) or hasattr(data, '__iter__'), confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The is_iterable variable combines the protocol isinstance check with an __iter__ attribute check.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T212641Z-388f8f39",
+    "seed": 7
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_049",
+  "run_id": "20260829T212641Z-388f8f39",
+  "task_description": "Review Requests request-body stream detection after commit 6404f34.",
+  "transcript": [
+    {
+      "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")",
+        "falsification_condition": "The code explicitly sets is_iterable using isinstance(data, Iterable) or hasattr(data, '__iter__'), confirming the claim.",
+        "file": "upstream.patch",
+        "line_end": 14,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:29:18.395575+00:00"
+    },
+    {
+      "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:29:19.148213+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "prepare_body treats data as iterable when isinstance(data, Iterable) or hasattr(data, '__iter__') succeeds.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:29:19.148263+00:00"
+    }
+  ]
+}

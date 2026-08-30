@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "# Remove decreasing values\nwhile s and not s[-1][1] <= value:\n    s.pop()\n\n# Place newest value at the end\ns.append((index, value))\n\n# Current minimum is at position zero\nyield s[0][1]",
+        "falsification_condition": "The code uses 'while s and not s[-1][1] <= value' to pop elements, which means it removes elements strictly greater than the new value, but keeps elements equal to the new value. Therefore, when a later value compares equal, the earlier value is kept, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code uses 'while s and not s[-1][1] <= value' to pop elements, which means it removes elements strictly greater than the new value, but keeps elements equal to the new value. Therefore, when a later value compares equal, the earlier value is kept, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "# Remove decreasing values\nwhile s and not s[-1][1] <= value:\n    s.pop()\n\n# Place newest value at the end\ns.append((index, value))\n\n# Current minimum is at position zero\nyield s[0][1]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_037_causal_mislocalization_supported",
+  "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "# Remove decreasing values\nwhile s and not s[-1][1] <= value:\n    s.pop()\n\n# Place newest value at the end\ns.append((index, value))\n\n# Current minimum is at position zero\nyield s[0][1]",
+        "falsification_condition": "The code uses 'while s and not s[-1][1] <= value' to pop elements, which means it removes elements strictly greater than the new value, but keeps elements equal to the new value. Therefore, when a later value compares equal, the earlier value is kept, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code uses 'while s and not s[-1][1] <= value' to pop elements, which means it removes elements strictly greater than the new value, but keeps elements equal to the new value. Therefore, when a later value compares equal, the earlier value is kept, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "# Remove decreasing values\nwhile s and not s[-1][1] <= value:\n    s.pop()\n\n# Place newest value at the end\ns.append((index, value))\n\n# Current minimum is at position zero\nyield s[0][1]"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Its pruning loop retains the prior tail while tail_value <= value, preserving the earlier equal value.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_037",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review running_min stability after commit d992be0.",
+  "transcript": [
+    {
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "# Remove decreasing values\nwhile s and not s[-1][1] <= value:\n    s.pop()\n\n# Place newest value at the end\ns.append((index, value))\n\n# Current minimum is at position zero\nyield s[0][1]",
+        "falsification_condition": "The code uses 'while s and not s[-1][1] <= value' to pop elements, which means it removes elements strictly greater than the new value, but keeps elements equal to the new value. Therefore, when a later value compares equal, the earlier value is kept, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "The code uses 'while s and not s[-1][1] <= value' to pop elements, which means it removes elements strictly greater than the new value, but keeps elements equal to the new value. Therefore, when a later value compares equal, the earlier value is kept, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 34,
+        "line_start": 8,
+        "quoted_or_paraphrased_support": "# Remove decreasing values\nwhile s and not s[-1][1] <= value:\n    s.pop()\n\n# Place newest value at the end\ns.append((index, value))\n\n# Current minimum is at position zero\nyield s[0][1]"
+      },
+      "timestamp": "2026-08-29T21:31:51.111374+00:00"
+    },
+    {
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:31:52.098546+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:31:52.098615+00:00"
+    }
+  ]
+}

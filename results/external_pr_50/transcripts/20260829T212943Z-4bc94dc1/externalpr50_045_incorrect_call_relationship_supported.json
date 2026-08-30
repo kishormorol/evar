@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "fdata = fp.read()",
+        "falsification_condition": "If the code did not call fp.read() when hasattr(fp, 'read') is true, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code did not call fp.read() when hasattr(fp, 'read') is true, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 9,
+        "quoted_or_paraphrased_support": "fdata = fp.read()"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_045_incorrect_call_relationship_supported",
+  "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "fdata = fp.read()",
+        "falsification_condition": "If the code did not call fp.read() when hasattr(fp, 'read') is true, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code did not call fp.read() when hasattr(fp, 'read') is true, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 9,
+        "quoted_or_paraphrased_support": "fdata = fp.read()"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The read branch accepts either _SupportsRead instances or objects for which hasattr(fp, 'read') succeeds.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T212943Z-4bc94dc1",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_045",
+  "run_id": "20260829T212943Z-4bc94dc1",
+  "task_description": "Review Requests multipart file-wrapper handling after commit 6f205ff.",
+  "transcript": [
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "behavioral",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "fdata = fp.read()",
+        "falsification_condition": "If the code did not call fp.read() when hasattr(fp, 'read') is true, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 9,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code did not call fp.read() when hasattr(fp, 'read') is true, the claim would be false.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 9,
+        "quoted_or_paraphrased_support": "fdata = fp.read()"
+      },
+      "timestamp": "2026-08-29T21:32:16.819058+00:00"
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:32:18.910311+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:32:18.910358+00:00"
+    }
+  ]
+}

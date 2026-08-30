@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": null,
+        "falsification_condition": "The code only adds parameters to params_dict if the parameter contains an '=' sign (line 32). If a parameter token is nonempty but contains no '=', it is ignored and not added to params_dict, which supports the claim. However, the claim states it ignores such tokens, which matches the code behavior, so the claim is actually supported, not contradicted. Therefore, the claim is true and cannot be contradicted by this code.",
+        "file": "upstream.patch",
+        "line_end": 35,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_043_missing_guard_supported",
+  "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": null,
+        "falsification_condition": "The code only adds parameters to params_dict if the parameter contains an '=' sign (line 32). If a parameter token is nonempty but contains no '=', it is ignored and not added to params_dict, which supports the claim. However, the claim states it ignores such tokens, which matches the code behavior, so the claim is actually supported, not contradicted. Therefore, the claim is true and cannot be contradicted by this code.",
+        "file": "upstream.patch",
+        "line_end": 35,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The loop only adds a parameter when param is nonempty and param.find('=') is not -1.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260829T212641Z-388f8f39",
+    "seed": 7
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_043",
+  "run_id": "20260829T212641Z-388f8f39",
+  "task_description": "Review Requests Content-Type parsing after commit f0198e6.",
+  "transcript": [
+    {
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign.",
+        "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": null,
+        "falsification_condition": "The code only adds parameters to params_dict if the parameter contains an '=' sign (line 32). If a parameter token is nonempty but contains no '=', it is ignored and not added to params_dict, which supports the claim. However, the claim states it ignores such tokens, which matches the code behavior, so the claim is actually supported, not contradicted. Therefore, the claim is true and cannot be contradicted by this code.",
+        "file": "upstream.patch",
+        "line_end": 35,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-29T21:28:57.617752+00:00"
+    },
+    {
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:29:00.229626+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "_parse_content_type_header ignores a nonempty parameter token that contains no equals sign",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:29:00.229672+00:00"
+    }
+  ]
+}

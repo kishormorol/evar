@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_019_stale_evidence_supported",
+  "claim": "varnames derives positional parameter names directly from the callable's code object.",
+  "claim_family": "stale_evidence",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "It reads func.__code__.co_varnames up to co_argcount and partitions defaults.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_019",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy parameter discovery after commit c4e254c."
+}

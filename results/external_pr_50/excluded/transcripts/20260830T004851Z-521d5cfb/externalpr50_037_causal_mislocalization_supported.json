@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_037_causal_mislocalization_supported",
+  "claim": "_windowed_running_min keeps an earlier value when a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Its pruning loop retains the prior tail while tail_value <= value, preserving the earlier equal value.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_037",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review running_min stability after commit d992be0."
+}

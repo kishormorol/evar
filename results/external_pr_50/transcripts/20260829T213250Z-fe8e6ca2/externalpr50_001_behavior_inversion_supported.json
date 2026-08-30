@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+      "claim_id": "click.edit-pathlib-single",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+        "claim_id": "click.edit-pathlib-single",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if isinstance(filename, (str, os.PathLike)):\n    filename = (filename,)",
+        "falsification_condition": "If click.edit did not wrap a single os.PathLike (such as pathlib.Path) in a tuple, it would not treat it as a single file path, but as an iterable of characters or components. The code explicitly checks for os.PathLike and wraps it, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 67,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If click.edit did not wrap a single os.PathLike (such as pathlib.Path) in a tuple, it would not treat it as a single file path, but as an iterable of characters or components. The code explicitly checks for os.PathLike and wraps it, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 67,
+        "quoted_or_paraphrased_support": "if isinstance(filename, (str, os.PathLike)):\n    filename = (filename,)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_001_behavior_inversion_supported",
+  "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+      "claim_id": "click.edit-pathlib-single",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+        "claim_id": "click.edit-pathlib-single",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if isinstance(filename, (str, os.PathLike)):\n    filename = (filename,)",
+        "falsification_condition": "If click.edit did not wrap a single os.PathLike (such as pathlib.Path) in a tuple, it would not treat it as a single file path, but as an iterable of characters or components. The code explicitly checks for os.PathLike and wraps it, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 67,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If click.edit did not wrap a single os.PathLike (such as pathlib.Path) in a tuple, it would not treat it as a single file path, but as an iterable of characters or components. The code explicitly checks for os.PathLike and wraps it, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 67,
+        "quoted_or_paraphrased_support": "if isinstance(filename, (str, os.PathLike)):\n    filename = (filename,)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "edit checks for both str and os.PathLike before deciding whether to wrap filename in a one-item tuple.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260829T213250Z-fe8e6ca2",
+    "seed": 7
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_001",
+  "run_id": "20260829T213250Z-fe8e6ca2",
+  "task_description": "Review Click edit filename handling after commit a1d8785.",
+  "transcript": [
+    {
+      "claim_id": "click.edit-pathlib-single",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+        "claim_id": "click.edit-pathlib-single",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "if isinstance(filename, (str, os.PathLike)):\n    filename = (filename,)",
+        "falsification_condition": "If click.edit did not wrap a single os.PathLike (such as pathlib.Path) in a tuple, it would not treat it as a single file path, but as an iterable of characters or components. The code explicitly checks for os.PathLike and wraps it, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 67,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "click.edit treats a single pathlib.Path filename as one file path.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If click.edit did not wrap a single os.PathLike (such as pathlib.Path) in a tuple, it would not treat it as a single file path, but as an iterable of characters or components. The code explicitly checks for os.PathLike and wraps it, supporting the claim.",
+        "file": "upstream.patch",
+        "line_end": 70,
+        "line_start": 67,
+        "quoted_or_paraphrased_support": "if isinstance(filename, (str, os.PathLike)):\n    filename = (filename,)"
+      },
+      "timestamp": "2026-08-29T21:32:54.432284+00:00"
+    },
+    {
+      "claim_id": "click.edit-pathlib-single",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-29T21:32:55.173793+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "click.edit-pathlib-single",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-29T21:32:55.173859+00:00"
+    }
+  ]
+}

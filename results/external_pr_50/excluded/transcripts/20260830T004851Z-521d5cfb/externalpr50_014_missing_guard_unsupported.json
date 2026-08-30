@@ -1,0 +1,17 @@
+{
+  "case_id": "externalpr50_014_missing_guard_unsupported",
+  "claim": "varnames silently accepts a legacy hookspec method missing self.",
+  "claim_family": "missing_guard",
+  "critic_model": null,
+  "failure": {
+    "reason": "HTTP Error 429: Too Many Requests",
+    "type": "HTTPError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated legacy_noself branch warns instead of silently accepting that shape.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/external_pr_50/repos/case_014",
+  "reviewer_model": null,
+  "run_id": "20260830T004851Z-521d5cfb",
+  "task_description": "Review pluggy legacy hookspec method handling after commit dd20a85."
+}

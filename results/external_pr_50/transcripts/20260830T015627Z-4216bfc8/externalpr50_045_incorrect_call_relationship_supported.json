@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+      "claim_id": "claim1",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "claim_id": "claim1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "elif isinstance(fp, _SupportsRead) or hasattr(fp, \"read\"):\n    fdata = fp.read()",
+        "falsification_condition": "If there were no code path where hasattr(wrapper, 'read') leads to a .read() call, the claim would be falsified.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+            elif isinstance(fp, _SupportsRead) or hasattr(fp, \"read\"):\n                 fdata = fp.read()"
+      }
+    }
+  ],
+  "case_id": "externalpr50_045_incorrect_call_relationship_supported",
+  "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+      "claim_id": "claim1",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "claim_id": "claim1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "elif isinstance(fp, _SupportsRead) or hasattr(fp, \"read\"):\n    fdata = fp.read()",
+        "falsification_condition": "If there were no code path where hasattr(wrapper, 'read') leads to a .read() call, the claim would be falsified.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+            elif isinstance(fp, _SupportsRead) or hasattr(fp, \"read\"):\n                 fdata = fp.read()"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The read branch accepts either _SupportsRead instances or objects for which hasattr(fp, 'read') succeeds.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T015627Z-4216bfc8",
+    "seed": 17
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_045",
+  "run_id": "20260830T015627Z-4216bfc8",
+  "task_description": "Review Requests multipart file-wrapper handling after commit 6f205ff.",
+  "transcript": [
+    {
+      "claim_id": "claim1",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_encode_files calls read on a file wrapper when hasattr(wrapper, 'read') is true.",
+        "claim_id": "claim1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "elif isinstance(fp, _SupportsRead) or hasattr(fp, \"read\"):\n    fdata = fp.read()",
+        "falsification_condition": "If there were no code path where hasattr(wrapper, 'read') leads to a .read() call, the claim would be falsified.",
+        "file": "upstream.patch",
+        "line_end": 13,
+        "line_start": 12,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:58:04.884167+00:00"
+    },
+    {
+      "claim_id": "claim1",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T01:58:04.885238+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "+            elif isinstance(fp, _SupportsRead) or hasattr(fp, \"read\"):\n                 fdata = fp.read()"
+      }
+    },
+    {
+      "claim_id": "claim1",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:58:05.736651+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "claim1",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:58:05.736716+00:00"
+    }
+  ]
+}

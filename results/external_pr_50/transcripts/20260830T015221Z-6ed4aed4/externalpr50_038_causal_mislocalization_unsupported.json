@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+      "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code retained earlier values when a later value compared equal, the while loop would use '<' instead of '<=' in the comparison, or would otherwise preserve the earlier value. Here, 'not s[-1][1] <= value' is true when s[-1][1] > value, so the loop pops all values from the end of the deque whose value is greater than or equal to the new value, including those equal to it. Thus, when a new value compares equal to the last value, the earlier (equal) value is discarded.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "externalpr50_038_causal_mislocalization_unsupported",
+  "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+      "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code retained earlier values when a later value compared equal, the while loop would use '<' instead of '<=' in the comparison, or would otherwise preserve the earlier value. Here, 'not s[-1][1] <= value' is true when s[-1][1] > value, so the loop pops all values from the end of the deque whose value is greater than or equal to the new value, including those equal to it. Thus, when a new value compares equal to the last value, the earlier (equal) value is discarded.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated <= condition stops pruning on equality.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T015221Z-6ed4aed4",
+    "seed": 17
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_50/repos/case_038",
+  "run_id": "20260830T015221Z-6ed4aed4",
+  "task_description": "Review running_min stability after commit d992be0.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_windowed_running_min discards the earlier value whenever a later value compares equal.",
+        "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while s and not s[-1][1] <= value:\n    s.pop()",
+        "falsification_condition": "If the code retained earlier values when a later value compared equal, the while loop would use '<' instead of '<=' in the comparison, or would otherwise preserve the earlier value. Here, 'not s[-1][1] <= value' is true when s[-1][1] > value, so the loop pops all values from the end of the deque whose value is greater than or equal to the new value, including those equal to it. Thus, when a new value compares equal to the last value, the earlier (equal) value is discarded.",
+        "file": "upstream.patch",
+        "line_end": 28,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T01:53:46.955727+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T01:53:47.615527+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization/_windowed_running_min_discards_earlier_equal_value",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T01:53:47.615581+00:00"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "benchmark": "external_pr_50",
+  "freeze_manifest": "benchmarks/external_pr_50/freeze_manifest.json",
+  "replicate_note": "Seeds 7 and 17 are frozen replicate labels. The OpenAI Responses backend used by this artifact does not transmit an explicit inference seed, so they must not be interpreted as controlled RNG seeds.",
+  "canonical_runs": [
+    {
+      "model": "gpt-4.1-mini",
+      "seed": 7,
+      "protocol": "ar",
+      "result": "results/external_pr_50/20260829T212641Z-388f8f39_ar.jsonl"
+    },
+    {
+      "model": "gpt-4.1-mini",
+      "seed": 7,
+      "protocol": "ar_text",
+      "result": "results/external_pr_50/20260829T212943Z-4bc94dc1_ar_text.jsonl"
+    },
+    {
+      "model": "gpt-4.1-mini",
+      "seed": 7,
+      "protocol": "evar_hard",
+      "result": "results/external_pr_50/20260829T213250Z-f23548cd_evar_hard.jsonl"
+    },
+    {
+      "model": "gpt-4.1-mini",
+      "seed": 17,
+      "protocol": "ar",
+      "result": "results/external_pr_50/20260830T014353Z-aba74b37_ar.jsonl"
+    },
+    {
+      "model": "gpt-4.1-mini",
+      "seed": 17,
+      "protocol": "ar_text",
+      "result": "results/external_pr_50/20260830T014638Z-a7b30b03_ar_text.jsonl"
+    },
+    {
+      "model": "gpt-4.1-mini",
+      "seed": 17,
+      "protocol": "evar_hard",
+      "result": "results/external_pr_50/20260830T014927Z-d3e9d3ed_evar_hard.jsonl"
+    },
+    {
+      "model": "gpt-4.1",
+      "seed": 7,
+      "protocol": "ar",
+      "result": "results/external_pr_50/20260829T212943Z-1f073d5c_ar.jsonl"
+    },
+    {
+      "model": "gpt-4.1",
+      "seed": 7,
+      "protocol": "ar_text",
+      "result": "results/external_pr_50/20260829T213250Z-fe8e6ca2_ar_text.jsonl"
+    },
+    {
+      "model": "gpt-4.1",
+      "seed": 7,
+      "protocol": "evar_hard",
+      "result": "results/external_pr_50/20260830T014150Z-73524316_evar_hard.jsonl"
+    },
+    {
+      "model": "gpt-4.1",
+      "seed": 17,
+      "protocol": "ar",
+      "result": "results/external_pr_50/20260830T015221Z-6ed4aed4_ar.jsonl"
+    },
+    {
+      "model": "gpt-4.1",
+      "seed": 17,
+      "protocol": "ar_text",
+      "result": "results/external_pr_50/20260830T015422Z-47c996b7_ar_text.jsonl"
+    },
+    {
+      "model": "gpt-4.1",
+      "seed": 17,
+      "protocol": "evar_hard",
+      "result": "results/external_pr_50/20260830T015627Z-4216bfc8_evar_hard.jsonl"
+    }
+  ],
+  "excluded_attempts": [
+    {
+      "result": "results/external_pr_50/excluded/20260829T212626Z-03905aa0_ar.jsonl",
+      "reason": "All 50 attempts failed because sandboxed DNS access was unavailable."
+    },
+    {
+      "result": "results/external_pr_50/excluded/20260829T213601Z-200308f4_ar.jsonl",
+      "reason": "Excluded infrastructure-invalid concurrent attempt: 22 connection, timeout, or HTTP 429 failures."
+    },
+    {
+      "result": "results/external_pr_50/excluded/20260829T213601Z-bb140831_evar_hard.jsonl",
+      "reason": "Excluded infrastructure-invalid concurrent attempt: 14 connection, timeout, or HTTP 429 failures."
+    },
+    {
+      "result": "results/external_pr_50/excluded/20260830T004851Z-521d5cfb_evar_hard.jsonl",
+      "reason": "All 50 attempts failed with credit_balance_exhausted before credits were replenished."
+    }
+  ]
+}

@@ -4,6 +4,10 @@ __pycache__/
 .venv/
 *.egg-info/
 results/
+!results/
+results/*
+!results/external_pr_50/
+!results/external_pr_50/**
 .env
 .env.*
 !.env.example

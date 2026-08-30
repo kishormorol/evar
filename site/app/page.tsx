@@ -23,17 +23,19 @@ const protocols = [
 ];
 
 const results = [
-  ["AR", "0.300", "1.000"],
-  ["AR-Text", "0.100", "0.900"],
-  ["EVAR-Hard", "0.100", "0.900"],
-  ["EVAR-Hard + repair*", "0.000", "1.000"],
+  ["GPT-4.1 · AR", "0.120", "1.000"],
+  ["GPT-4.1 · AR-Text", "0.120", "1.000"],
+  ["GPT-4.1 · EVAR-Hard", "0.060", "0.860"],
+  ["GPT-4.1 mini · AR", "0.160", "0.980"],
+  ["GPT-4.1 mini · AR-Text", "0.120", "0.980"],
+  ["GPT-4.1 mini · EVAR-Hard", "0.041", "0.420"],
 ];
 
 const guardrails = [
   "Ground-truth labels never enter agent prompts.",
-  "The verifier sees receipts and repository evidence—not expected answers.",
-  "Failed runs remain in the result set instead of disappearing.",
-  "Model configuration, prompts, budgets, and seeds are recorded.",
+  "Prompts, verifier code, configs, cases, and patches were frozen before model calls.",
+  "Failed runs remain explicit; infrastructure-invalid attempts are preserved separately.",
+  "All 600 canonical records and transcripts received a judge-free audit.",
 ];
 
 export default function Home() {
@@ -107,20 +109,20 @@ export default function Home() {
       <section className="signal" id="evidence" aria-label="Current benchmark signal">
         <div className="shell signalGrid">
           <div className="signalIntro">
-            <p className="eyebrow light">Current diagnostic signal</p>
-            <p>External PR 20 · EVAR-Hard with receipt repair</p>
+            <p className="eyebrow light">Frozen external signal</p>
+            <p>External PR 50 · GPT-4.1 · two replicates</p>
           </div>
           <div className="metric">
-            <strong>0.000</strong>
+            <strong>0.060</strong>
             <span>False consensus rate</span>
           </div>
           <div className="metric">
-            <strong>1.000</strong>
+            <strong>0.860</strong>
             <span>Supported claim retention</span>
           </div>
           <p className="caveat">
-            Development result on an inspected 20-case benchmark—not a claim of
-            real-world performance.
+            EVAR halves observed FCR versus AR, but loses 14 points of retention.
+            Verification is a tradeoff—not a free win.
           </p>
         </div>
       </section>
@@ -169,29 +171,34 @@ export default function Home() {
 
       <section className="results shell sectionPad" aria-labelledby="results-heading">
         <div className="resultsIntro">
-          <p className="sectionKicker">External PR 20</p>
-          <h2 id="results-heading">A harder, commit-grounded stress test.</h2>
+          <p className="sectionKicker">External PR 50 · frozen evaluation</p>
+          <h2 id="results-heading">Less false consensus. More missed claims.</h2>
           <p>
-            Twenty supported and unsupported claims drawn from pinned public repository
-            commits. Lower FCR is better; higher SCR is better.
+            Fifty balanced claims from 25 pinned commits across Click, pluggy, attrs,
+            more-itertools, and Requests. Results pool two independent replicates per model.
+            Lower FCR is better; higher SCR is better.
+          </p>
+          <p>
+            GPT-4.1 handles the evidence gate substantially better than the mini model:
+            76% of its receipts verify, compared with 47% for GPT-4.1 mini.
           </p>
         </div>
-        <div className="resultsTable" role="table" aria-label="External PR 20 benchmark results">
+        <div className="resultsTable" role="table" aria-label="External PR 50 frozen benchmark results">
           <div className="resultRow resultHead" role="row">
             <span role="columnheader">Protocol</span>
             <span role="columnheader">FCR ↓</span>
             <span role="columnheader">SCR ↑</span>
           </div>
           {results.map(([protocol, fcr, scr], index) => (
-            <div className={index === 3 ? "resultRow diagnostic" : "resultRow"} role="row" key={protocol}>
+            <div className={index === 2 || index === 5 ? "resultRow evar" : "resultRow"} role="row" key={protocol}>
               <strong role="cell">{protocol}</strong>
               <span role="cell">{fcr}</span>
               <span role="cell">{scr}</span>
             </div>
           ))}
           <p className="tableNote">
-            *Diagnostic result after tuning on this inspected benchmark. It is development
-            evidence, not a fresh held-out result.
+            Cluster-bootstrap intervals, paired deltas, family results, tokens, latency,
+            exclusions, and the complete audit are available in the paper and artifact.
           </p>
         </div>
       </section>
@@ -202,8 +209,8 @@ export default function Home() {
             <p className="sectionKicker inverse">Scientific guardrails</p>
             <h2 id="limits-heading">Built to expose failure, not hide it.</h2>
             <p className="limitsLead">
-              EVAR is a research harness, not a production code-review product. The current
-              evidence is promising—and deliberately bounded.
+              EVAR is a research harness, not a production code-review product. The frozen
+              evidence shows a real safety–retention tradeoff and remains deliberately bounded.
             </p>
           </div>
           <ol className="guardrailList">
@@ -228,13 +235,11 @@ export default function Home() {
         </div>
         <div className="terminal" aria-label="EVAR command example">
           <div className="terminalBar"><span /><span /><span /><small>evar / experiment</small></div>
-          <pre><code><span>$</span> python -m evar.run \
-  --protocol evar \
-  --cases cases.jsonl
+          <pre><code><span>$</span> python -m evar.freeze verify \
+  --manifest benchmarks/external_pr_50/freeze_manifest.json
 
-<span>$</span> python -m evar.eval_table \
-  --results results/*.jsonl \
-  --by-family --costs</code></pre>
+<span>$</span> PYTHONPATH=. python \
+  scripts/report_external_pr_50.py</code></pre>
         </div>
       </section>
 
@@ -248,6 +253,7 @@ export default function Home() {
           <div className="footerLinks">
             <a href="https://github.com/kishormorol/evar">Repository ↗</a>
             <a href="https://github.com/kishormorol/evar/blob/master/PAPER.md">Paper ↗</a>
+            <a href="https://github.com/kishormorol/evar/tree/master/benchmarks/external_pr_50">Artifact ↗</a>
           </div>
         </div>
       </footer>
