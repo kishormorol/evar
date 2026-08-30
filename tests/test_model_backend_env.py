@@ -4,6 +4,8 @@ import os
 import tempfile
 import unittest
 import json
+import subprocess
+import urllib.error
 from pathlib import Path
 from unittest import mock
 
@@ -140,24 +142,13 @@ class ModelBackendEnvTests(unittest.TestCase):
 
     def test_openrouter_backend_sends_structured_chat_request(self) -> None:
         captured: dict[str, object] = {}
-
-        class FakeHTTPResponse:
-            def __enter__(self) -> "FakeHTTPResponse":
-                return self
-
-            def __exit__(self, *args: object) -> None:
-                return None
-
-            def read(self) -> bytes:
-                return (
-                    b'{"model":"vendor/model","choices":[{"message":{"content":"{\\"ok\\":true}"}}],'
-                    b'"usage":{"prompt_tokens":3,"completion_tokens":4}}'
-                )
-
-        def fake_urlopen(request: object, timeout: int) -> FakeHTTPResponse:
-            captured["timeout"] = timeout
-            captured["payload"] = json.loads(request.data.decode("utf-8"))
-            return FakeHTTPResponse()
+        def fake_run(command: list[str], **kwargs: object) -> object:
+            captured["timeout"] = kwargs["timeout"]
+            captured["payload"] = json.loads(kwargs["input"].decode("utf-8"))
+            return subprocess.CompletedProcess(command, 0, stdout=(
+                b'{"model":"vendor/model","choices":[{"message":{"content":"{\\"ok\\":true}"}}],'
+                b'"usage":{"prompt_tokens":3,"completion_tokens":4}}\n__EVAR_STATUS:200'
+            ), stderr=b"")
 
         backend = OpenRouterChatBackend(
             model_name="vendor/model",
@@ -165,7 +156,7 @@ class ModelBackendEnvTests(unittest.TestCase):
             reasoning_effort="low",
             api_key="test-key",
         )
-        with mock.patch("urllib.request.urlopen", fake_urlopen):
+        with mock.patch("subprocess.run", fake_run):
             response = backend.generate(
                 "system",
                 "user",
@@ -184,7 +175,54 @@ class ModelBackendEnvTests(unittest.TestCase):
         self.assertEqual(payload["response_format"]["type"], "json_schema")
         self.assertTrue(payload["response_format"]["json_schema"]["strict"])
         self.assertEqual(payload["provider"], {"require_parameters": True})
-        self.assertEqual(captured["timeout"], 120)
+        self.assertEqual(captured["timeout"], 50)
         self.assertEqual(response.parsed_output, {"ok": True})
         self.assertEqual(response.input_tokens, 3)
         self.assertEqual(response.output_tokens, 4)
+
+    def test_openrouter_retries_rate_limit_and_honors_retry_after(self) -> None:
+        calls = 0
+        sleeps: list[float] = []
+
+        def fake_run(command: list[str], **kwargs: object) -> object:
+            del kwargs
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                return subprocess.CompletedProcess(command, 0, stdout=(
+                    b'{"error":"busy"}\n__EVAR_STATUS:429'
+                ), stderr=b"")
+            return subprocess.CompletedProcess(command, 0, stdout=(
+                b'{"choices":[{"message":{"content":"{}"}}],"usage":{}}\n__EVAR_STATUS:200'
+            ), stderr=b"")
+
+        backend = OpenRouterChatBackend(model_name="vendor/model", api_key="test-key")
+        with mock.patch("subprocess.run", fake_run), mock.patch(
+            "time.sleep", side_effect=lambda value: sleeps.append(value)
+        ):
+            response = backend.generate("system", "user")
+
+        self.assertEqual(calls, 2)
+        self.assertEqual(sleeps, [1.0])
+        self.assertEqual(response.parsed_output, {})
+
+    def test_openrouter_does_not_retry_payment_required(self) -> None:
+        calls = 0
+
+        def fake_run(command: list[str], **kwargs: object) -> object:
+            del command, kwargs
+            nonlocal calls
+            calls += 1
+            return subprocess.CompletedProcess([], 0, stdout=b'{"error":"payment"}\n__EVAR_STATUS:402', stderr=b"")
+
+        backend = OpenRouterChatBackend(model_name="vendor/model", api_key="test-key")
+        with mock.patch("subprocess.run", fake_run):
+            with self.assertRaises(urllib.error.HTTPError) as caught:
+                backend.generate("system", "user")
+
+        self.assertEqual(calls, 1)
+        caught.exception.close()
+
+    def test_openrouter_hard_deadline_is_positive(self) -> None:
+        self.assertGreater(OpenRouterChatBackend.request_timeout_seconds, 0)
+        self.assertGreaterEqual(OpenRouterChatBackend.max_total_seconds, OpenRouterChatBackend.request_timeout_seconds)

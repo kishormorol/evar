@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import io
 import os
+import subprocess
 import time
+import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -165,6 +168,9 @@ class OpenRouterChatBackend:
     """OpenAI-compatible chat backend for reproducible cross-provider runs."""
 
     endpoint = "https://openrouter.ai/api/v1/chat/completions"
+    request_timeout_seconds = 45
+    max_attempts = 4
+    max_total_seconds = 180
 
     def __init__(
         self,
@@ -218,20 +224,52 @@ class OpenRouterChatBackend:
             }
             payload["provider"] = {"require_parameters": True}
 
-        request = urllib.request.Request(
-            self.endpoint,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/kishormorol/evar",
-                "X-OpenRouter-Title": "EVAR Research Evaluation",
-            },
-            method="POST",
-        )
+        request_body = json.dumps(payload).encode("utf-8")
+        request_headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://github.com/kishormorol/evar",
+            "X-OpenRouter-Title": "EVAR Research Evaluation",
+        }
         started = time.perf_counter()
-        with urllib.request.urlopen(request, timeout=120) as response:
-            raw = json.loads(response.read().decode("utf-8"))
+        raw: dict[str, Any] | None = None
+        last_error: Exception | None = None
+        for attempt in range(self.max_attempts):
+            if time.perf_counter() - started >= self.max_total_seconds:
+                break
+            try:
+                decoded = _curl_json_post(
+                    self.endpoint,
+                    request_body,
+                    request_headers,
+                    timeout=self.request_timeout_seconds,
+                )
+                if not isinstance(decoded, dict):
+                    raise ValueError("OpenRouter returned a non-object JSON response")
+                raw = decoded
+                break
+            except urllib.error.HTTPError as exc:
+                last_error = exc
+                if exc.code == 402 or exc.code < 500 and exc.code != 429:
+                    raise
+                if exc.code != 429 and not 500 <= exc.code < 600:
+                    raise
+                retry_after = _retry_after_seconds(exc)
+                exc.close()
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+                last_error = exc
+                retry_after = None
+            if attempt + 1 >= self.max_attempts:
+                break
+            delay = retry_after if retry_after is not None else min(30.0, 2.0 ** attempt)
+            remaining = self.max_total_seconds - (time.perf_counter() - started)
+            if remaining <= 0:
+                break
+            time.sleep(min(delay, remaining))
+        if raw is None:
+            if last_error is not None:
+                raise last_error
+            raise TimeoutError("OpenRouter request exceeded its total deadline")
         latency = time.perf_counter() - started
         text = _extract_chat_output_text(raw)
         usage = raw.get("usage", {}) if isinstance(raw, dict) else {}
@@ -244,6 +282,55 @@ class OpenRouterChatBackend:
             latency_seconds=latency,
             raw_metadata=raw if isinstance(raw, dict) else {"raw": raw},
         )
+
+
+def _curl_json_post(
+    endpoint: str,
+    body: bytes,
+    headers: dict[str, str],
+    *,
+    timeout: float,
+) -> dict[str, Any]:
+    """POST JSON through curl so a stalled chunked response cannot hang a run."""
+    marker = b"\n__EVAR_STATUS:"
+    command = [
+        "curl", "--silent", "--show-error", "--max-time", str(int(timeout)),
+        "--connect-timeout", "10", "--request", "POST", endpoint,
+        "--write-out", "\n__EVAR_STATUS:%{http_code}",
+    ]
+    for name, value in headers.items():
+        command.extend(["--header", f"{name}: {value}"])
+    command.extend(["--data-binary", "@-"])
+    try:
+        completed = subprocess.run(
+            command, input=body, capture_output=True, timeout=timeout + 5, check=False
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise TimeoutError(f"request exceeded {timeout:g}s deadline") from exc
+    if completed.returncode != 0:
+        raise urllib.error.URLError(completed.stderr.decode("utf-8", errors="replace"))
+    if marker not in completed.stdout:
+        raise ValueError("curl response did not include an HTTP status")
+    response_body, status_bytes = completed.stdout.rsplit(marker, 1)
+    status = int(status_bytes.strip())
+    if status >= 400:
+        raise urllib.error.HTTPError(
+            endpoint, status, "OpenRouter HTTP error", {}, io.BytesIO(response_body)
+        )
+    decoded = json.loads(response_body.decode("utf-8"))
+    if not isinstance(decoded, dict):
+        raise ValueError("OpenRouter returned a non-object JSON response")
+    return decoded
+
+
+def _retry_after_seconds(error: urllib.error.HTTPError) -> float | None:
+    value = error.headers.get("Retry-After") if error.headers else None
+    if value is None:
+        return None
+    try:
+        return max(0.0, min(30.0, float(value)))
+    except ValueError:
+        return None
 
 
 def _extract_output_text(raw: dict[str, Any]) -> str:
