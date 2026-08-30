@@ -1,0 +1,32 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>EVAR Human PR 200 annotation</title>
+<style>
+body{font:15px system-ui,sans-serif;max-width:1400px;margin:24px auto;padding:0 20px;color:#17202a}header{display:flex;gap:16px;align-items:center;flex-wrap:wrap}button{padding:8px 12px;border:1px solid #8b98a5;border-radius:6px;background:#fff;cursor:pointer}button.primary{background:#14532d;color:#fff;border-color:#14532d}input,select,textarea{font:inherit;padding:7px;border:1px solid #9aa6b2;border-radius:5px}textarea{width:100%;min-height:76px}#meta{color:#52606d}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel{border:1px solid #d7dee5;border-radius:8px;padding:14px;background:#f8fafc}.panel h3{margin-top:0}.code{white-space:pre-wrap;overflow:auto;max-height:520px;background:#111827;color:#e5e7eb;padding:12px;border-radius:6px;font:12px ui-monospace,monospace}.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}.field{display:flex;flex-direction:column;gap:5px}.wide{grid-column:1/-1}.warning{color:#92400e;background:#fffbeb;padding:10px;border-radius:6px}.ok{color:#166534}
+</style>
+<header><h1>Human PR 200</h1><span id="meta">Loading…</span><label>Annotator <input id="annotator" placeholder="your name or ID"></label><button id="export">Export annotations</button></header>
+<p class="warning">This queue is blinded to benchmark labels. Annotate independently. Do not use model outputs or coordinate decisions with another annotator.</p>
+<section class="fields">
+  <div class="field"><label>Eligible?</label><select id="eligible"><option value="">Choose…</option><option value="true">Yes</option><option value="false">No</option></select></div>
+  <div class="field"><label>Claim family</label><select id="family"><option value="">Choose…</option><option>behavior_inversion</option><option>missing_guard</option><option>incorrect_call_relationship</option><option>causal_mislocalization</option><option>stale_evidence</option></select></div>
+  <div class="field"><label>True at reviewed snapshot?</label><select id="supported"><option value="">Choose…</option><option value="true">Yes</option><option value="false">No</option></select></div>
+  <div class="field"><label>False at merged snapshot?</label><select id="unsupported"><option value="">Choose…</option><option value="true">Yes</option><option value="false">No</option></select></div>
+  <div class="field wide"><label>Normalized claim</label><textarea id="claim" placeholder="Short declarative, self-contained claim; do not mention labels or snapshots."></textarea></div>
+  <div class="field wide"><label>Exclusion reason (required when ineligible)</label><textarea id="reason"></textarea></div>
+</section>
+<div class="grid"><article class="panel"><h3>Review comment</h3><div id="comment"></div><p id="source"></p></article><article class="panel"><h3>Review snapshot</h3><div id="review" class="code"></div><h3>Merged snapshot</h3><div id="merge" class="code"></div></article></div>
+<footer style="margin-top:14px;display:flex;gap:10px"><button id="prev">Previous</button><button id="save" class="primary">Save & next</button><button id="next">Skip</button><span id="status"></span></footer>
+<script>
+const state={rows:[],index:0,answers:{},key:'evar-human-pr-200'};
+const $=id=>document.getElementById(id);
+function parse(text){return text.split(/\n+/).filter(Boolean).map(JSON.parse)}
+function val(id){return $(id).value}
+function set(id,v){$(id).value=v==null?'':String(v)}
+function answer(){return {eligible:val('eligible')===''?null:val('eligible')==='true',normalized_claim:val('claim').trim()||null,claim_family:val('family')||null,supported_at_review:val('supported')===''?null:val('supported')==='true',unsupported_at_merge:val('unsupported')===''?null:val('unsupported')==='true',exclusion_reason:val('reason').trim()||null,annotator_id:val('annotator').trim()||null}}
+function loadAnswer(){const a=state.answers[state.rows[state.index].candidate_id]||{};set('eligible',a.eligible);set('claim',a.normalized_claim);set('family',a.claim_family);set('supported',a.supported_at_review);set('unsupported',a.unsupported_at_merge);set('reason',a.exclusion_reason);set('annotator',a.annotator_id||localStorage.getItem(state.key+'-annotator')||'')}
+function render(){const r=state.rows[state.index]; if(!r)return; loadAnswer(); $('meta').textContent=`${state.index+1}/${state.rows.length} · ${r.language} · ${r.source_repository} · ${r.source_pull_number}`;$('comment').textContent=r.source_comment_body;$('source').innerHTML=`<a href="${r.source_comment_url}" target="_blank">Open comment ↗</a><br>${r.source_comment_path}:${r.source_comment_line}`;$('review').textContent=r.review_excerpt;$('merge').textContent=r.merge_excerpt;$('status').textContent=state.answers[r.candidate_id]?'Saved locally':'Not saved'}
+function save(){const r=state.rows[state.index];const a=answer();if(!a.annotator_id){alert('Enter an annotator ID first.');return}if(a.eligible===null){alert('Choose eligibility.');return}if(a.eligible&&(!a.normalized_claim||!a.claim_family||a.supported_at_review===null||a.unsupported_at_merge===null)){alert('Complete claim, family, and temporal labels.');return}if(!a.eligible&&!a.exclusion_reason){alert('Give an exclusion reason.');return}state.answers[r.candidate_id]=a;localStorage.setItem(state.key,JSON.stringify(state.answers));localStorage.setItem(state.key+'-annotator',a.annotator_id);state.index=Math.min(state.rows.length-1,state.index+1);render()}
+function exportData(){const rows=state.rows.map(r=>({...r,annotation:state.answers[r.candidate_id]||r.annotation}));const blob=new Blob([rows.map(r=>JSON.stringify(r)).join('\n')+'\n'],{type:'application/jsonl'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='human_pr_200_annotations.jsonl';a.click();URL.revokeObjectURL(a.href)}
+$('save').onclick=save;$('next').onclick=()=>{state.index=Math.min(state.rows.length-1,state.index+1);render()};$('prev').onclick=()=>{state.index=Math.max(0,state.index-1);render()};$('export').onclick=exportData;
+fetch('../benchmarks/human_pr_200/annotation_queue_all.jsonl').then(r=>r.text()).then(text=>{state.rows=parse(text);try{state.answers=JSON.parse(localStorage.getItem(state.key)||'{}')}catch{}render()}).catch(e=>{$('meta').textContent='Could not load queue; serve repository root over HTTP.';console.error(e)});
+</script>

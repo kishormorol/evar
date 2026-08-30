@@ -43,3 +43,13 @@ PYTHONPATH=. python3 scripts/prepare_human_pr_annotation_queue.py \
   --input benchmarks/human_pr_200/candidates_all.jsonl \
   --output benchmarks/human_pr_200/annotation_queue_all.jsonl
 ```
+
+Open the local annotation tool by serving the repository root and visiting
+`http://localhost:4173/review/human_pr_200.html`:
+
+```bash
+PYTHONPATH=. python3 -m http.server 4173
+```
+
+Each annotator exports their own JSONL file. Merge the completed annotations and
+render accepted temporal pairs with `scripts/render_human_pr_200.py`.
