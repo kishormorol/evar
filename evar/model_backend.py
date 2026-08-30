@@ -91,13 +91,15 @@ class OpenAIResponsesBackend:
         self,
         *,
         model_name: str,
-        temperature: float = 0.0,
+        temperature: float | None = 0.0,
         max_output_tokens: int | None = None,
+        reasoning_effort: str | None = None,
         api_key: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.temperature = temperature
         self.max_output_tokens = max_output_tokens
+        self.reasoning_effort = reasoning_effort
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or _load_env_api_key(Path(".env"))
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is required for the OpenAI backend.")
@@ -111,14 +113,17 @@ class OpenAIResponsesBackend:
     ) -> ModelResponse:
         payload: dict[str, Any] = {
             "model": self.model_name,
-            "temperature": self.temperature,
             "input": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
         }
+        if self.temperature is not None:
+            payload["temperature"] = self.temperature
         if self.max_output_tokens is not None:
             payload["max_output_tokens"] = self.max_output_tokens
+        if self.reasoning_effort is not None:
+            payload["reasoning"] = {"effort": self.reasoning_effort}
         if response_schema is not None:
             payload["text"] = {
                 "format": {

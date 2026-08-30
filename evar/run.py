@@ -199,6 +199,7 @@ def _build_backend(config: PilotConfig, *, dry_run: bool) -> ModelBackend:
             model_name=config.model.model,
             temperature=config.model.temperature,
             max_output_tokens=config.model.max_output_tokens,
+            reasoning_effort=config.model.reasoning_effort,
         )
     raise ValueError(f"Unsupported model backend: {config.model.backend}")
 

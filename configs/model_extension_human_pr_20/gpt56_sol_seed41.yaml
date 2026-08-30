@@ -1,0 +1,16 @@
+model:
+  backend: openai
+  model: gpt-5.6-sol
+  temperature: null
+  reasoning_effort: none
+  max_output_tokens: 1200
+
+protocol:
+  critic_rounds: 1
+  verifier_timeout_seconds: 5.0
+  reviewer_prompt: reviewer_evar_v2.txt
+  reviewer_parse_retries: 1
+
+experiment:
+  seed: 41
+  repetitions: 1

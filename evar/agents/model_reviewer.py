@@ -67,7 +67,7 @@ REVIEWER_RESPONSE_SCHEMA = {
 @dataclass(frozen=True)
 class ModelAgentConfig:
     model_name: str
-    temperature: float = 0.0
+    temperature: float | None = 0.0
     seed: int | None = 7
     max_output_tokens: int | None = None
 

@@ -97,9 +97,17 @@ def _check_config(config: PilotConfig, issues: list[PreflightIssue]) -> None:
         issues.append(
             PreflightIssue("error", "REPETITIONS_UNSUPPORTED", "Initial pilot requires experiment.repetitions == 1.")
         )
-    if config.model.temperature != 0.0:
+    if config.model.temperature not in (None, 0.0):
         issues.append(
             PreflightIssue("warning", "NONZERO_TEMPERATURE", "Pilot config uses nonzero temperature.")
+        )
+    if config.model.reasoning_effort not in (None, "none", "low", "medium", "high", "xhigh", "max"):
+        issues.append(
+            PreflightIssue(
+                "error",
+                "INVALID_REASONING_EFFORT",
+                f"Unsupported reasoning effort: {config.model.reasoning_effort}",
+            )
         )
     if config.model.backend not in {"dry_run", "openai"}:
         issues.append(

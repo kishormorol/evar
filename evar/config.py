@@ -8,8 +8,9 @@ from pathlib import Path
 class ModelConfig:
     backend: str
     model: str
-    temperature: float
+    temperature: float | None
     max_output_tokens: int | None
+    reasoning_effort: str | None = None
 
 
 @dataclass(frozen=True)
@@ -39,8 +40,9 @@ def load_config(path: Path) -> PilotConfig:
         model=ModelConfig(
             backend=str(data["model"]["backend"]),
             model=str(data["model"]["model"]),
-            temperature=float(data["model"]["temperature"]),
+            temperature=_optional_float(data["model"].get("temperature")),
             max_output_tokens=_optional_int(data["model"].get("max_output_tokens")),
+            reasoning_effort=_optional_string(data["model"].get("reasoning_effort")),
         ),
         protocol=ProtocolConfig(
             critic_rounds=int(data["protocol"]["critic_rounds"]),
@@ -92,6 +94,12 @@ def _optional_int(value: object) -> int | None:
     if value is None:
         return None
     return int(value)
+
+
+def _optional_float(value: object) -> float | None:
+    if value is None:
+        return None
+    return float(value)
 
 
 def _optional_string(value: object) -> str | None:

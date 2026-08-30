@@ -21,6 +21,29 @@ class LLMIntegrationTests(unittest.TestCase):
         self.assertEqual(config.protocol.critic_rounds, 1)
         self.assertEqual(config.experiment.seed, 7)
 
+    def test_config_can_omit_temperature_for_reasoning_models(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config_path = Path(tmp) / "reasoning.yaml"
+            config_path.write_text(
+                "model:\n"
+                "  backend: openai\n"
+                "  model: reasoning-model\n"
+                "  temperature: null\n"
+                "  reasoning_effort: none\n"
+                "protocol:\n"
+                "  critic_rounds: 1\n"
+                "  verifier_timeout_seconds: 5\n"
+                "experiment:\n"
+                "  seed: 1\n"
+                "  repetitions: 1\n",
+                encoding="utf-8",
+            )
+
+            config = load_config(config_path)
+
+        self.assertIsNone(config.model.temperature)
+        self.assertEqual(config.model.reasoning_effort, "none")
+
     def test_pilot_cases_load_without_prompt_leakage_fields(self) -> None:
         cases = load_jsonl_cases(Path("benchmark/pilot_cases.jsonl"))
 

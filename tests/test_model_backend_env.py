@@ -68,3 +68,58 @@ class ModelBackendEnvTests(unittest.TestCase):
         self.assertTrue(payload["text"]["format"]["strict"])
         self.assertEqual(response.input_tokens, 1)
         self.assertEqual(response.output_tokens, 2)
+
+    def test_openai_backend_omits_unsupported_optional_temperature(self) -> None:
+        captured: dict[str, object] = {}
+
+        class FakeHTTPResponse:
+            def __enter__(self) -> "FakeHTTPResponse":
+                return self
+
+            def __exit__(self, *args: object) -> None:
+                return None
+
+            def read(self) -> bytes:
+                return b'{"output_text":"{}","usage":{}}'
+
+        def fake_urlopen(request: object, timeout: int) -> FakeHTTPResponse:
+            del timeout
+            captured["payload"] = json.loads(request.data.decode("utf-8"))
+            return FakeHTTPResponse()
+
+        backend = OpenAIResponsesBackend(
+            model_name="reasoning-model", temperature=None, api_key="test-key"
+        )
+        with mock.patch("urllib.request.urlopen", fake_urlopen):
+            backend.generate("system", "user")
+
+        self.assertNotIn("temperature", captured["payload"])
+
+    def test_openai_backend_sends_explicit_reasoning_effort(self) -> None:
+        captured: dict[str, object] = {}
+
+        class FakeHTTPResponse:
+            def __enter__(self) -> "FakeHTTPResponse":
+                return self
+
+            def __exit__(self, *args: object) -> None:
+                return None
+
+            def read(self) -> bytes:
+                return b'{"output_text":"{}","usage":{}}'
+
+        def fake_urlopen(request: object, timeout: int) -> FakeHTTPResponse:
+            del timeout
+            captured["payload"] = json.loads(request.data.decode("utf-8"))
+            return FakeHTTPResponse()
+
+        backend = OpenAIResponsesBackend(
+            model_name="reasoning-model",
+            temperature=None,
+            reasoning_effort="none",
+            api_key="test-key",
+        )
+        with mock.patch("urllib.request.urlopen", fake_urlopen):
+            backend.generate("system", "user")
+
+        self.assertEqual(captured["payload"]["reasoning"], {"effort": "none"})
