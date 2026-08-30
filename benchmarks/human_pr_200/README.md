@@ -14,7 +14,7 @@ The benchmark has two deliberately separate stages:
    Disagreements go to a third adjudicator. Only adjudicated candidates become cases.
 
 A second acquisition wave is preserved in `candidates_expansion.jsonl`; the combined
-artifact is `candidates_all.jsonl` and currently contains 487 candidates from 44
+artifact is `candidates_682.jsonl` and currently contains 682 candidates from 63
 repositories. Acquisition does not assign labels or generate normalized claims. This prevents an LLM
 or a change heuristic from becoming an unreported source of benchmark ground truth.
 Only one candidate is retained per pull request during acquisition, and repositories
@@ -40,8 +40,8 @@ The canonical combined queue is generated with:
 
 ```bash
 PYTHONPATH=. python3 scripts/prepare_human_pr_annotation_queue.py \
-  --input benchmarks/human_pr_200/candidates_all.jsonl \
-  --output benchmarks/human_pr_200/annotation_queue_all.jsonl
+  --input benchmarks/human_pr_200/candidates_682.jsonl \
+  --output benchmarks/human_pr_200/annotation_queue_682.jsonl
 ```
 
 Open the local annotation tool by serving the repository root and visiting

@@ -1,0 +1,139 @@
+{
+  "candidate_count": 195,
+  "created_at": "2026-08-30T17:28:17.457834+00:00",
+  "cutoff": "2026-08-30T23:59:59+00:00",
+  "excluded_existing_comment_ids": 268,
+  "language_counts": {
+    "Go": 52,
+    "Java": 33,
+    "JavaScript": 14,
+    "Python": 36,
+    "Rust": 30,
+    "TypeScript": 30
+  },
+  "output_sha256": "02d1c1dafa5fb94b81c6495061f7ee0abe71c144278da4127a9af7af4478f307",
+  "repositories": {
+    "aio-libs/aiohttp": {
+      "comments_seen": 90,
+      "eligible_shape": 51,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "apache/camel": {
+      "comments_seen": 99,
+      "eligible_shape": 86,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "babel/babel": {
+      "comments_seen": 184,
+      "eligible_shape": 95,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "bevyengine/bevy": {
+      "comments_seen": 300,
+      "eligible_shape": 265,
+      "reconstructed": 6,
+      "selected": 6
+    },
+    "charmbracelet/bubbletea": {
+      "comments_seen": 86,
+      "eligible_shape": 59,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "cockroachdb/cockroach": {
+      "comments_seen": 242,
+      "eligible_shape": 187,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "containerd/containerd": {
+      "comments_seen": 300,
+      "eligible_shape": 128,
+      "reconstructed": 4,
+      "selected": 4
+    },
+    "docker/cli": {
+      "comments_seen": 251,
+      "eligible_shape": 160,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "electron/electron": {
+      "comments_seen": 300,
+      "eligible_shape": 239,
+      "reconstructed": 11,
+      "selected": 11
+    },
+    "embassy-rs/embassy": {
+      "comments_seen": 99,
+      "eligible_shape": 95,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "istio/istio": {
+      "comments_seen": 87,
+      "eligible_shape": 77,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "matplotlib/matplotlib": {
+      "comments_seen": 180,
+      "eligible_shape": 157,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "microsoft/vscode": {
+      "comments_seen": 300,
+      "eligible_shape": 100,
+      "reconstructed": 7,
+      "selected": 7
+    },
+    "netty/netty": {
+      "comments_seen": 95,
+      "eligible_shape": 86,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "python/cpython": {
+      "comments_seen": 222,
+      "eligible_shape": 189,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "rust-lang/rust-clippy": {
+      "comments_seen": 282,
+      "eligible_shape": 239,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "spring-projects/spring-boot": {
+      "comments_seen": 300,
+      "eligible_shape": 266,
+      "reconstructed": 9,
+      "selected": 9
+    },
+    "sqlalchemy/sqlalchemy": {
+      "comments_seen": 300,
+      "eligible_shape": 279,
+      "reconstructed": 0,
+      "selected": 0
+    },
+    "storybookjs/storybook": {
+      "comments_seen": 110,
+      "eligible_shape": 67,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "webpack/webpack": {
+      "comments_seen": 300,
+      "eligible_shape": 19,
+      "reconstructed": 2,
+      "selected": 2
+    }
+  },
+  "repository_count": 19,
+  "schema_version": 1
+}

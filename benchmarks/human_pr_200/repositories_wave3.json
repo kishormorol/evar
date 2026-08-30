@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "purpose": "Third acquisition wave for a larger candidate reservoir",
+  "repositories": [
+    {"repository": "sqlalchemy/sqlalchemy", "language": "Python"},
+    {"repository": "matplotlib/matplotlib", "language": "Python"},
+    {"repository": "aio-libs/aiohttp", "language": "Python"},
+    {"repository": "python/cpython", "language": "Python"},
+    {"repository": "webpack/webpack", "language": "JavaScript"},
+    {"repository": "babel/babel", "language": "JavaScript"},
+    {"repository": "microsoft/vscode", "language": "TypeScript"},
+    {"repository": "storybookjs/storybook", "language": "TypeScript"},
+    {"repository": "electron/electron", "language": "TypeScript"},
+    {"repository": "docker/cli", "language": "Go"},
+    {"repository": "containerd/containerd", "language": "Go"},
+    {"repository": "istio/istio", "language": "Go"},
+    {"repository": "cockroachdb/cockroach", "language": "Go"},
+    {"repository": "charmbracelet/bubbletea", "language": "Go"},
+    {"repository": "bevyengine/bevy", "language": "Rust"},
+    {"repository": "rust-lang/rust-clippy", "language": "Rust"},
+    {"repository": "embassy-rs/embassy", "language": "Rust"},
+    {"repository": "spring-projects/spring-boot", "language": "Java"},
+    {"repository": "apache/camel", "language": "Java"},
+    {"repository": "netty/netty", "language": "Java"}
+  ]
+}
