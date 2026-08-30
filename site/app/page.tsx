@@ -23,19 +23,19 @@ const protocols = [
 ];
 
 const results = [
-  ["GPT-4.1 · AR", "0.120", "1.000"],
-  ["GPT-4.1 · AR-Text", "0.120", "1.000"],
-  ["GPT-4.1 · EVAR-Hard", "0.060", "0.860"],
-  ["GPT-4.1 mini · AR", "0.160", "0.980"],
-  ["GPT-4.1 mini · AR-Text", "0.120", "0.980"],
-  ["GPT-4.1 mini · EVAR-Hard", "0.041", "0.420"],
+  ["GPT-4.1 · AR", "0.400", "0.700"],
+  ["GPT-4.1 · AR-Text", "0.200", "0.700"],
+  ["GPT-4.1 · EVAR-Hard", "0.300", "0.600"],
+  ["GPT-4.1 mini · AR", "0.400", "0.900"],
+  ["GPT-4.1 mini · AR-Text", "0.200", "0.700"],
+  ["GPT-4.1 mini · EVAR-Hard", "0.200", "0.700"],
 ];
 
 const guardrails = [
   "Ground-truth labels never enter agent prompts.",
   "Prompts, verifier code, configs, cases, and patches were frozen before model calls.",
   "Failed runs remain explicit; infrastructure-invalid attempts are preserved separately.",
-  "All 600 canonical records and transcripts received a judge-free audit.",
+  "All 720 canonical records and transcripts received judge-free audits.",
 ];
 
 export default function Home() {
@@ -109,20 +109,20 @@ export default function Home() {
       <section className="signal" id="evidence" aria-label="Current benchmark signal">
         <div className="shell signalGrid">
           <div className="signalIntro">
-            <p className="eyebrow light">Frozen external signal</p>
-            <p>External PR 50 · GPT-4.1 · two replicates</p>
+            <p className="eyebrow light">Untouched final holdout</p>
+            <p>Human PR 20 · GPT-4.1 mini · one frozen run</p>
           </div>
           <div className="metric">
-            <strong>0.060</strong>
+            <strong>0.200</strong>
             <span>False consensus rate</span>
           </div>
           <div className="metric">
-            <strong>0.860</strong>
+            <strong>0.700</strong>
             <span>Supported claim retention</span>
           </div>
           <p className="caveat">
-            EVAR halves observed FCR versus AR, but loses 14 points of retention.
-            Verification is a tradeoff—not a free win.
+            EVAR ties AR-Text on the mini model and trails it on GPT-4.1.
+            Verification is auditable—not a free performance win.
           </p>
         </div>
       </section>
@@ -171,19 +171,20 @@ export default function Home() {
 
       <section className="results shell sectionPad" aria-labelledby="results-heading">
         <div className="resultsIntro">
-          <p className="sectionKicker">External PR 50 · frozen evaluation</p>
-          <h2 id="results-heading">Less false consensus. More missed claims.</h2>
+          <p className="sectionKicker">Human PR 20 · untouched evaluation</p>
+          <h2 id="results-heading">A useful negative result.</h2>
           <p>
-            Fifty balanced claims from 25 pinned commits across Click, pluggy, attrs,
-            more-itertools, and Requests. Results pool two independent replicates per model.
-            Lower FCR is better; higher SCR is better.
+            Ten real human review comments become 20 temporal cases across Black, pytest,
+            Rich, Pydantic, and Poetry. The reviewed commit supports each claim; the merge
+            commit no longer does. Lower FCR is better; higher SCR is better.
           </p>
           <p>
-            GPT-4.1 handles the evidence gate substantially better than the mini model:
-            76% of its receipts verify, compared with 47% for GPT-4.1 mini.
+            The v2 evidence format verifies 18 of 20 receipts for each model. That solves
+            much of the mechanical retention problem, but it does not outperform the
+            simpler AR-Text baseline on final decisions.
           </p>
         </div>
-        <div className="resultsTable" role="table" aria-label="External PR 50 frozen benchmark results">
+        <div className="resultsTable" role="table" aria-label="Human PR 20 frozen holdout results">
           <div className="resultRow resultHead" role="row">
             <span role="columnheader">Protocol</span>
             <span role="columnheader">FCR ↓</span>
@@ -197,8 +198,8 @@ export default function Home() {
             </div>
           ))}
           <p className="tableNote">
-            Cluster-bootstrap intervals, paired deltas, family results, tokens, latency,
-            exclusions, and the complete audit are available in the paper and artifact.
+            Every condition has ten cases per label, so intervals are wide. Paired deltas,
+            tokens, latency, source links, and the complete audit are in the artifact.
           </p>
         </div>
       </section>
@@ -209,8 +210,8 @@ export default function Home() {
             <p className="sectionKicker inverse">Scientific guardrails</p>
             <h2 id="limits-heading">Built to expose failure, not hide it.</h2>
             <p className="limitsLead">
-              EVAR is a research harness, not a production code-review product. The frozen
-              evidence shows a real safety–retention tradeoff and remains deliberately bounded.
+              EVAR is a research harness, not a production code-review product. The public
+              evidence includes the mixed result and remains deliberately bounded.
             </p>
           </div>
           <ol className="guardrailList">
@@ -236,10 +237,10 @@ export default function Home() {
         <div className="terminal" aria-label="EVAR command example">
           <div className="terminalBar"><span /><span /><span /><small>evar / experiment</small></div>
           <pre><code><span>$</span> python -m evar.freeze verify \
-  --manifest benchmarks/external_pr_50/freeze_manifest.json
+  --manifest benchmarks/human_pr_20/freeze_manifest.json
 
 <span>$</span> PYTHONPATH=. python \
-  scripts/report_external_pr_50.py</code></pre>
+  scripts/report_human_pr_20.py</code></pre>
         </div>
       </section>
 
@@ -253,7 +254,8 @@ export default function Home() {
           <div className="footerLinks">
             <a href="https://github.com/kishormorol/evar">Repository ↗</a>
             <a href="https://github.com/kishormorol/evar/blob/master/PAPER.md">Paper ↗</a>
-            <a href="https://github.com/kishormorol/evar/tree/master/benchmarks/external_pr_50">Artifact ↗</a>
+            <a href="https://github.com/kishormorol/evar/tree/master/benchmarks/human_pr_20">Artifact ↗</a>
+            <a href="https://github.com/kishormorol/evar/blob/master/review/INDEPENDENT_REVIEW.md">Review ↗</a>
           </div>
         </div>
       </footer>

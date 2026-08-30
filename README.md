@@ -16,6 +16,9 @@ Current writeup:
 - [External 10 pilot results](benchmarks/external_10/RESULTS.md)
 - [External PR 10 pilot results](benchmarks/external_pr_10/RESULTS.md)
 - [External PR 20 results](benchmarks/external_pr_20/RESULTS.md)
+- [Frozen External PR 50 results](benchmarks/external_pr_50/RESULTS.md)
+- [Untouched Human PR 20 results](benchmarks/human_pr_20/RESULTS.md)
+- [Independent review packet](review/INDEPENDENT_REVIEW.md)
 
 ## Protocols
 
@@ -99,6 +102,19 @@ Evidence-level protocol registry names:
 - `evar_hard`
 
 ## Current Results
+
+Untouched `human_pr_20` holdout built from ten real human review comments across five previously unseen repositories:
+
+| Model | Protocol | FCR | SCR |
+| --- | --- | ---: | ---: |
+| `gpt-4.1` | `ar` | 0.400 | 0.700 |
+| `gpt-4.1` | `ar_text` | 0.200 | 0.700 |
+| `gpt-4.1` | `evar_hard` | 0.300 | 0.600 |
+| `gpt-4.1-mini` | `ar` | 0.400 | 0.900 |
+| `gpt-4.1-mini` | `ar_text` | 0.200 | 0.700 |
+| `gpt-4.1-mini` | `evar_hard` | 0.200 | 0.700 |
+
+This final holdout does not establish that EVAR outperforms AR-Text. The full 120-record audit passed, and all intervals and costs are reported in the linked result artifact.
 
 Held-out 50-case `gpt-4.1` result:
 

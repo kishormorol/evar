@@ -1,0 +1,19 @@
+{
+  "title": "EVAR: Evidence-Verified Adversarial Review",
+  "description": "A reproducible research harness, frozen benchmarks, transcripts, and analysis artifacts for testing whether deterministic evidence verification reduces false consensus in LLM code review.",
+  "creators": [
+    {
+      "name": "Morol, Kishor"
+    }
+  ],
+  "keywords": [
+    "code review",
+    "large language models",
+    "evidence verification",
+    "software engineering"
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "version": "0.2.0",
+  "access_right": "open"
+}

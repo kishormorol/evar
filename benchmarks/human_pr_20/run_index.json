@@ -1,0 +1,13 @@
+{
+  "benchmark": "human_pr_20",
+  "evaluator_freeze_commit": "0ce6be881e40d539bfe47ad01f28a69184972fa5",
+  "replicate_note": "The integer seed is a provenance label. OpenAI Responses API sampling is not asserted to be deterministic.",
+  "canonical_runs": [
+    {"model": "gpt-4.1-mini", "seed": 31, "protocol": "ar", "result": "results/human_pr_20/20260830T023941Z-afddb024_ar.jsonl"},
+    {"model": "gpt-4.1-mini", "seed": 31, "protocol": "ar_text", "result": "results/human_pr_20/20260830T024053Z-c9586727_ar_text.jsonl"},
+    {"model": "gpt-4.1-mini", "seed": 31, "protocol": "evar_hard", "result": "results/human_pr_20/20260830T024201Z-dbef2b3d_evar_hard.jsonl"},
+    {"model": "gpt-4.1", "seed": 31, "protocol": "ar", "result": "results/human_pr_20/20260830T024311Z-80cdd265_ar.jsonl"},
+    {"model": "gpt-4.1", "seed": 31, "protocol": "ar_text", "result": "results/human_pr_20/20260830T024357Z-5757190b_ar_text.jsonl"},
+    {"model": "gpt-4.1", "seed": 31, "protocol": "evar_hard", "result": "results/human_pr_20/20260830T024445Z-99e3e505_evar_hard.jsonl"}
+  ]
+}

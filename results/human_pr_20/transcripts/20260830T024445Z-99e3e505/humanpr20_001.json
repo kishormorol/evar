@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_001",
+  "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+      "claim_id": "causal_mislocalization_case_001_1",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization_case_001_1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Fix `--skip-magic-trailing-comma` dropping the syntactically required trailing comma of a one-element subscript (`a[x,]`) when the line is long enough to be split and contains a power operator. `hug_power_op` rebuilt the line from cloned leaves, whose missing parent kept the guards for required commas from firing, so the index stopped being a one-tuple and Black failed its own AST safety check (#5272)",
+        "falsification_condition": "Entry for #5272 omits internal details like 'hug_power_op' and 'cloned leaves'.",
+        "file": "context/target.md",
+        "line_end": 42,
+        "line_start": 39,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "  of a one-element subscript (`a[x,]`) when the line is long enough to be split and\n  contains a power operator. `hug_power_op` rebuilt the line from cloned leaves, whose\n  missing parent kept the guards for required commas from firing, so the index stopped\n  being a one-tuple and Black failed its own AST safety check (#5272)"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/psf/black/pull/5272#discussion_r3678519973; exact reviewed snapshot 7e2e327d67ceba006e2b7b2cf62373441f8ab8e4.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T024445Z-99e3e505",
+    "seed": 31
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+      "claim_id": "causal_mislocalization_case_001_1",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization_case_001_1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Fix `--skip-magic-trailing-comma` dropping the syntactically required trailing comma of a one-element subscript (`a[x,]`) when the line is long enough to be split and contains a power operator. `hug_power_op` rebuilt the line from cloned leaves, whose missing parent kept the guards for required commas from firing, so the index stopped being a one-tuple and Black failed its own AST safety check (#5272)",
+        "falsification_condition": "Entry for #5272 omits internal details like 'hug_power_op' and 'cloned leaves'.",
+        "file": "context/target.md",
+        "line_end": 42,
+        "line_start": 39,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "  of a one-element subscript (`a[x,]`) when the line is long enough to be split and\n  contains a power operator. `hug_power_op` rebuilt the line from cloned leaves, whose\n  missing parent kept the guards for required commas from firing, so the index stopped\n  being a one-tuple and Black failed its own AST safety check (#5272)"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_001",
+  "run_id": "20260830T024445Z-99e3e505",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization_case_001_1",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization_case_001_1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Fix `--skip-magic-trailing-comma` dropping the syntactically required trailing comma of a one-element subscript (`a[x,]`) when the line is long enough to be split and contains a power operator. `hug_power_op` rebuilt the line from cloned leaves, whose missing parent kept the guards for required commas from firing, so the index stopped being a one-tuple and Black failed its own AST safety check (#5272)",
+        "falsification_condition": "Entry for #5272 omits internal details like 'hug_power_op' and 'cloned leaves'.",
+        "file": "context/target.md",
+        "line_end": 42,
+        "line_start": 39,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:44:47.669740+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization_case_001_1",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:44:47.670272+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Expected structural observation was not present in referenced lines.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "  of a one-element subscript (`a[x,]`) when the line is long enough to be split and\n  contains a power operator. `hug_power_op` rebuilt the line from cloned leaves, whose\n  missing parent kept the guards for required commas from firing, so the index stopped\n  being a one-tuple and Black failed its own AST safety check (#5272)"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization_case_001_1",
+      "critic_decision": "CHALLENGE_EVIDENCE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:44:48.557962+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization_case_001_1",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:44:48.558009+00:00"
+    }
+  ]
+}

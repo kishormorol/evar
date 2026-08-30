@@ -1,0 +1,157 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+\newcommand{\evar}{\textsc{Evar}}
+\newcommand{\fcr}{\textsc{Fcr}}
+\newcommand{\scr}{\textsc{Scr}}
+
+\title{Evidence-Verified Adversarial Review for Code-Review Claims}
+\author{Kishor Morol}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+LLM reviewer and critic agents can converge on plausible but unsupported code-review findings when their interaction remains purely textual. We study Evidence-Verified Adversarial Review (\evar), a protocol that requires structured evidence receipts and deterministic verification before a finding can become actionable. After a 600-record frozen experiment exposed severe supported-claim loss, we improved receipt generation only on a separate development split, froze the evaluator, and evaluated once on Human PR 20: ten real human pull-request review comments paired across their reviewed and merge commits, producing 20 balanced cases from five previously unseen Python repositories. Across 120 audited decisions, \evar-Hard tied the stronger AR-Text baseline with GPT-4.1-mini (false consensus rate 0.200, supported-claim retention 0.700) and trailed it with GPT-4.1 (0.300 versus 0.200; 0.600 versus 0.700). All bootstrap intervals are wide. \evar therefore does not demonstrate a general performance advantage over text-evidence review on this small human-comment holdout. Its contribution is a mechanically auditable acceptance boundary and a reproducible negative result showing that receipt verification alone does not reliably improve the safety-retention tradeoff.
+\end{abstract}
+
+\section{Introduction}
+
+Reviewer-critic systems use a second model call to challenge or refine a first model's answer. Iterative self-feedback and multi-agent debate can improve generation and reasoning \cite{selfrefine,debate}, but textual agreement is not independent evidence. In code review, two agents can converge on the same plausible interpretation of code while both overlook the observation that would falsify it.
+
+\evar changes the acceptance rule. A reviewer submits a structured evidence receipt; a deterministic verifier checks a source location or executes a bounded witness; and only a verified receipt can become actionable. We ask whether that external gate reduces false consensus without suppressing supported findings.
+
+Our contributions are:
+\begin{enumerate}
+  \item a measurable definition of false consensus for candidate code-review claims;
+  \item a structured receipt and deterministic actionability gate;
+  \item a reproducible harness for matched AR, AR-Text, and \evar-Hard comparisons;
+  \item frozen input and output manifests plus judge-free audits for 720 model decisions;
+  \item a temporal holdout derived from human review comments across unseen repositories; and
+  \item a mixed, non-dominance result that separates frozen evaluation, development, and post-hoc interpretation.
+\end{enumerate}
+
+\section{Related Work}
+
+Self-Refine uses model-generated feedback to iteratively improve a model's output \cite{selfrefine}. Multi-agent debate has similarly improved reasoning and factuality through textual deliberation \cite{debate}. These methods motivate the AR baselines but do not require evidence external to the agents' dialogue.
+
+Software-engineering benchmarks increasingly ground tasks in public development history. SWE-bench uses real GitHub issues and pull requests and demonstrates the need for repository context and executable environments \cite{swebench}. SWE-PRBench evaluates code-review models against pull-request feedback and reports limited detection of human-flagged issues \cite{sweprbench}. Our task is narrower: a candidate claim is given, and the system must decide whether it remains actionable under the supplied repository snapshot.
+
+\section{Protocols}
+
+All protocols receive the same candidate claim, task description, repository context, model configuration, and interaction budget.
+
+\begin{table}[h]
+\centering
+\caption{Compared protocols.}
+\label{tab:protocols}
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+Protocol & Evidence handling & Actionability gate \\
+\midrule
+AR & Reviewer proposes a finding; critic evaluates textually. & Critic returns \texttt{ACCEPT}. \\
+AR-Text & Reviewer adds textual evidence when challenged. & Critic returns \texttt{ACCEPT}. \\
+\evar-Hard & Reviewer submits a receipt; verifier checks structural or behavioral evidence. & Verifier returns \texttt{VERIFIED} and critic returns \texttt{ACCEPT}. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+An \evar receipt contains the claim, evidence type and role, file and line range, optional verification command, expected observation, and falsification condition. Structural evidence is accepted only by exact source matching after conservative cleanup of display-only line numbers and Markdown fences. Behavioral witnesses must exit successfully and print a designated pass marker only when the claim is supported. The verifier does not use semantic fuzzy matching or model judgment.
+
+\section{Benchmarks and Freeze Procedure}
+
+The project contains synthetic diagnostics, source snapshots, commit-grounded cases, a 50-case frozen external benchmark, a separate v2 development split, and the final human-comment holdout. Frozen results are never overwritten by later development runs.
+
+External PR 50 contains 50 balanced claims grounded in 25 commits from Click, pluggy, attrs, more-itertools, and Requests. Its 600 model decisions exposed a false-consensus versus retention tradeoff and motivated receipt-generation work. No code or prompt change was evaluated against that benchmark again.
+
+Human PR 20 was created after v2 development. Ten comments by non-bot GitHub reviewers were selected from Black, pytest, Rich, Pydantic, and Poetry, none of which appeared in External PR 50. Each comment yields a temporal pair: the reviewed commit supports the claim and the merged commit no longer does. Cases preserve the exact public comment URL, author, path, line, pull request, and commit. Each contains a focused changed-target excerpt and a companion changed-file excerpt when available, with less than 30 KB total context. This yields ten supported and ten unsupported cases.
+
+The evaluator commit, prompts, configs, cases, and source excerpts were hashed before the first model call. Two model configurations each ran AR, AR-Text, and \evar-Hard once. Ground-truth fields are removed from the model-visible task object. Every attempted case produces a result row and transcript. A separate audit checks prompt hashes, transcript integrity, actionability gates, token counts, latency, and failures without calling a judge model.
+
+\section{Metrics and Analysis}
+
+For completed cases, false consensus rate and supported-claim retention are
+\[
+\fcr = \frac{\mathrm{unsupported\ actionable}}{\mathrm{unsupported\ completed}},\qquad
+\scr = \frac{\mathrm{supported\ actionable}}{\mathrm{supported\ completed}}.
+\]
+Lower \fcr and higher \scr are desirable. Failures remain explicit and are excluded from both denominators. We report 10,000-sample bootstrap intervals, resampling by case identifier. Paired protocol deltas match model, replicate label, and case before resampling. These are descriptive intervals: the holdout is small and not a random sample from a defined population.
+
+\section{Results}
+
+\subsection{Untouched Human PR 20 holdout}
+
+Table~\ref{tab:human} reports the final holdout. All 120 attempts completed. Both \evar configurations produced 18 verified and two failed receipts. The complete audit found no integrity or accounting inconsistency.
+
+\begin{table}[h]
+\centering
+\caption{Human PR 20 results. Each metric has ten eligible cases per row.}
+\label{tab:human}
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Model & Protocol & \fcr\ (95\% CI) & \scr\ (95\% CI) & Verified & Cost (USD) \\
+\midrule
+GPT-4.1 & AR & .400 (.100-.700) & .700 (.400-1.000) & -- & .136 \\
+GPT-4.1 & AR-Text & .200 (.000-.500) & .700 (.400-1.000) & -- & .143 \\
+GPT-4.1 & \evar-Hard & .300 (.000-.600) & .600 (.300-.900) & 18 & .145 \\
+GPT-4.1-mini & AR & .400 (.100-.700) & .900 (.700-1.000) & -- & .027 \\
+GPT-4.1-mini & AR-Text & .200 (.000-.500) & .700 (.400-1.000) & -- & .029 \\
+GPT-4.1-mini & \evar-Hard & .200 (.000-.500) & .700 (.400-1.000) & 18 & .030 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+With GPT-4.1-mini, AR-Text and \evar-Hard have identical decisions: relative to AR, both change \fcr by -0.200 (95\% CI -0.500 to 0.000) and \scr by -0.200 (-0.500 to 0.000). With GPT-4.1, AR-Text changes \fcr by -0.200 with no \scr change, whereas \evar-Hard changes both metrics by -0.100. Thus, this holdout provides no evidence that \evar-Hard dominates AR-Text.
+
+\subsection{Earlier frozen External PR 50 experiment}
+
+The earlier study pooled two repetitions for each model and protocol. GPT-4.1 \evar-Hard reduced \fcr from 0.120 under both baselines to 0.060 while reducing \scr from 1.000 to 0.860. GPT-4.1-mini reduced \fcr from 0.160 under AR and 0.120 under AR-Text to 0.041, but reduced \scr from 0.980 to 0.420. One mini \evar output failed JSON parsing and remained an explicit failed row. The directionally favorable \fcr result therefore came with substantial missed supported claims.
+
+\section{Discussion}
+
+The final holdout changes the headline from a safety-retention tradeoff to non-dominance. The v2 receipt format solved much of the mechanical receipt-validity problem: 90\% of holdout receipts verified for each model. However, that did not improve decisions beyond text evidence. Receipt validity, evidentiary relevance, critic correctness, and final actionability are distinct failure surfaces.
+
+The result does not show that \evar is inferior in a defined population. A one-case change moves either holdout metric by 0.100, and the intervals are correspondingly wide. It does show that requiring deterministic receipts is insufficient, by itself, to claim better review quality. The defensible benefit is procedural: every actionable \evar finding has an inspectable machine-checked receipt, and failed verification stops actionability.
+
+\section{Threats to Validity}
+
+Human PR 20 has only ten source comments, five repositories, and ten cases per label. Selection requires a clean temporal contrast and reconstructable context, favoring localized and explicit claims. Temporal pairs are related rather than independent. Ground truth follows the public review comment and subsequent code change but lacks independent expert adjudication. Benchmark builders inspected source comments to validate provenance and label direction, although evaluator tuning stopped before the frozen run. A public independent methodology review has been requested but was not complete at release time.
+
+The task evaluates pre-specified candidate claims, not end-to-end defect discovery or review utility. Focused excerpts omit repository-scale dependency graphs. The verifier is Python-specific and covers a limited set of structural and behavioral observations. API calls are not guaranteed deterministic; integer seeds are provenance labels. Model behavior and pricing can change. Finally, bootstrap intervals quantify resampling variability inside this artifact, not representativeness of software review in general.
+
+\section{Reproducibility and Availability}
+
+Release \texttt{v0.2.0} contains evaluator code, prompts, configs, benchmark snapshots, all 720 canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The public repository and project site are available at
+\begin{center}
+\url{https://github.com/kishormorol/evar}\\
+\url{https://evar-research.elitelab-ai.chatgpt.site}
+\end{center}
+The release notes provide the archival DOI when the Zenodo deposit is complete.
+
+\section{Conclusion}
+
+\evar makes reviewer-critic agreement necessary but insufficient: a claim must survive an external evidence check. In the earlier frozen experiment, this gate lowered unsupported actionability while rejecting supported claims. After receipt-generation improvements on a separate split, the final human-comment holdout achieved high receipt verification but no advantage over AR-Text. Mechanically checked evidence creates an auditable boundary, but a valid receipt is not synonymous with a correct review decision. A larger, independently labeled and preregistered evaluation is needed before making a population-level performance claim.
+
+\begin{thebibliography}{9}
+\bibitem{selfrefine}
+A. Madaan et al. Self-Refine: Iterative Refinement with Self-Feedback. \emph{arXiv:2303.17651}, 2023.
+
+\bibitem{debate}
+Y. Du, S. Li, A. Torralba, J. B. Tenenbaum, and I. Mordatch. Improving Factuality and Reasoning in Language Models through Multiagent Debate. \emph{arXiv:2305.14325}, 2023.
+
+\bibitem{swebench}
+C. E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? \emph{arXiv:2310.06770}, 2023.
+
+\bibitem{sweprbench}
+D. Kumar. SWE-PRBench: Benchmarking AI Code Review Quality Against Pull Request Feedback. \emph{arXiv:2603.26130}, 2026.
+\end{thebibliography}
+
+\end{document}

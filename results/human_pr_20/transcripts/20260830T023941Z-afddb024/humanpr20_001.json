@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "hug_power_op rebuilt the line from cloned leaves, whose missing parent kept the guards for required commas from firing, so the index stopped being a one-tuple and Black failed its own AST safety check (#5272)",
+        "falsification_condition": "CHANGES entry for PR 5272 contains a concise user-facing summary without internal implementation details",
+        "file": "context/target.md",
+        "line_end": 42,
+        "line_start": 39,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_001",
+  "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "hug_power_op rebuilt the line from cloned leaves, whose missing parent kept the guards for required commas from firing, so the index stopped being a one-tuple and Black failed its own AST safety check (#5272)",
+        "falsification_condition": "CHANGES entry for PR 5272 contains a concise user-facing summary without internal implementation details",
+        "file": "context/target.md",
+        "line_end": 42,
+        "line_start": 39,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/psf/black/pull/5272#discussion_r3678519973; exact reviewed snapshot 7e2e327d67ceba006e2b7b2cf62373441f8ab8e4.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T023941Z-afddb024",
+    "seed": 31
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_001",
+  "run_id": "20260830T023941Z-afddb024",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "The CHANGES entry for pull request 5272 includes internal hug_power_op and cloned-leaf details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "hug_power_op rebuilt the line from cloned leaves, whose missing parent kept the guards for required commas from firing, so the index stopped being a one-tuple and Black failed its own AST safety check (#5272)",
+        "falsification_condition": "CHANGES entry for PR 5272 contains a concise user-facing summary without internal implementation details",
+        "file": "context/target.md",
+        "line_end": 42,
+        "line_start": 39,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:39:44.795667+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:39:45.729029+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:39:45.729089+00:00"
+    }
+  ]
+}

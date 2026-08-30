@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+      "claim_id": "causal_mislocalization_case_003_001",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization_case_003_001",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "- Preserve blank lines that come immediately before a `# fmt: on` comment. They are\ninside the opted-out region, but they live in the prefix of the `# fmt: on` comment\nrather than in the verbatim block, so they were being capped like any ordinary blank\nrun (#5300)",
+        "falsification_condition": "Entry omits internal details about prefix or verbatim block.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_003",
+  "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+      "claim_id": "causal_mislocalization_case_003_001",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization_case_003_001",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "- Preserve blank lines that come immediately before a `# fmt: on` comment. They are\ninside the opted-out region, but they live in the prefix of the `# fmt: on` comment\nrather than in the verbatim block, so they were being capped like any ordinary blank\nrun (#5300)",
+        "falsification_condition": "Entry omits internal details about prefix or verbatim block.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/psf/black/pull/5300#discussion_r3813438763; exact reviewed snapshot 6ca34c38c7706bf74bf408bb8ba12f086dc1fe45.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260830T024311Z-80cdd265",
+    "seed": 31
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_003",
+  "run_id": "20260830T024311Z-80cdd265",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization_case_003_001",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "claim_id": "causal_mislocalization_case_003_001",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "- Preserve blank lines that come immediately before a `# fmt: on` comment. They are\ninside the opted-out region, but they live in the prefix of the `# fmt: on` comment\nrather than in the verbatim block, so they were being capped like any ordinary blank\nrun (#5300)",
+        "falsification_condition": "Entry omits internal details about prefix or verbatim block.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:43:18.613782+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization_case_003_001",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:43:19.819106+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization_case_003_001",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:43:19.819143+00:00"
+    }
+  ]
+}

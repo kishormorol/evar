@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"\"\"Test whether two paths reference the same actual file or directory.\n\n    Unlike Path.samefile(), does not resolve symlinks.\n    \"\"\"\n    s1, s2 = p1.lstat(), p2.lstat()\n    # On Windows st_ino is the file ID, which file systems are free to not support,\n    # in which case it is 0 for every file -- WinFsp mounts such as sshfs-win are one\n    # example. os.path.samestat() would then consider any two files on the volume to\n    # be the same (python/cpython#78116), so treat a zero file ID as \"unknown\" and\n    # leave the caller with plain path comparison (#14864).",
+        "falsification_condition": "The implementation detail is documented as a code comment, not in the docstring.",
+        "file": "context/target.py",
+        "line_end": 66,
+        "line_start": 52,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "Original path: src/_pytest/pathlib.py\nSnapshot commit: d6f66d42df86624ed128b84ce57df3d173fe1b95\nOriginal lines: 1046-1106\n\n    If one path is relative and one is absolute, returns None.\n    \"\"\"\n    try:\n        return Path(os.path.commonpath((str(path1), str(path2))))\n    except ValueError:\n        return None\n\n\ndef bestrelpath(directory: Path, dest: Path) -> str:\n    \"\"\"Return a string which is a relative path from directory to dest such\n    that directory/bestrelpath == dest.\n\n    The paths must be either both absolute or both relative.\n\n    If no such path can be determined, returns dest.\n    \"\"\"\n    assert isinstance(directory, Path)\n    assert isinstance(dest, Path)\n    if dest == directory:\n        return os.curdir\n    # Find the longest common directory.\n    base = commonpath(directory, dest)\n    # Can be the case on Windows for two absolute paths on different drives.\n    # Can be the case for two relative paths without common prefix.\n    # Can be the case for a relative path and an absolute path.\n    if not base:\n        return str(dest)\n    reldirectory = directory.relative_to(base)\n    reldest = dest.relative_to(base)\n    return os.path.join(\n        # Back from directory to base.\n        *([os.pardir] * len(reldirectory.parts)),\n        # Forward from base to dest.\n        *reldest.parts,\n    )\n\n\ndef safe_exists(p: Path) -> bool:\n    \"\"\"Like Path.exists(), but account for input arguments that might be too long (#11394).\"\"\"\n    try:\n        return p.exists()\n    except (ValueError, OSError):\n        # ValueError: stat: path too long for Windows\n        # OSError: [WinError 123] The filename, directory name, or volume label syntax is incorrect\n        return False\n\n\ndef samefile_nofollow(p1: Path, p2: Path) -> bool:\n    \"\"\"Test whether two paths reference the same actual file or directory.\n\n    Unlike Path.samefile(), does not resolve symlinks.\n    \"\"\"\n    s1, s2 = p1.lstat(), p2.lstat()\n    # On Windows st_ino is the file ID, which file systems are free to not support,\n    # in which case it is 0 for every file -- WinFsp mounts such as sshfs-win are one\n    # example. os.path.samestat() would then consider any two files on the volume to\n    # be the same (python/cpython#78116), so treat a zero file ID as \"unknown\" and\n    # leave the caller with plain path comparison (#14864).\n    if s1.st_ino == 0 or s2.st_ino == 0:\n        return False\n    return os.path.samestat(s1, s2)"
+      }
+    }
+  ],
+  "case_id": "humanpr20_006",
+  "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"\"\"Test whether two paths reference the same actual file or directory.\n\n    Unlike Path.samefile(), does not resolve symlinks.\n    \"\"\"\n    s1, s2 = p1.lstat(), p2.lstat()\n    # On Windows st_ino is the file ID, which file systems are free to not support,\n    # in which case it is 0 for every file -- WinFsp mounts such as sshfs-win are one\n    # example. os.path.samestat() would then consider any two files on the volume to\n    # be the same (python/cpython#78116), so treat a zero file ID as \"unknown\" and\n    # leave the caller with plain path comparison (#14864).",
+        "falsification_condition": "The implementation detail is documented as a code comment, not in the docstring.",
+        "file": "context/target.py",
+        "line_end": 66,
+        "line_start": 52,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "Original path: src/_pytest/pathlib.py\nSnapshot commit: d6f66d42df86624ed128b84ce57df3d173fe1b95\nOriginal lines: 1046-1106\n\n    If one path is relative and one is absolute, returns None.\n    \"\"\"\n    try:\n        return Path(os.path.commonpath((str(path1), str(path2))))\n    except ValueError:\n        return None\n\n\ndef bestrelpath(directory: Path, dest: Path) -> str:\n    \"\"\"Return a string which is a relative path from directory to dest such\n    that directory/bestrelpath == dest.\n\n    The paths must be either both absolute or both relative.\n\n    If no such path can be determined, returns dest.\n    \"\"\"\n    assert isinstance(directory, Path)\n    assert isinstance(dest, Path)\n    if dest == directory:\n        return os.curdir\n    # Find the longest common directory.\n    base = commonpath(directory, dest)\n    # Can be the case on Windows for two absolute paths on different drives.\n    # Can be the case for two relative paths without common prefix.\n    # Can be the case for a relative path and an absolute path.\n    if not base:\n        return str(dest)\n    reldirectory = directory.relative_to(base)\n    reldest = dest.relative_to(base)\n    return os.path.join(\n        # Back from directory to base.\n        *([os.pardir] * len(reldirectory.parts)),\n        # Forward from base to dest.\n        *reldest.parts,\n    )\n\n\ndef safe_exists(p: Path) -> bool:\n    \"\"\"Like Path.exists(), but account for input arguments that might be too long (#11394).\"\"\"\n    try:\n        return p.exists()\n    except (ValueError, OSError):\n        # ValueError: stat: path too long for Windows\n        # OSError: [WinError 123] The filename, directory name, or volume label syntax is incorrect\n        return False\n\n\ndef samefile_nofollow(p1: Path, p2: Path) -> bool:\n    \"\"\"Test whether two paths reference the same actual file or directory.\n\n    Unlike Path.samefile(), does not resolve symlinks.\n    \"\"\"\n    s1, s2 = p1.lstat(), p2.lstat()\n    # On Windows st_ino is the file ID, which file systems are free to not support,\n    # in which case it is 0 for every file -- WinFsp mounts such as sshfs-win are one\n    # example. os.path.samestat() would then consider any two files on the volume to\n    # be the same (python/cpython#78116), so treat a zero file ID as \"unknown\" and\n    # leave the caller with plain path comparison (#14864).\n    if s1.st_ino == 0 or s2.st_ino == 0:\n        return False\n    return os.path.samestat(s1, s2)"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3774173657; exact merged snapshot d6f66d42df86624ed128b84ce57df3d173fe1b95.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T024201Z-dbef2b3d",
+    "seed": 31
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_006",
+  "run_id": "20260830T024201Z-dbef2b3d",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "\"\"\"Test whether two paths reference the same actual file or directory.\n\n    Unlike Path.samefile(), does not resolve symlinks.\n    \"\"\"\n    s1, s2 = p1.lstat(), p2.lstat()\n    # On Windows st_ino is the file ID, which file systems are free to not support,\n    # in which case it is 0 for every file -- WinFsp mounts such as sshfs-win are one\n    # example. os.path.samestat() would then consider any two files on the volume to\n    # be the same (python/cpython#78116), so treat a zero file ID as \"unknown\" and\n    # leave the caller with plain path comparison (#14864).",
+        "falsification_condition": "The implementation detail is documented as a code comment, not in the docstring.",
+        "file": "context/target.py",
+        "line_end": 66,
+        "line_start": 52,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:42:22.343207+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:42:22.345329+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "Original path: src/_pytest/pathlib.py\nSnapshot commit: d6f66d42df86624ed128b84ce57df3d173fe1b95\nOriginal lines: 1046-1106\n\n    If one path is relative and one is absolute, returns None.\n    \"\"\"\n    try:\n        return Path(os.path.commonpath((str(path1), str(path2))))\n    except ValueError:\n        return None\n\n\ndef bestrelpath(directory: Path, dest: Path) -> str:\n    \"\"\"Return a string which is a relative path from directory to dest such\n    that directory/bestrelpath == dest.\n\n    The paths must be either both absolute or both relative.\n\n    If no such path can be determined, returns dest.\n    \"\"\"\n    assert isinstance(directory, Path)\n    assert isinstance(dest, Path)\n    if dest == directory:\n        return os.curdir\n    # Find the longest common directory.\n    base = commonpath(directory, dest)\n    # Can be the case on Windows for two absolute paths on different drives.\n    # Can be the case for two relative paths without common prefix.\n    # Can be the case for a relative path and an absolute path.\n    if not base:\n        return str(dest)\n    reldirectory = directory.relative_to(base)\n    reldest = dest.relative_to(base)\n    return os.path.join(\n        # Back from directory to base.\n        *([os.pardir] * len(reldirectory.parts)),\n        # Forward from base to dest.\n        *reldest.parts,\n    )\n\n\ndef safe_exists(p: Path) -> bool:\n    \"\"\"Like Path.exists(), but account for input arguments that might be too long (#11394).\"\"\"\n    try:\n        return p.exists()\n    except (ValueError, OSError):\n        # ValueError: stat: path too long for Windows\n        # OSError: [WinError 123] The filename, directory name, or volume label syntax is incorrect\n        return False\n\n\ndef samefile_nofollow(p1: Path, p2: Path) -> bool:\n    \"\"\"Test whether two paths reference the same actual file or directory.\n\n    Unlike Path.samefile(), does not resolve symlinks.\n    \"\"\"\n    s1, s2 = p1.lstat(), p2.lstat()\n    # On Windows st_ino is the file ID, which file systems are free to not support,\n    # in which case it is 0 for every file -- WinFsp mounts such as sshfs-win are one\n    # example. os.path.samestat() would then consider any two files on the volume to\n    # be the same (python/cpython#78116), so treat a zero file ID as \"unknown\" and\n    # leave the caller with plain path comparison (#14864).\n    if s1.st_ino == 0 or s2.st_ino == 0:\n        return False\n    return os.path.samestat(s1, s2)"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:42:23.114214+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:42:23.114254+00:00"
+    }
+  ]
+}

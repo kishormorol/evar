@@ -1,0 +1,56 @@
+name: Independent methodology review
+description: Record an independent audit of the EVAR paper and frozen artifact.
+title: "Independent methodology review: "
+labels: ["methodology-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for independently reviewing EVAR. Please use the checklist in `review/INDEPENDENT_REVIEW.md` and do not disclose private credentials or personal data.
+  - type: input
+    id: identity
+    attributes:
+      label: Reviewer identity
+      description: Your name, organization, or "anonymous".
+    validations:
+      required: true
+  - type: textarea
+    id: conflicts
+    attributes:
+      label: Conflicts of interest
+    validations:
+      required: true
+  - type: input
+    id: artifact
+    attributes:
+      label: Release or commit reviewed
+      placeholder: v0.2.0 or full commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Checks completed
+      description: Include manifest, test, source-provenance, transcript, and statistical checks.
+    validations:
+      required: true
+  - type: textarea
+    id: blocking
+    attributes:
+      label: Blocking issues
+    validations:
+      required: true
+  - type: textarea
+    id: nonblocking
+    attributes:
+      label: Non-blocking issues and revisions
+  - type: dropdown
+    id: verdict
+    attributes:
+      label: Verdict
+      options:
+        - Claims supported as written
+        - Supported with revisions
+        - Not supported
+    validations:
+      required: true

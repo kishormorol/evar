@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use EVAR, please cite this software release and its accompanying paper."
+title: "EVAR: Evidence-Verified Adversarial Review"
+type: software
+authors:
+  - family-names: Morol
+    given-names: Kishor
+version: 0.2.0
+date-released: 2026-08-30
+repository-code: "https://github.com/kishormorol/evar"
+url: "https://evar-research.elitelab-ai.chatgpt.site"
+abstract: >-
+  A reproducible research harness and frozen artifact for testing whether
+  deterministic evidence verification reduces false consensus in LLM code review.
+keywords:
+  - code review
+  - large language models
+  - evidence verification
+  - software engineering
+license: MIT
