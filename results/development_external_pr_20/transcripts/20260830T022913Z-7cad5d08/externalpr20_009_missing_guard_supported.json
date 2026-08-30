@@ -1,0 +1,150 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "_ancestry treats multiple separators like a single path separator.",
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_ancestry treats multiple separators like a single path separator.",
+        "claim_id": "_ancestry treats multiple separators like a single path separator",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while path and not path.endswith(posixpath.sep):",
+        "falsification_condition": "The deterministic AST observation does not support the claim.",
+        "file": "zipp/__init__.py",
+        "line_end": 70,
+        "line_start": 66,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_ancestry_separator_behavior observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    \"\"\"\n    path = path.rstrip(posixpath.sep)\n    while path and not path.endswith(posixpath.sep):\n        yield path\n        path, tail = posixpath.split(path)"
+      }
+    }
+  ],
+  "case_id": "externalpr20_009_missing_guard_supported",
+  "claim": "_ancestry treats multiple separators like a single path separator.",
+  "claim_family": "missing_guard",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "_ancestry treats multiple separators like a single path separator.",
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "_ancestry treats multiple separators like a single path separator.",
+        "claim_id": "_ancestry treats multiple separators like a single path separator",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while path and not path.endswith(posixpath.sep):",
+        "falsification_condition": "The deterministic AST observation does not support the claim.",
+        "file": "zipp/__init__.py",
+        "line_end": 70,
+        "line_start": 66,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_ancestry_separator_behavior observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    \"\"\"\n    path = path.rstrip(posixpath.sep)\n    while path and not path.endswith(posixpath.sep):\n        yield path\n        path, tail = posixpath.split(path)"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The updated docstring states multiple separators are treated like a single and the loop stops on path.endswith(posixpath.sep).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T022913Z-7cad5d08",
+    "seed": 23
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_20/repos/case_009",
+  "run_id": "20260830T022913Z-7cad5d08",
+  "task_description": "Review zipp malformed path ancestry after commit f89b93f.",
+  "transcript": [
+    {
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "_ancestry treats multiple separators like a single path separator.",
+        "claim_id": "_ancestry treats multiple separators like a single path separator",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while path and not path.endswith(posixpath.sep):",
+        "falsification_condition": "_ancestry yields paths with multiple consecutive separators unchanged, not treating them as a single separator",
+        "file": "zipp/__init__.py",
+        "line_end": 70,
+        "line_start": 66,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:29:45.144982+00:00"
+    },
+    {
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:29:45.149685+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_ancestry_separator_behavior observed supports_claim=True; evidence_role=contradicts_claim.",
+        "status": "FAILED",
+        "stderr": "",
+        "stdout": "    \"\"\"\n    path = path.rstrip(posixpath.sep)\n    while path and not path.endswith(posixpath.sep):\n        yield path\n        path, tail = posixpath.split(path)"
+      }
+    },
+    {
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "event_type": "RECEIPT_REPAIR",
+      "receipt": {
+        "claim": "_ancestry treats multiple separators like a single path separator.",
+        "claim_id": "_ancestry treats multiple separators like a single path separator",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "while path and not path.endswith(posixpath.sep):",
+        "falsification_condition": "The deterministic AST observation does not support the claim.",
+        "file": "zipp/__init__.py",
+        "line_end": 70,
+        "line_start": 66,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:29:45.149786+00:00"
+    },
+    {
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:29:45.157943+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_ancestry_separator_behavior observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    \"\"\"\n    path = path.rstrip(posixpath.sep)\n    while path and not path.endswith(posixpath.sep):\n        yield path\n        path, tail = posixpath.split(path)"
+      }
+    },
+    {
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:29:46.129485+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "_ancestry treats multiple separators like a single path separator",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:29:46.129553+00:00"
+    }
+  ]
+}

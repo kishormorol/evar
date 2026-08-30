@@ -9,12 +9,15 @@ from pathlib import Path
 
 from evar.agents.model_critic import CriticPromptContext, _critic_user_prompt, parse_critic_decision
 from evar.agents.model_reviewer import (
+    ModelAgentConfig,
     ModelOutputError,
+    ModelReviewer,
     _repository_context,
     _review_user_prompt,
     parse_reviewer_receipts,
 )
 from evar.eval.metrics import compute_fcr_scr
+from evar.model_backend import DryRunBackend, ModelResponse
 from evar.prompts import load_prompt
 from evar.protocols.evar import CriticDecision, TextEvidence
 from evar.run_model import main
@@ -225,6 +228,63 @@ class ModelAdapterTests(unittest.TestCase):
         self.assertIn("wrapper/call-chain relationship", prompt)
         self.assertIn("use structural evidence, not behavioral evidence", prompt)
 
+    def test_reviewer_can_select_versioned_prompt(self) -> None:
+        reviewer = ModelReviewer(
+            DryRunBackend(),
+            ModelAgentConfig(model_name="dry"),
+            prompt_filename_override="reviewer_evar_v2.txt",
+        )
+
+        self.assertEqual(reviewer.prompt_template.filename, "reviewer_evar_v2.txt")
+        self.assertIn("shortest exact contiguous source quote", reviewer.prompt_template.text)
+
+    def test_reviewer_retries_one_malformed_structured_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("return True\n", encoding="utf-8")
+            backend = _SequenceBackend(
+                [
+                    ModelResponse("{", None, "test", 3, 1, 0.1),
+                    ModelResponse(
+                        text=json.dumps(
+                            {
+                                "receipts": [
+                                    {
+                                        "claim_id": "c1",
+                                        "claim": "sample returns true",
+                                        "evidence_type": "structural",
+                                        "evidence_role": "supports_claim",
+                                        "file": "sample.py",
+                                        "line_start": 1,
+                                        "line_end": 1,
+                                        "verification_command": None,
+                                        "expected_exit_code": None,
+                                        "expected_stdout_contains": "return True",
+                                        "falsification_condition": "return False",
+                                    }
+                                ]
+                            }
+                        ),
+                        parsed_output=None,
+                        model_name="test",
+                        input_tokens=4,
+                        output_tokens=2,
+                        latency_seconds=0.2,
+                    ),
+                ]
+            )
+            reviewer = ModelReviewer(
+                backend,
+                ModelAgentConfig(model_name="test"),
+                parse_retries=1,
+            )
+
+            receipts = reviewer.review("Candidate claim: sample returns true", repo)
+
+        self.assertEqual(receipts[0].claim_id, "c1")
+        self.assertEqual(len(reviewer.last_responses), 2)
+        self.assertIn("previous response could not be parsed", backend.user_prompts[1])
+
     def test_eval_table_counts_configured_final_actionable_records(self) -> None:
         summary = compute_fcr_scr(
             [
@@ -318,3 +378,22 @@ def _critic_context() -> CriticPromptContext:
             reason="Not used by protocol.",
         ),
     )
+
+
+class _SequenceBackend:
+    model_name = "test"
+
+    def __init__(self, responses: list[ModelResponse]) -> None:
+        self.responses = list(responses)
+        self.user_prompts: list[str] = []
+
+    def generate(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        *,
+        response_schema: object | None = None,
+    ) -> ModelResponse:
+        del system_prompt, response_schema
+        self.user_prompts.append(user_prompt)
+        return self.responses.pop(0)

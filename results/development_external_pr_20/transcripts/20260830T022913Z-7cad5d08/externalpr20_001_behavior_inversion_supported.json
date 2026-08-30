@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "Path.iterdir raises NotADirectoryError when called on a file.",
+      "claim_id": "claim_1",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Path.iterdir raises NotADirectoryError when called on a file.",
+        "claim_id": "claim_1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "raise NotADirectoryError(\"Can't listdir a file\")",
+        "falsification_condition": "iterdir does not raise NotADirectoryError when called on a file",
+        "file": "zipp/__init__.py",
+        "line_end": 401,
+        "line_start": 399,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_raises_exception observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def iterdir(self):\n        if not self.is_dir():\n            raise NotADirectoryError(\"Can't listdir a file\")"
+      }
+    }
+  ],
+  "case_id": "externalpr20_001_behavior_inversion_supported",
+  "claim": "Path.iterdir raises NotADirectoryError when called on a file.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "Path.iterdir raises NotADirectoryError when called on a file.",
+      "claim_id": "claim_1",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Path.iterdir raises NotADirectoryError when called on a file.",
+        "claim_id": "claim_1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "raise NotADirectoryError(\"Can't listdir a file\")",
+        "falsification_condition": "iterdir does not raise NotADirectoryError when called on a file",
+        "file": "zipp/__init__.py",
+        "line_end": 401,
+        "line_start": 399,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_raises_exception observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def iterdir(self):\n        if not self.is_dir():\n            raise NotADirectoryError(\"Can't listdir a file\")"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "The commit changes Path.iterdir to raise NotADirectoryError when not self.is_dir().",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T022913Z-7cad5d08",
+    "seed": 23
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_20/repos/case_001",
+  "run_id": "20260830T022913Z-7cad5d08",
+  "task_description": "Review zipp Path.iterdir behavior after commit 84be2a5.",
+  "transcript": [
+    {
+      "claim_id": "claim_1",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Path.iterdir raises NotADirectoryError when called on a file.",
+        "claim_id": "claim_1",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "raise NotADirectoryError(\"Can't listdir a file\")",
+        "falsification_condition": "iterdir does not raise NotADirectoryError when called on a file",
+        "file": "zipp/__init__.py",
+        "line_end": 401,
+        "line_start": 399,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:29:16.227743+00:00"
+    },
+    {
+      "claim_id": "claim_1",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:29:16.236989+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_raises_exception observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def iterdir(self):\n        if not self.is_dir():\n            raise NotADirectoryError(\"Can't listdir a file\")"
+      }
+    },
+    {
+      "claim_id": "claim_1",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:29:17.296817+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "claim_1",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:29:17.296859+00:00"
+    }
+  ]
+}

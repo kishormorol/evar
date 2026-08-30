@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "externalpr20_020_causal_mislocalization_unsupported",
+  "claim": "Markup.__mod__ passes a single non-mapping argument directly to _MarkupEscapeHelper without tuple wrapping.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "Markup.__mod__ passes a single non-mapping argument directly to _MarkupEscapeHelper without tuple wrapping.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "Markup.__mod__ passes a single non-mapping argument directly to _MarkupEscapeHelper without tuple wrapping.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "arg = (_MarkupEscapeHelper(arg, self.escape),)",
+        "falsification_condition": "Line 112 shows the single argument is wrapped in a tuple after wrapping with _MarkupEscapeHelper.",
+        "file": "markupsafe/__init__.py",
+        "line_end": 114,
+        "line_start": 103,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def __mod__(self, arg: t.Any) -> \"Markup\":\n        if isinstance(arg, tuple):\n            # a tuple of arguments, each wrapped\n            arg = tuple(_MarkupEscapeHelper(x, self.escape) for x in arg)\n        elif hasattr(type(arg), \"__getitem__\") and not isinstance(arg, str):\n            # a mapping of arguments, wrapped\n            arg = _MarkupEscapeHelper(arg, self.escape)\n        else:\n            # a single argument, wrapped with the helper and a tuple\n            arg = (_MarkupEscapeHelper(arg, self.escape),)\n\n        return self.__class__(super().__mod__(arg))"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "The updated else branch wraps the helper in a one-element tuple.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T022913Z-7cad5d08",
+    "seed": 23
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "Markup.__mod__ passes a single non-mapping argument directly to _MarkupEscapeHelper without tuple wrapping.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "Markup.__mod__ passes a single non-mapping argument directly to _MarkupEscapeHelper without tuple wrapping.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "arg = (_MarkupEscapeHelper(arg, self.escape),)",
+        "falsification_condition": "Line 112 shows the single argument is wrapped in a tuple after wrapping with _MarkupEscapeHelper.",
+        "file": "markupsafe/__init__.py",
+        "line_end": 114,
+        "line_start": 103,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def __mod__(self, arg: t.Any) -> \"Markup\":\n        if isinstance(arg, tuple):\n            # a tuple of arguments, each wrapped\n            arg = tuple(_MarkupEscapeHelper(x, self.escape) for x in arg)\n        elif hasattr(type(arg), \"__getitem__\") and not isinstance(arg, str):\n            # a mapping of arguments, wrapped\n            arg = _MarkupEscapeHelper(arg, self.escape)\n        else:\n            # a single argument, wrapped with the helper and a tuple\n            arg = (_MarkupEscapeHelper(arg, self.escape),)\n\n        return self.__class__(super().__mod__(arg))"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/external_pr_20/repos/case_020",
+  "run_id": "20260830T022913Z-7cad5d08",
+  "task_description": "Review MarkupSafe percent-format single placeholder behavior after commit 3d809ae.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Markup.__mod__ passes a single non-mapping argument directly to _MarkupEscapeHelper without tuple wrapping.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "arg = (_MarkupEscapeHelper(arg, self.escape),)",
+        "falsification_condition": "Line 112 shows the single argument is wrapped in a tuple after wrapping with _MarkupEscapeHelper.",
+        "file": "markupsafe/__init__.py",
+        "line_end": 114,
+        "line_start": 103,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:30:24.062572+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:30:24.068855+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def __mod__(self, arg: t.Any) -> \"Markup\":\n        if isinstance(arg, tuple):\n            # a tuple of arguments, each wrapped\n            arg = tuple(_MarkupEscapeHelper(x, self.escape) for x in arg)\n        elif hasattr(type(arg), \"__getitem__\") and not isinstance(arg, str):\n            # a mapping of arguments, wrapped\n            arg = _MarkupEscapeHelper(arg, self.escape)\n        else:\n            # a single argument, wrapped with the helper and a tuple\n            arg = (_MarkupEscapeHelper(arg, self.escape),)\n\n        return self.__class__(super().__mod__(arg))"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:30:24.984438+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:30:24.984519+00:00"
+    }
+  ]
+}

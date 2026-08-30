@@ -83,21 +83,42 @@ class ModelReviewer:
         config: ModelAgentConfig,
         *,
         protocol: str = "evar_hard",
+        prompt_filename_override: str | None = None,
+        parse_retries: int = 0,
     ) -> None:
+        if parse_retries < 0:
+            raise ValueError("parse_retries must be non-negative.")
         self.backend = backend
         self.config = config
         self.protocol = protocol
-        self.prompt = load_prompt(prompt_filename("reviewer", protocol))
+        self.prompt = load_prompt(prompt_filename_override or prompt_filename("reviewer", protocol))
+        self.parse_retries = parse_retries
         self.responses: list[ModelResponse] = []
+        self.last_responses: list[ModelResponse] = []
 
     def review(self, task: str, repo_path: Path) -> list[EvidenceReceipt]:
-        response = self.backend.generate(
-            self.prompt.text,
-            _review_user_prompt(task, repo_path),
-            response_schema=REVIEWER_RESPONSE_SCHEMA,
-        )
-        self.responses.append(response)
-        return parse_reviewer_receipts(response.parsed_output if response.parsed_output is not None else response.text)
+        user_prompt = _review_user_prompt(task, repo_path)
+        self.last_responses = []
+        for attempt in range(self.parse_retries + 1):
+            response = self.backend.generate(
+                self.prompt.text,
+                user_prompt,
+                response_schema=REVIEWER_RESPONSE_SCHEMA,
+            )
+            self.responses.append(response)
+            self.last_responses.append(response)
+            try:
+                return parse_reviewer_receipts(
+                    response.parsed_output if response.parsed_output is not None else response.text
+                )
+            except ModelOutputError:
+                if attempt >= self.parse_retries:
+                    raise
+                user_prompt += (
+                    "\n\nThe previous response could not be parsed. Return one complete JSON object "
+                    "matching the response schema, with exactly one receipt and no surrounding prose."
+                )
+        raise AssertionError("unreachable")
 
     @property
     def prompt_template(self) -> PromptTemplate:

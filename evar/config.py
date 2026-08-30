@@ -16,6 +16,8 @@ class ModelConfig:
 class ProtocolConfig:
     critic_rounds: int
     verifier_timeout_seconds: float
+    reviewer_prompt: str | None = None
+    reviewer_parse_retries: int = 0
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,8 @@ def load_config(path: Path) -> PilotConfig:
         protocol=ProtocolConfig(
             critic_rounds=int(data["protocol"]["critic_rounds"]),
             verifier_timeout_seconds=float(data["protocol"]["verifier_timeout_seconds"]),
+            reviewer_prompt=_optional_string(data["protocol"].get("reviewer_prompt")),
+            reviewer_parse_retries=int(data["protocol"].get("reviewer_parse_retries", 0)),
         ),
         experiment=ExperimentConfig(
             seed=int(data["experiment"]["seed"]),
@@ -88,3 +92,10 @@ def _optional_int(value: object) -> int | None:
     if value is None:
         return None
     return int(value)
+
+
+def _optional_string(value: object) -> str | None:
+    if value is None:
+        return None
+    stripped = str(value).strip()
+    return stripped or None

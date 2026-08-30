@@ -42,7 +42,7 @@ def run_preflight(config_path: Path, cases_path: Path) -> PreflightReport:
     cases = _load_cases(cases_path, issues)
     if config is not None:
         _check_config(config, issues)
-    _check_prompts(prompt_hashes, issues)
+    _check_prompts(config, prompt_hashes, issues)
     for case in cases:
         _check_case(case, issues)
 
@@ -89,6 +89,10 @@ def _check_config(config: PilotConfig, issues: list[PreflightIssue]) -> None:
         issues.append(
             PreflightIssue("error", "BAD_VERIFIER_TIMEOUT", "verifier_timeout_seconds must be positive.")
         )
+    if config.protocol.reviewer_parse_retries < 0:
+        issues.append(
+            PreflightIssue("error", "BAD_REVIEWER_RETRIES", "reviewer_parse_retries must be non-negative.")
+        )
     if config.experiment.repetitions != 1:
         issues.append(
             PreflightIssue("error", "REPETITIONS_UNSUPPORTED", "Initial pilot requires experiment.repetitions == 1.")
@@ -103,25 +107,34 @@ def _check_config(config: PilotConfig, issues: list[PreflightIssue]) -> None:
         )
 
 
-def _check_prompts(prompt_hashes: dict[str, str], issues: list[PreflightIssue]) -> None:
+def _check_prompts(
+    config: PilotConfig | None,
+    prompt_hashes: dict[str, str],
+    issues: list[PreflightIssue],
+) -> None:
+    filenames: set[str] = set()
     for protocol in PROTOCOLS:
         for role in PROMPT_ROLES:
             filename = prompt_filename(role, protocol)
-            try:
-                prompt = load_prompt(filename)
-            except OSError as exc:
-                issues.append(PreflightIssue("error", "PROMPT_MISSING", f"{filename}: {exc}"))
-                continue
-            prompt_hashes[filename] = prompt.sha256
-            lowered = prompt.text.lower()
-            if "ground truth" not in lowered and "ground_truth" not in lowered:
-                issues.append(
-                    PreflightIssue(
-                        "warning",
-                        "PROMPT_NO_LEAKAGE_REMINDER",
-                        f"{filename} does not explicitly mention ground-truth exclusion.",
-                    )
+            filenames.add(filename)
+    if config is not None and config.protocol.reviewer_prompt:
+        filenames.add(config.protocol.reviewer_prompt)
+    for filename in sorted(filenames):
+        try:
+            prompt = load_prompt(filename)
+        except OSError as exc:
+            issues.append(PreflightIssue("error", "PROMPT_MISSING", f"{filename}: {exc}"))
+            continue
+        prompt_hashes[filename] = prompt.sha256
+        lowered = prompt.text.lower()
+        if "ground truth" not in lowered and "ground_truth" not in lowered:
+            issues.append(
+                PreflightIssue(
+                    "warning",
+                    "PROMPT_NO_LEAKAGE_REMINDER",
+                    f"{filename} does not explicitly mention ground-truth exclusion.",
                 )
+            )
 
 
 def _check_case(case: BenchmarkCase, issues: list[PreflightIssue]) -> None:

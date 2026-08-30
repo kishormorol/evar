@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "Translator.extend appends \\z to the generated regex.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Translator.extend appends \\z to the generated regex.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "(?s:{pattern})\\z",
+        "falsification_condition": "extend method does not append \\z to the pattern",
+        "file": "zipp/glob.py",
+        "line_end": 41,
+        "line_start": 41,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_extend_regex_terminator observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "        return rf'(?s:{pattern})\\z'"
+      }
+    }
+  ],
+  "case_id": "externalpr20_003_incorrect_call_relationship_supported",
+  "claim": "Translator.extend appends \\z to the generated regex.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "Translator.extend appends \\z to the generated regex.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Translator.extend appends \\z to the generated regex.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "(?s:{pattern})\\z",
+        "falsification_condition": "extend method does not append \\z to the pattern",
+        "file": "zipp/glob.py",
+        "line_end": 41,
+        "line_start": 41,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_extend_regex_terminator observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "        return rf'(?s:{pattern})\\z'"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Translator.extend returns rf'(?s:{pattern})\\z'.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T022913Z-7cad5d08",
+    "seed": 23
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_20/repos/case_003",
+  "run_id": "20260830T022913Z-7cad5d08",
+  "task_description": "Review zipp glob regex terminator after commit d860de4.",
+  "transcript": [
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Translator.extend appends \\z to the generated regex.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "(?s:{pattern})\\z",
+        "falsification_condition": "extend method does not append \\z to the pattern",
+        "file": "zipp/glob.py",
+        "line_end": 41,
+        "line_start": 41,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:29:22.525051+00:00"
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:29:22.527920+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_extend_regex_terminator observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "        return rf'(?s:{pattern})\\z'"
+      }
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:29:23.769104+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:29:23.769150+00:00"
+    }
+  ]
+}

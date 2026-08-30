@@ -100,7 +100,13 @@ def _run_configured(
         seed=config.experiment.seed,
         max_output_tokens=config.model.max_output_tokens,
     )
-    reviewer = ModelReviewer(backend, agent_config, protocol=normalized_protocol)
+    reviewer = ModelReviewer(
+        backend,
+        agent_config,
+        protocol=normalized_protocol,
+        prompt_filename_override=config.protocol.reviewer_prompt,
+        parse_retries=config.protocol.reviewer_parse_retries,
+    )
     critic = ModelCritic(backend, agent_config, protocol=normalized_protocol)
     protocol = create_protocol(
         normalized_protocol,
@@ -244,7 +250,7 @@ def _configured_result_record(
                 "filename": critic.prompt_template.filename,
                 "sha256": critic.prompt_template.sha256,
             },
-            "reviewer_model": _response_summary(reviewer.responses[-1:]),
+            "reviewer_model": _response_summary(reviewer.last_responses),
             "critic_model": _response_summary(critic.responses[-1:]),
         },
         "run_status": "ok",
@@ -284,7 +290,7 @@ def _configured_failure_record(
                 "filename": critic.prompt_template.filename,
                 "sha256": critic.prompt_template.sha256,
             },
-            "reviewer_model": _response_summary(reviewer.responses[-1:]),
+            "reviewer_model": _response_summary(reviewer.last_responses),
             "critic_model": _response_summary(critic.responses[-1:]),
         },
         "run_status": "failed",
@@ -352,13 +358,16 @@ def _response_summary(responses: list[object]) -> dict[str, object] | None:
     if not responses:
         return None
     response = responses[-1]
+    input_tokens = [item.input_tokens for item in responses if item.input_tokens is not None]
+    output_tokens = [item.output_tokens for item in responses if item.output_tokens is not None]
     return {
         "text": response.text,
         "parsed_output": _json_safe(response.parsed_output),
         "model_name": response.model_name,
-        "input_tokens": response.input_tokens,
-        "output_tokens": response.output_tokens,
-        "latency_seconds": response.latency_seconds,
+        "input_tokens": sum(input_tokens) if input_tokens else None,
+        "output_tokens": sum(output_tokens) if output_tokens else None,
+        "latency_seconds": sum(item.latency_seconds for item in responses),
+        "attempt_count": len(responses),
     }
 
 

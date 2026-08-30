@@ -254,7 +254,6 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
     else:
         excerpt = "\n".join(lines)
     normalized_excerpt = _normalize_structural_text(excerpt)
-    normalized_file = _normalize_structural_text("\n".join(lines))
     ast_result = _verify_python_structural_claim(receipt, target, excerpt)
     if ast_result is not None:
         return ast_result
@@ -269,14 +268,10 @@ def _verify_structural(receipt: EvidenceReceipt, target: Path) -> VerificationRe
             exit_code=0,
             reason="Falsification condition was observed in referenced lines.",
         )
-    if (
-        receipt.expected_stdout_contains
-        and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_excerpt
-        and _normalize_structural_text(receipt.expected_stdout_contains) not in normalized_file
-        and _normalize_structural_for_match(receipt.expected_stdout_contains)
-        not in _normalize_structural_for_match(excerpt)
-        and _normalize_structural_for_match(receipt.expected_stdout_contains)
-        not in _normalize_structural_for_match("\n".join(lines))
+    if receipt.expected_stdout_contains and not _structural_observation_present(
+        receipt.expected_stdout_contains,
+        excerpt,
+        "\n".join(lines),
     ):
         if used_stale_line_recovery:
             return VerificationResult(
@@ -317,6 +312,42 @@ def _normalize_structural_text(text: str) -> str:
 
 def _normalize_structural_for_match(text: str) -> str:
     return _normalize_structural_text(text).replace('"', "").replace("'", "")
+
+
+def _structural_observation_present(expected: str, excerpt: str, full_text: str) -> bool:
+    haystacks = {
+        _normalize_structural_text(excerpt),
+        _normalize_structural_text(full_text),
+        _normalize_structural_for_match(excerpt),
+        _normalize_structural_for_match(full_text),
+    }
+    for candidate in _structural_quote_candidates(expected):
+        normalized = _normalize_structural_text(candidate)
+        normalized_loose = _normalize_structural_for_match(candidate)
+        if any(normalized in haystack or normalized_loose in haystack for haystack in haystacks):
+            return True
+    return False
+
+
+def _structural_quote_candidates(text: str) -> set[str]:
+    """Return conservative variants of a copied source quote.
+
+    Models sometimes preserve the line-number prefix shown in repository context or
+    wrap an exact quote in Markdown. Removing only those display artifacts retains
+    exact-source matching without introducing fuzzy semantic verification.
+    """
+    stripped = text.strip()
+    candidates = {stripped}
+    if stripped.startswith("```") and stripped.endswith("```"):
+        inner = stripped[3:-3].strip()
+        if "\n" in inner and re.fullmatch(r"[A-Za-z0-9_+.-]+", inner.splitlines()[0].strip()):
+            inner = "\n".join(inner.splitlines()[1:])
+        candidates.add(inner.strip())
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] == "`":
+        candidates.add(stripped[1:-1].strip())
+    numbered = "\n".join(re.sub(r"^\s*\d+\s*:\s?", "", line) for line in stripped.splitlines())
+    candidates.add(numbered.strip())
+    return {candidate for candidate in candidates if candidate}
 
 
 def _verify_python_structural_claim(

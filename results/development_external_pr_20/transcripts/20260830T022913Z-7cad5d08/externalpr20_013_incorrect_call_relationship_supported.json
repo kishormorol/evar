@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "Translator.translate wraps translate_core with match_dirs.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Translator.translate wraps translate_core with match_dirs.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self.extend(self.match_dirs(self.translate_core(pattern)))",
+        "falsification_condition": "Translator.translate does not call translate_core and match_dirs in the claimed wrapping order",
+        "file": "zipp/glob.py",
+        "line_end": 32,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_translate_match_dirs_wrapping observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def translate(self, pattern):\n        \"\"\"\n        Given a glob pattern, produce a regex that matches it.\n        \"\"\"\n        return self.extend(self.match_dirs(self.translate_core(pattern)))\n"
+      }
+    }
+  ],
+  "case_id": "externalpr20_013_incorrect_call_relationship_supported",
+  "claim": "Translator.translate wraps translate_core with match_dirs.",
+  "claim_family": "incorrect_call_relationship",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "Translator.translate wraps translate_core with match_dirs.",
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "Translator.translate wraps translate_core with match_dirs.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self.extend(self.match_dirs(self.translate_core(pattern)))",
+        "falsification_condition": "Translator.translate does not call translate_core and match_dirs in the claimed wrapping order",
+        "file": "zipp/glob.py",
+        "line_end": 32,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_translate_match_dirs_wrapping observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def translate(self, pattern):\n        \"\"\"\n        Given a glob pattern, produce a regex that matches it.\n        \"\"\"\n        return self.extend(self.match_dirs(self.translate_core(pattern)))\n"
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "translate returns self.extend(self.match_dirs(self.translate_core(pattern))).",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260830T022913Z-7cad5d08",
+    "seed": 23
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/external_pr_20/repos/case_013",
+  "run_id": "20260830T022913Z-7cad5d08",
+  "task_description": "Review zipp directory glob matching after commit 5d89a1c.",
+  "transcript": [
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "Translator.translate wraps translate_core with match_dirs.",
+        "claim_id": "incorrect_call_relationship",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "return self.extend(self.match_dirs(self.translate_core(pattern)))",
+        "falsification_condition": "Translator.translate does not call translate_core and match_dirs in the claimed wrapping order",
+        "file": "zipp/glob.py",
+        "line_end": 32,
+        "line_start": 27,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-30T02:29:58.702167+00:00"
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-30T02:29:58.703444+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Python AST structural check _check_translate_match_dirs_wrapping observed supports_claim=True; evidence_role=supports_claim.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "    def translate(self, pattern):\n        \"\"\"\n        Given a glob pattern, produce a regex that matches it.\n        \"\"\"\n        return self.extend(self.match_dirs(self.translate_core(pattern)))\n"
+      }
+    },
+    {
+      "claim_id": "incorrect_call_relationship",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-30T02:29:59.765030+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "incorrect_call_relationship",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-30T02:29:59.765099+00:00"
+    }
+  ]
+}

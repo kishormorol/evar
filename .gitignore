@@ -8,6 +8,8 @@ results/
 results/*
 !results/external_pr_50/
 !results/external_pr_50/**
+!results/development_external_pr_20/
+!results/development_external_pr_20/**
 .env
 .env.*
 !.env.example
