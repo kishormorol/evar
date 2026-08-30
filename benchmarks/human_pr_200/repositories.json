@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "repositories": [
+    {"repository": "django/django", "language": "Python"},
+    {"repository": "fastapi/fastapi", "language": "Python"},
+    {"repository": "pandas-dev/pandas", "language": "Python"},
+    {"repository": "scikit-learn/scikit-learn", "language": "Python"},
+    {"repository": "encode/httpx", "language": "Python"},
+
+    {"repository": "microsoft/TypeScript", "language": "TypeScript"},
+    {"repository": "vercel/next.js", "language": "TypeScript"},
+    {"repository": "vitejs/vite", "language": "TypeScript"},
+    {"repository": "eslint/eslint", "language": "JavaScript"},
+    {"repository": "nodejs/node", "language": "JavaScript"},
+
+    {"repository": "golang/go", "language": "Go"},
+    {"repository": "kubernetes/kubernetes", "language": "Go"},
+    {"repository": "prometheus/prometheus", "language": "Go"},
+    {"repository": "hashicorp/terraform", "language": "Go"},
+    {"repository": "gin-gonic/gin", "language": "Go"},
+
+    {"repository": "rust-lang/rust", "language": "Rust"},
+    {"repository": "tokio-rs/tokio", "language": "Rust"},
+    {"repository": "serde-rs/json", "language": "Rust"},
+    {"repository": "clap-rs/clap", "language": "Rust"},
+    {"repository": "astral-sh/ruff", "language": "Rust"},
+
+    {"repository": "spring-projects/spring-framework", "language": "Java"},
+    {"repository": "apache/kafka", "language": "Java"},
+    {"repository": "elastic/elasticsearch", "language": "Java"},
+    {"repository": "google/guava", "language": "Java"},
+    {"repository": "junit-team/junit5", "language": "Java"}
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "candidate_count": 258,
+  "created_at": "2026-08-30T10:23:46.702951+00:00",
+  "cutoff": "2026-08-30T23:59:59+00:00",
+  "excluded_existing_comment_ids": 10,
+  "language_counts": {
+    "Go": 41,
+    "Java": 44,
+    "JavaScript": 24,
+    "Python": 55,
+    "Rust": 60,
+    "TypeScript": 34
+  },
+  "output_sha256": "dda34ee04eada3d1d14017f5c5e6b9308fe879c7c68086be6aeacd2c272675a9",
+  "repositories": {
+    "apache/kafka": {
+      "comments_seen": 300,
+      "eligible_shape": 215,
+      "reconstructed": 11,
+      "selected": 11
+    },
+    "astral-sh/ruff": {
+      "comments_seen": 139,
+      "eligible_shape": 129,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "clap-rs/clap": {
+      "comments_seen": 191,
+      "eligible_shape": 173,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "django/django": {
+      "comments_seen": 300,
+      "eligible_shape": 228,
+      "reconstructed": 7,
+      "selected": 7
+    },
+    "elastic/elasticsearch": {
+      "comments_seen": 300,
+      "eligible_shape": 256,
+      "reconstructed": 9,
+      "selected": 9
+    },
+    "encode/httpx": {
+      "comments_seen": 232,
+      "eligible_shape": 197,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "eslint/eslint": {
+      "comments_seen": 148,
+      "eligible_shape": 123,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "fastapi/fastapi": {
+      "comments_seen": 116,
+      "eligible_shape": 96,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "gin-gonic/gin": {
+      "comments_seen": 252,
+      "eligible_shape": 106,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "golang/go": {
+      "comments_seen": 171,
+      "eligible_shape": 126,
+      "reconstructed": 0,
+      "selected": 0
+    },
+    "google/guava": {
+      "comments_seen": 300,
+      "eligible_shape": 247,
+      "reconstructed": 2,
+      "selected": 2
+    },
+    "hashicorp/terraform": {
+      "comments_seen": 82,
+      "eligible_shape": 71,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "junit-team/junit5": {
+      "comments_seen": 160,
+      "eligible_shape": 127,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "kubernetes/kubernetes": {
+      "comments_seen": 300,
+      "eligible_shape": 252,
+      "reconstructed": 5,
+      "selected": 5
+    },
+    "microsoft/TypeScript": {
+      "comments_seen": 300,
+      "eligible_shape": 117,
+      "reconstructed": 10,
+      "selected": 10
+    },
+    "nodejs/node": {
+      "comments_seen": 243,
+      "eligible_shape": 217,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "pandas-dev/pandas": {
+      "comments_seen": 199,
+      "eligible_shape": 175,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "prometheus/prometheus": {
+      "comments_seen": 105,
+      "eligible_shape": 83,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "rust-lang/rust": {
+      "comments_seen": 267,
+      "eligible_shape": 248,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "scikit-learn/scikit-learn": {
+      "comments_seen": 253,
+      "eligible_shape": 215,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "serde-rs/json": {
+      "comments_seen": 117,
+      "eligible_shape": 112,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "spring-projects/spring-framework": {
+      "comments_seen": 300,
+      "eligible_shape": 232,
+      "reconstructed": 10,
+      "selected": 10
+    },
+    "tokio-rs/tokio": {
+      "comments_seen": 126,
+      "eligible_shape": 116,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "vercel/next.js": {
+      "comments_seen": 251,
+      "eligible_shape": 127,
+      "reconstructed": 12,
+      "selected": 12
+    },
+    "vitejs/vite": {
+      "comments_seen": 127,
+      "eligible_shape": 108,
+      "reconstructed": 12,
+      "selected": 12
+    }
+  },
+  "repository_count": 24,
+  "schema_version": 1
+}
