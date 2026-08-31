@@ -22,7 +22,7 @@
 \maketitle
 
 \begin{abstract}
-Code-review agents can agree on a plausible finding even when the cited code does not support it. We study whether a machine-checkable evidence requirement reduces this \emph{false consensus}. Evidence-Verified Adversarial Review (\evar) adds a structured receipt---file, lines, expected observation, falsification condition, and optionally a bounded command---to a reviewer/critic protocol. A deterministic verifier must accept the receipt before the finding can become actionable. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard under matched prompts, cases, and call budgets. The untouched Human PR 20 holdout contains 120 decisions over temporal pairs derived from ten public review comments. With GPT-4.1-mini, AR-Text and \evar-Hard tie at \fcr/\scr=.200/.700; with GPT-4.1, \evar-Hard scores .300/.600 versus .200/.700 for AR-Text. A 180-decision OpenAI model extension is likewise heterogeneous; a separate 180-attempt cross-provider study completes only seven of fifteen protocol cells, exposing schema and serving failures. Across 900 fully completed matched decisions, deterministic verification changes the safety--retention operating point but does not dominate textual evidence. Its robust benefit is procedural: every actionable \evar finding carries an inspectable machine result, while invalid evidence becomes an explicit failure rather than silent agreement.
+When a code-review agent cites the wrong lines, asking a second language model whether the finding sounds reasonable can reproduce the same mistake. We test a stricter alternative. Evidence-Verified Adversarial Review (\evar) requires the reviewer to submit a structured receipt---a file, line range, expected observation, falsification condition, and optionally a bounded command---and makes deterministic verification a precondition for actionability. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched prompts, cases, and call budgets. Our final holdout contains 120 decisions over temporal pairs derived from ten public pull-request comments. On this holdout, GPT-4.1-mini gives the same \fcr/\scr operating point for AR-Text and \evar-Hard (.200/.700), while GPT-4.1 favors AR-Text (.200/.700 versus .300/.600). Results from three newer OpenAI models are similarly mixed. A separate cross-provider run completes only seven of fifteen protocol cells and reveals a practical obstacle: schema and serving failures can prevent the comparison from being run at all. Across 900 completed matched decisions, the hard gate changes which findings survive but does not consistently improve decision quality. What it does provide is a reproducible acceptance boundary: an actionable \evar finding has a machine-checked receipt, and failed evidence remains visible in the record.
 \end{abstract}
 
 \section{Introduction}
@@ -39,13 +39,13 @@ We organize the study around three research questions:
   \item[RQ2 (model sensitivity).] Does the safety--retention operating point persist across model capability and cost tiers?
   \item[RQ3 (auditability).] Which protocol failures become mechanically observable when actionability requires a verified receipt?
 \end{description}
-These questions deliberately separate predictive performance from procedural assurance. A protocol can fail to dominate on \fcr and \scr while still making its acceptance path easier to inspect. Conversely, a high receipt-verification rate need not imply that the submitted evidence is relevant to the claim.
+The distinction between decision quality and auditability matters throughout the paper. A receipt can be mechanically valid yet irrelevant to the claim, and a protocol can be easier to audit without producing a better \fcr/\scr pair.
 
 Our contributions are:
 \begin{enumerate}
   \item \textbf{Protocol:} a structured evidence receipt and deterministic gate that make acceptance conditions externally inspectable;
   \item \textbf{Benchmark:} a temporally paired holdout built from public human review comments at reviewed and merged commits;
-  \item \textbf{Evidence:} matched AR, AR-Text, and \evar-Hard experiments showing a reproducible, model-sensitive safety--retention tradeoff rather than universal dominance; and
+  \item \textbf{Evidence:} matched AR, AR-Text, and \evar-Hard experiments that expose a model-sensitive safety--retention tradeoff; and
   \item \textbf{Artifact:} frozen inputs, transcripts, result manifests, and judge-free audits for 900 completed matched decisions, plus canonical accounting for 180 cross-provider attempts with failures retained explicitly.
 \end{enumerate}
 
@@ -266,7 +266,7 @@ GPT-4.1-mini & 8 & 1 & 1 & 10 & 0 & 0 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Finding 1.} On the untouched holdout, the evidence gate does not outperform textual evidence and is not equivalent to a conservative filter. Its effect depends on both receipt validity and how the critic interprets the verified observation.
+The case-level view rules out a simple interpretation of the gate as a conservative filter. On the untouched holdout it neither outperforms textual evidence nor merely removes claims that AR-Text would have accepted. The outcome depends on whether the receipt verifies and on what the critic makes of the verified observation.
 
 \subsection{Exploratory GPT-5.6 model extension}
 
@@ -296,11 +296,11 @@ Sol & \evar-Hard & .100 (.000-.300) & .700 (.400-1.000) & 19 & .308 \\
 
 Luna \evar-Hard exchanges a 0.100 \fcr{} reduction for a 0.100 \scr{} reduction relative to AR. Terra \evar-Hard exactly matches AR and retains two more supported claims than AR-Text. Sol \evar-Hard exactly matches AR-Text and retains one fewer supported claim than AR. Descriptively pooling repeated measurements on the same 20 cases gives AR 0.100/0.767, AR-Text 0.100/0.667, and \evar-Hard 0.067/0.700 for \fcr/\scr; this is not an independent-sample estimate. Total estimated token cost was \$1.411.
 
-\paragraph{Finding 2.} The three-model extension rejects a simple capability-ladder explanation. Receipt verification improves from 85\% to 95\%, but final decision quality does not improve monotonically with it.
+Nor do the three newer models form a simple capability ladder. Receipt verification rises from 85\% for Luna to 95\% for Sol, but neither final metric improves monotonically. Better receipt construction is useful, yet it is plainly not sufficient.
 
 \subsection{Cross-model Pareto synthesis}
 
-Table~\ref{tab:pareto} compares \evar-Hard with each matched baseline without averaging across models. A negative $\Delta\fcr$ is favorable; a positive $\Delta\scr$ is favorable. Across ten comparisons, \evar-Hard dominates once, is dominated twice, ties three times, and produces a safety--retention tradeoff four times. The single dominance result occurs for Terra against AR-Text; it is not reproduced against AR or by the adjacent Luna and Sol tiers. This heterogeneity is the central empirical result, not noise to be removed by pooling.
+Table~\ref{tab:pareto} compares \evar-Hard with each matched baseline instead of averaging across models. A negative $\Delta\fcr$ is favorable; a positive $\Delta\scr$ is favorable. Of the ten comparisons, \evar-Hard dominates once, is dominated twice, ties three times, and exchanges safety for retention four times. The only dominance result is Terra against AR-Text. It disappears when Terra is compared with AR and is not repeated by Luna or Sol. Pooling these outcomes would produce a cleaner number but a less faithful account of the experiment.
 
 \begin{table}[H]
 \centering
@@ -325,11 +325,11 @@ Sol & AR-Text & .000 & .000 & Tie \\
 \end{tabular}
 \end{table}
 
-\paragraph{Finding 3.} Verification is not a model-independent wrapper with a stable effect. Its operating point is an interaction among the reviewer, evidence representation, deterministic verifier, and critic.
+Taken together, the five OpenAI configurations show that verification is not a model-independent wrapper with a stable effect. The reviewer, receipt representation, deterministic checks, and critic jointly determine the operating point.
 
 \subsection{Exploratory cross-provider results}
 
-Table~\ref{tab:cross-provider-accounting} separates canonical attempted rows from duplicate retries and aborted files. Claude and Gemini completed all three protocols; Kimi completed AR only. DeepSeek's 15 invalid-output failures give a valid-response rate of 59.5\% (22/37), making protocol comparison inappropriate. Qwen has only a three-case connectivity pilot. These gaps are results about operational reliability, not missing values to impute.
+Table~\ref{tab:cross-provider-accounting} separates the canonical attempts from duplicate retries and abandoned files. Claude and Gemini completed all three protocols, whereas Kimi completed only AR. DeepSeek returned a valid response in 22 of 37 attempts (59.5\%); with 15 invalid outputs and no complete protocol block, a quality comparison would be misleading. Qwen reached only a three-case connectivity pilot. We retain these gaps because they describe whether the experiment is operationally viable, not because they can be filled by imputation.
 
 \begin{table}[h]
 \centering
@@ -371,7 +371,7 @@ Kimi & AR & .100 & .900 & -- \\
 \end{tabular}
 \end{table}
 
-\paragraph{Finding 4.} Cross-provider execution exposes a second dependency beyond model reasoning: schema compliance and serving reliability determine whether an evidentiary protocol can be evaluated at all.
+The cross-provider run therefore adds a different lesson. Before reasoning quality can be compared, the model and serving path must reliably satisfy the receipt schema. For DeepSeek and Qwen, that prerequisite was not met in this run.
 
 \subsection{Earlier frozen External PR 50 experiment}
 
@@ -425,52 +425,58 @@ Synthetic and small commit-grounded pilots were useful for finding implementatio
 
 \section{Discussion}
 
-The final holdout changes the headline from a safety-retention tradeoff to non-dominance. The v2 receipt format solved much of the mechanical receipt-validity problem: 90\% of holdout receipts verified for each model. However, that did not improve decisions beyond text evidence. Receipt validity, evidentiary relevance, critic correctness, and final actionability are distinct failure surfaces.
+The empirical story is less tidy than the protocol. External PR 50 initially suggested a familiar bargain: the hard gate admitted fewer unsupported claims, but it also discarded supported ones. We then improved receipt generation on a separate development split. On Human PR 20, 90\% of receipts verified for both models, so the obvious mechanical bottleneck had largely receded. The expected gain over textual evidence did not appear. GPT-4.1-mini tied AR-Text, and GPT-4.1 was slightly worse on both measures.
 
-The result does not show that \evar is inferior in a defined population. A one-case change moves either holdout metric by 0.100, and the intervals are correspondingly wide. It does show that requiring deterministic receipts is insufficient, by itself, to claim better review quality. The defensible benefit is procedural: every actionable \evar finding has an inspectable machine-checked receipt, and failed verification stops actionability.
+Looking at individual transitions explains why. \evar-Hard is not AR-Text followed by a filter. The critic receives a different representation of the evidence, and that can alter its judgment in either direction. In one GPT-4.1 case, an unsupported claim rejected by AR-Text became actionable under \evar-Hard. The receipt was valid enough to pass the verifier, but validity did not make the observation relevant. Conversely, a failed receipt can suppress a sound claim before the critic has any opportunity to recover it. Mechanical validity, relevance, critic judgment, and final actionability are separate stages, and errors can enter at each one.
 
-The extension strengthens the non-dominance interpretation. Its three model tiers produce three different comparisons: a safety-retention exchange with Luna, equality with AR for Terra, and equality with AR-Text for Sol. Receipt verification rises from 85\% to 95\% without a monotonic improvement in final outcomes. Model behavior, receipt relevance, critic decisions, and verifier coverage jointly determine the operating point.
+The newer models do not simplify the picture. Luna exchanges a lower FCR for lower retention, Terra matches AR while outperforming AR-Text on retention, and Sol matches AR-Text. Receipt verification improves from 85\% to 95\% across those models without a corresponding ordering of final decisions. The natural conclusion is not that verification wins or loses, but that its effect depends on who writes the receipt, what the verifier can check, and how the critic interprets the result.
+
+The sample is too small to rank protocols in a broader population: one changed decision moves a holdout rate by 0.100. It is large enough to reject the claim that a hard evidence gate is automatically better than textual evidence. The benefit that survives every run is narrower and procedural. \evar makes the acceptance path inspectable, retains failed evidence instead of burying it in dialogue, and prevents critic agreement from overriding a failed check.
 
 \subsection{Answers to the research questions}
 
-\textbf{RQ1: decision quality.} Deterministic verification consistently changes the operating point but does not uniformly improve it. The first frozen study shows lower unsupported acceptance accompanied by supported-claim loss. The untouched human holdout shows equality or a small disadvantage relative to text evidence. The correct headline is non-dominance.
+\textbf{RQ1: decision quality.} Deterministic verification changes which claims become actionable, but it does not improve the two primary metrics consistently. The first frozen study trades lower unsupported acceptance for lost supported claims. On the untouched human holdout, \evar-Hard ties or trails AR-Text.
 
-\textbf{RQ2: model sensitivity.} Receipt construction is strongly model-dependent, particularly in the earlier external study. Yet better receipt validity alone does not order final outcomes in the later extension. Verification should therefore be analyzed as an interaction among generator, critic, receipt language, and verifier rather than as a model-independent wrapper.
+\textbf{RQ2: model sensitivity.} Receipt construction varies sharply with the model, especially in the earlier external study. Even so, the later extension shows that a higher verification rate does not order the final outcomes. The protocol behaves as an interaction among the reviewer, critic, receipt language, and verifier, not as a fixed post-processing step.
 
-\textbf{RQ3: auditability.} The hard gate turns several otherwise latent failures into explicit artifacts: invalid JSON, absent paths, mismatched source, failing witnesses, verifier timeouts, and gate inconsistencies. This is the most robust positive result. It supports forensic review of why a finding became actionable even when aggregate accuracy does not improve.
+\textbf{RQ3: auditability.} Here the result is clearer. Invalid JSON, missing paths, source mismatches, failing witnesses, timeouts, and gate inconsistencies become named records rather than unobserved reasoning errors. That record makes it possible to reconstruct why a finding crossed---or failed to cross---the actionability boundary.
 
 \subsection{Design implications}
 
-First, evidence interfaces should be treated as model-facing APIs. Schema complexity, path vocabulary, source formatting, and repair policy all affect whether a capable model can express what it knows. Second, verifier coverage should grow only on development data; adding targeted checks after inspecting a final holdout converts evaluation into diagnosis. Third, production systems need a policy for the abstention created by failed receipts. In safety-sensitive review, rejecting an unsupported claim may be valuable, but repeatedly suppressing valid findings can make the tool operationally irrelevant.
+An evidence schema is part of the model interface, not neutral plumbing. Path vocabulary, source formatting, nullable fields, and repair policy all affect whether the model can express an observation that the verifier understands. The low verification rate of GPT-4.1-mini on External PR 50 and the much higher rate after development make this dependence visible.
 
-The results also caution against replacing a deterministic gate with a second semantic judge and calling the result verification. A learned judge may improve coverage, but it reintroduces correlated model error and makes the acceptance boundary harder to reproduce. A promising hybrid is to keep deterministic verification as a privileged signal while allowing a separate, explicitly reported ``unverified'' queue for claims requiring human or repository-scale analysis.
+Verifier coverage also needs the same train/test discipline as a learned component. It is tempting to add a structural check whenever a final case fails. Doing so may improve the tool, but the resulting score is diagnostic, not held-out evidence. Our post-hoc perfect result on External PR 20 is reported in exactly that role.
+
+Finally, a failed receipt is an abstention, even when the implementation records it as a rejected finding. A production system needs to decide where those abstentions go. Silently dropping them may be acceptable in a high-noise assistant, but not in a safety-sensitive review process. A more useful deployment might keep deterministic verification as a privileged signal while routing unverified claims to a clearly separated human-review queue.
+
+Replacing the deterministic gate with another semantic judge would improve coverage, but it would also recreate the correlated-error problem that motivated \evar. Such a judge may still be useful, provided its output is reported as judgment rather than verification.
 
 \subsection{What the study does not establish}
 
-We do not show that \evar improves developer productivity, discovers more defects, or reduces review latency in practice. We do not estimate the relative cost of false positives and false negatives. We also do not claim that the five evaluated OpenAI models represent the broader model ecosystem. The frozen cross-provider extension is designed to address the last limitation, but its results must remain separate from the untouched holdout and cannot increase the number of independent benchmark cases.
+This experiment evaluates supplied claims, not open-ended review. It says nothing directly about how many defects an agent discovers, whether developers value its comments, or whether review becomes faster. We also leave the relative cost of a false alarm and a missed finding unspecified; that is why FCR and SCR remain separate. The five fully evaluated OpenAI configurations are not a stand-in for the model ecosystem, and the partial cross-provider run cannot repair that limitation. It reuses the same cases and contributes operational evidence, not new independent examples.
 
 \section{Threats to Validity}
 
 \paragraph{Construct validity.}
-FCR measures whether a pre-specified unsupported claim becomes actionable; it is not the false-positive rate of an open-ended review system. SCR measures retention of claims grounded in a public review-and-fix sequence; it does not establish that every retained comment is useful, well written, or worth a developer's attention. Mechanical receipt validity is likewise not semantic entailment. We report these constructs separately to avoid calling source matching ``correctness.''
+FCR is the rate at which supplied unsupported claims become actionable. It should not be read as the false-positive rate of an agent searching freely for defects. Likewise, SCR captures retention of comments grounded in a public review-and-fix sequence, not whether each comment is well written or useful to a developer. A verified receipt proves only that the submitted observation passed a check; it does not prove semantic entailment. Keeping these measurements separate avoids treating source matching as review correctness.
 
 \paragraph{Internal validity.}
-Human PR 20 uses public review comments and subsequent code changes as temporal evidence. That reduces label ambiguity but does not eliminate it: a merge edit can address only part of a comment, and benchmark builders necessarily inspected every pair. We froze the evaluator before holdout calls, hid labels from prompts, clustered paired cases in the bootstrap, and retained failed calls. These controls reduce leakage and accounting bias; they do not replace independent expert adjudication.
+Human PR 20 treats the reviewed commit and the later merge edit as temporal evidence for the label. This is auditable, but a merge may address only part of a comment, and we necessarily inspected every pair while constructing the benchmark. We froze the evaluator before the holdout calls, removed labels from model-visible prompts, clustered temporal pairs in the bootstrap, and retained failed calls. Independent expert adjudication would still be stronger than this construction procedure.
 
 \paragraph{External validity.}
-Human PR 20 has ten source comments, five Python repositories, and ten cases per label. Selection requires a clean temporal contrast and reconstructable context, favoring localized and explicit claims. Results do not generalize to open-ended discovery, other languages, large architectural findings, or industrial review workflows. The focused excerpts also give models less context to search and less context to misunderstand than a full pull request.
+The final holdout is ten source comments from five Python repositories, paired into ten cases per label. Requiring a clean temporal contrast favors localized, explicit claims. Diffuse architectural concerns, other programming languages, and review comments that depend on an unavailable runtime are largely absent. Focused excerpts also offer much less context than a full pull request---less to search, but also less to misunderstand.
 
 \paragraph{Reliability and conclusion validity.}
-API inference is stochastic, seeds are provenance labels, and most holdout cells have one call. With ten eligible cases per metric, one changed decision moves a rate by 0.100. Cluster bootstrap intervals describe sensitivity within this artifact, not a sampled population. The cross-provider gateway adds routing, throttling, and structured-output failures; incomplete cells are not used for performance claims. Behavioral witnesses run with \texttt{shell=False} and a timeout, but not inside an operating-system sandbox. The released cases are trusted frozen fixtures; executing receipts from untrusted models or repositories requires process isolation, network denial, and disposable filesystems.
+Most holdout cells contain one stochastic call per case, and the configured seeds are provenance labels rather than guaranteed inference controls. With ten eligible cases, a single decision moves a metric by .100. The cluster bootstrap shows sensitivity to the observed pairs; it does not create a sampled population. Gateway routing, throttling, and structured-output failures add further variability to the provider extension, so incomplete cells are excluded from performance comparisons.
 
 \paragraph{Data ethics.}
-The benchmark uses public GitHub repositories and public review comments, preserving URLs and usernames for provenance. It contains no private communication or inferred developer attributes. Public availability does not remove all ethical risk: comments were written for software maintenance, not research participation. The artifact therefore limits analysis to technical claims, avoids profiling individuals, and reports aggregate model behavior.
+The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers.
 
-The model extension is exploratory and reuses Human PR 20 after the original outcomes were known. Its model calls are repeated measurements on the same cases, not additional independent benchmark examples, and there is only one call per model-protocol-case cell. Reasoning effort \texttt{none} controls the configuration but may understate maximum model capability. Model aliases, availability, behavior, and pricing can change after the freeze date.
+\paragraph{Extension validity.}
+Both model extensions reuse Human PR 20 after the original outcomes were known. They are repeated measurements, not additional benchmark examples. Reasoning settings are not necessarily comparable across vendors, and exact model aliases, routing, behavior, and prices can change after the freeze. The gateway may also choose among eligible serving providers. These facts are why we report the OpenAI extension as exploratory and the incomplete provider run primarily as validity accounting.
 
-The partial cross-provider extension introduces gateway routing as an additional construct. Exact model slugs are pinned, but the gateway may select among eligible serving providers. A common \texttt{low} reasoning-effort label does not imply identical hidden-compute budgets across vendors. Several cells are incomplete, and reuse of Human PR 20 prevents treating completed calls as new independent cases. We therefore report provider validity and failure accounting, not a cross-provider performance ranking.
-
-The verifier is Python-specific and covers a limited set of structural and behavioral observations. Model aliases, provider routing, behavior, and pricing can change after the freeze date. These limitations motivate a larger, independently labeled and containerized replication rather than stronger claims from the present sample.
+\paragraph{Implementation scope and safety.}
+The verifier is Python-specific and recognizes a limited set of structural and behavioral observations. Behavioral witnesses use \texttt{shell=False} and a timeout, but they are not isolated by the operating system. The released fixtures are trusted; receipts from untrusted models or repositories should run with network denial, process isolation, and a disposable filesystem. Broader claims require a larger independently labeled benchmark and a containerized evaluator.
 
 \section{Reproducibility and Availability}
 
@@ -498,7 +504,9 @@ Model-backed reproduction requires the corresponding API credential and will not
 
 \section{Conclusion}
 
-\evar makes reviewer-critic agreement necessary but insufficient: a claim must survive an external evidence check. In the earlier frozen experiment, this gate lowered unsupported actionability while rejecting supported claims. After receipt-generation improvements on a separate split, the final human-comment holdout achieved high receipt verification but no advantage over AR-Text. The exploratory three-model extension was heterogeneous rather than a universal win: \evar-Hard traded safety for retention with Luna, matched AR with Terra, and matched AR-Text with Sol. Mechanically checked evidence creates an auditable boundary, but a valid receipt is not synonymous with a correct review decision. A larger, independently labeled and preregistered evaluation is needed before making a population-level performance claim.
+\evar began with a simple premise: agreement between two language models should not be enough to make a code-review claim actionable. Requiring a checked receipt does enforce a clearer boundary, and it turns several hidden failures into inspectable records. The experiments also show the limit of that idea. A receipt can verify and still be irrelevant, while a sound claim can be lost because its receipt fails. On the final human-comment holdout, the hard gate offers no decision-quality advantage over textual evidence; across later models, its effect varies.
+
+That leaves a narrower but useful result. Deterministic evidence improves the provenance of an accepted finding, not necessarily the finding itself. Establishing a performance benefit will require more independent review comments, expert adjudication, repeated calls, full pull-request context, and complete cross-provider cells. The artifact is intended to make that larger test possible without hiding the awkward outcomes that motivated it.
 
 \appendix
 
