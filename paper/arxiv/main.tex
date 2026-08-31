@@ -67,6 +67,8 @@ CodeReviewer pre-trains on code changes and review activities, evaluating qualit
 
 Software-engineering benchmarks increasingly ground tasks in public development history. SWE-bench uses real GitHub issues and pull requests and demonstrates the need for repository context and executable environments \cite{swebench}. SWE-PRBench evaluates code-review models against pull-request feedback and reports limited detection of human-flagged issues \cite{sweprbench}. Our task is narrower: a candidate claim is given, and the system must decide whether it remains actionable under the supplied repository snapshot.
 
+SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues \cite{swrbench}. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable. A future larger benchmark should combine EVAR's receipt-level audit with the PR-scale context and manual verification used by SWR-Bench.
+
 \section{Protocols}
 
 All protocols receive the same candidate claim, task description, repository context, model configuration, and interaction budget.
@@ -458,6 +460,9 @@ C. E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Is
 
 \bibitem{sweprbench}
 D. Kumar. SWE-PRBench: Benchmarking AI Code Review Quality Against Pull Request Feedback. \emph{arXiv:2603.26130}, 2026.
+
+\bibitem{swrbench}
+Z. Zeng et al. Benchmarking and Studying the LLM-based Code Review. \emph{arXiv:2509.01494}, 2025.
 \end{thebibliography}
 
 \end{document}

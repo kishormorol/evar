@@ -27,6 +27,8 @@ EVAR builds on iterative critique and multi-agent deliberation but changes the a
 
 For software-engineering evaluation, SWE-bench grounds tasks in real GitHub issues and pull requests and highlights the need for repository context and executable environments [3]. More recent code-review work evaluates models against human pull-request feedback and reports low detection of human-flagged issues [4]. EVAR studies a narrower question: given a pre-specified candidate review claim, does an evidence gate prevent unsupported reviewer-critic consensus without discarding supported claims?
 
+SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues [5]. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable. A future larger benchmark should combine EVAR's receipt-level audit with the PR-scale context and manual verification used by SWR-Bench.
+
 ## 2. Protocols
 
 We compare three protocols:
@@ -424,3 +426,4 @@ The cross-provider transport uses a process-level curl deadline because some chu
 2. Yilun Du, Shuang Li, Antonio Torralba, Joshua B. Tenenbaum, and Igor Mordatch. "Improving Factuality and Reasoning in Language Models through Multiagent Debate." arXiv:2305.14325, 2023. https://arxiv.org/abs/2305.14325
 3. Carlos E. Jimenez et al. "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?" arXiv:2310.06770, 2023. https://arxiv.org/abs/2310.06770
 4. Deepak Kumar. "SWE-PRBench: Benchmarking AI Code Review Quality Against Pull Request Feedback." arXiv:2603.26130, 2026. https://arxiv.org/abs/2603.26130
+5. Zhengran Zeng et al. "Benchmarking and Studying the LLM-based Code Review." arXiv:2509.01494, 2025. https://arxiv.org/abs/2509.01494
