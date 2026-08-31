@@ -175,7 +175,7 @@ class ModelBackendEnvTests(unittest.TestCase):
         self.assertEqual(payload["response_format"]["type"], "json_schema")
         self.assertTrue(payload["response_format"]["json_schema"]["strict"])
         self.assertEqual(payload["provider"], {"require_parameters": True})
-        self.assertEqual(captured["timeout"], 50)
+        self.assertEqual(captured["timeout"], 25)
         self.assertEqual(response.parsed_output, {"ok": True})
         self.assertEqual(response.input_tokens, 3)
         self.assertEqual(response.output_tokens, 4)

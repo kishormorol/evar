@@ -168,9 +168,9 @@ class OpenRouterChatBackend:
     """OpenAI-compatible chat backend for reproducible cross-provider runs."""
 
     endpoint = "https://openrouter.ai/api/v1/chat/completions"
-    request_timeout_seconds = 45
-    max_attempts = 4
-    max_total_seconds = 180
+    request_timeout_seconds = 20
+    max_attempts = 2
+    max_total_seconds = 50
 
     def __init__(
         self,
