@@ -3,14 +3,17 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 from evar.benchmark.loader import load_jsonl_cases
 from evar.config import load_config
 
 
-ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK = ROOT / "benchmarks/human_pr_20"
 CONFIG_DIR = ROOT / "configs/cross_provider_human_pr_20_v2"
 OUTPUT = BENCHMARK / "cross_provider_freeze_manifest.json"
