@@ -147,9 +147,9 @@ The evaluator commit, prompts, configs, cases, and source excerpts were hashed b
 
 After the original Human PR 20 study was released, we specified an exploratory model extension before making its benchmark calls. The unchanged cases, prompts, verifier semantics, scoring, and budgets were evaluated once per protocol with GPT-5.6 Luna, Terra, and Sol. All configurations used explicit reasoning effort \texttt{none}; seed 41 is a provenance label rather than a deterministic inference control. A transport-only backend change omitted the unsupported \texttt{temperature} field for these models. The evaluator and three configurations were frozen before evaluation.
 
-\subsection{Frozen cross-provider extension}
+\subsection{Exploratory cross-provider extension}
 
-A second exploratory extension is frozen but not yet included in the reported results. It pins Claude Sonnet 5, Gemini 3.1 Pro Preview, Kimi K3, DeepSeek V4 Pro 0813, and Qwen3.8 Max behind OpenRouter's OpenAI-compatible chat endpoint. Each exact model slug supports JSON-schema output and a common \texttt{low} reasoning-effort setting in the August 30, 2026 catalog. The extension holds cases, prompts, budgets, verifier semantics, and scoring fixed and requests only serving endpoints that accept the schema parameter. Its 15 model--protocol cells will add 300 attempted decisions. Results will be inserted only after all calls, audits, and output hashes are complete; this draft makes no claim about their outcomes.
+We also ran a pre-specified exploratory extension through OpenRouter, holding cases, prompts, budgets, verifier semantics, and scoring fixed. The completed blocks cover Claude Sonnet 5 and Gemini 3.1 Pro Preview (20 cases under each of AR, AR-Text, and \evar-Hard; 120/120 successful rows). DeepSeek V4 Pro completed 20 AR cases (11 valid, 9 invalid-output failures) and 17 AR-Text cases before the run was stopped; Kimi K3 completed 16 AR cases plus a separate three-case pilot, and Qwen3.8 Max completed a three-case AR pilot. These rows are exploratory and are not pooled as independent evidence. Invalid model outputs and incomplete cells are retained as failures rather than silently excluded. The OpenRouter transport uses a process-level curl deadline because some chunked responses otherwise remained open indefinitely.
 
 \section{Metrics and Analysis}
 

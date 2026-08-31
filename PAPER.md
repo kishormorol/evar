@@ -152,7 +152,11 @@ Luna EVAR-Hard changes FCR by -0.100 and SCR by -0.100 relative to AR; both pair
 
 The extension cost an estimated $1.411 in standard API token charges. Receipt verification varies from 85% for Luna to 90% for Terra and 95% for Sol, but higher receipt validity does not produce monotonic improvement in final FCR or SCR. These results reinforce that model capability, textual criticism, evidentiary relevance, and the deterministic gate interact rather than forming a simple quality ladder.
 
-### 5.3 Frozen External PR 50 Evaluation
+### 5.3 Exploratory Cross-Provider Extension
+
+We additionally ran a pre-specified cross-provider extension through OpenRouter with the cases, prompts, budgets, verifier semantics, and scoring held fixed. Claude Sonnet 5 and Gemini 3.1 Pro Preview each completed all 60 protocol decisions (AR, AR-Text, and EVAR-Hard; 120/120 successful rows). DeepSeek V4 completed 20 AR cases (11 valid and 9 invalid-output failures) and 17 AR-Text cases before stopping. Kimi K3 completed 16 full AR cases plus a separate three-case pilot; Qwen3.8 Max completed a three-case AR pilot. These exploratory rows are not pooled as independent evidence. Invalid model outputs and incomplete cells remain visible as failures. A process-level curl deadline was added after some OpenRouter chunked responses stayed open indefinitely.
+
+### 5.4 Frozen External PR 50 Evaluation
 
 The primary evaluation contains 600 attempted case decisions: 50 cases × 3 protocols × 2 models × 2 replicates. One `gpt-4.1-mini` EVAR-Hard case failed because the reviewer returned truncated invalid JSON; it remains an explicit failed record and is excluded from FCR/SCR denominators. Seeds 7 and 17 are frozen replicate labels, but the Responses API backend did not transmit an explicit inference seed, so they are independent repetitions rather than controlled seeded inference.
 
