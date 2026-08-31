@@ -19,6 +19,8 @@ class LLMIntegrationTests(unittest.TestCase):
 
         self.assertEqual(config.model.backend, "dry_run")
         self.assertEqual(config.protocol.critic_rounds, 1)
+        self.assertEqual(config.protocol.verifier_execution_backend, "local")
+        self.assertEqual(config.protocol.verifier_container_image, "python:3.12.5-slim-bookworm")
         self.assertEqual(config.experiment.seed, 7)
 
     def test_config_can_omit_temperature_for_reasoning_models(self) -> None:

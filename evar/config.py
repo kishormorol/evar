@@ -17,6 +17,8 @@ class ModelConfig:
 class ProtocolConfig:
     critic_rounds: int
     verifier_timeout_seconds: float
+    verifier_execution_backend: str = "local"
+    verifier_container_image: str = "python:3.12.5-slim-bookworm"
     reviewer_prompt: str | None = None
     reviewer_parse_retries: int = 0
 
@@ -47,6 +49,10 @@ def load_config(path: Path) -> PilotConfig:
         protocol=ProtocolConfig(
             critic_rounds=int(data["protocol"]["critic_rounds"]),
             verifier_timeout_seconds=float(data["protocol"]["verifier_timeout_seconds"]),
+            verifier_execution_backend=str(data["protocol"].get("verifier_execution_backend", "local")),
+            verifier_container_image=str(
+                data["protocol"].get("verifier_container_image", "python:3.12.5-slim-bookworm")
+            ),
             reviewer_prompt=_optional_string(data["protocol"].get("reviewer_prompt")),
             reviewer_parse_retries=int(data["protocol"].get("reviewer_parse_retries", 0)),
         ),

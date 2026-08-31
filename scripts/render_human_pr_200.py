@@ -22,8 +22,23 @@ def load_rows(path: Path) -> list[dict[str, object]]:
 
 def accepted(row: dict[str, object]) -> bool:
     annotation = row.get("annotation")
-    if not isinstance(annotation, dict):
+    provenance = row.get("annotation_provenance")
+    if not isinstance(annotation, dict) or not isinstance(provenance, dict):
         return False
+    annotator_ids = provenance.get("annotator_ids")
+    if (
+        provenance.get("status") != "resolved"
+        or provenance.get("resolution") not in {"agreement", "adjudication"}
+        or not isinstance(annotator_ids, list)
+        or len(annotator_ids) != 2
+        or len(set(str(item).strip() for item in annotator_ids)) != 2
+        or any(not str(item).strip() for item in annotator_ids)
+    ):
+        return False
+    if provenance.get("resolution") == "adjudication":
+        adjudicator_id = provenance.get("adjudicator_id")
+        if not isinstance(adjudicator_id, str) or not adjudicator_id.strip() or adjudicator_id in annotator_ids:
+            return False
     return (
         annotation.get("eligible") is True
         and isinstance(annotation.get("normalized_claim"), str)

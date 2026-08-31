@@ -118,7 +118,9 @@ def _run_configured(
         reviewer,
         critic,
         verifier=DeterministicVerifier(
-            timeout_seconds=config.protocol.verifier_timeout_seconds
+            timeout_seconds=config.protocol.verifier_timeout_seconds,
+            execution_backend=config.protocol.verifier_execution_backend,
+            container_image=config.protocol.verifier_container_image,
         ),
         metadata={
             "run_id": run_id,

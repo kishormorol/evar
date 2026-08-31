@@ -19,6 +19,7 @@ from evar.verifier.models import (
 
 
 DEFAULT_TIMEOUT_SECONDS = 5.0
+DEFAULT_CONTAINER_IMAGE = "python:3.12.5-slim-bookworm"
 BEHAVIORAL_SUPPORT_MARKER = "EVAR_WITNESS_PASS"
 
 
@@ -37,6 +38,8 @@ def verify_evidence(
     repo_path: Path,
     *,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+    execution_backend: str = "local",
+    container_image: str = DEFAULT_CONTAINER_IMAGE,
 ) -> VerificationResult:
     """Verify a reviewer evidence receipt without using an LLM."""
     repo_result = _check_repo_path(repo_path)
@@ -62,7 +65,13 @@ def verify_evidence(
     if receipt.evidence_type == EvidenceType.STRUCTURAL:
         return _verify_structural(receipt, target)
     if receipt.evidence_type == EvidenceType.BEHAVIORAL:
-        return _verify_behavioral(receipt, repo_root, timeout_seconds)
+        return _verify_behavioral(
+            receipt,
+            repo_root,
+            timeout_seconds,
+            execution_backend=execution_backend,
+            container_image=container_image,
+        )
 
     return VerificationResult(
         status=VerificationStatus.UNVERIFIABLE,
@@ -78,14 +87,55 @@ def execute_command(
     repo_path: Path,
     *,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+    execution_backend: str = "local",
+    container_image: str = DEFAULT_CONTAINER_IMAGE,
 ) -> CommandExecution:
-    """Central command execution point; intentionally uses shell=False."""
+    """Run a receipt command locally or in a read-only, networkless container."""
     argv = _parse_command(command)
-    popen_args: str | list[str] = command if os.name == "nt" else argv
+    if execution_backend == "local":
+        popen_args: str | list[str] = command if os.name == "nt" else argv
+        cwd: Path | None = repo_path
+    elif execution_backend == "container":
+        if os.name == "nt":
+            raise OSError("container verification is not supported on Windows")
+        container_argv = list(argv)
+        if Path(container_argv[0]).name.startswith("python"):
+            container_argv[0] = "python"
+        popen_args = [
+            "docker",
+            "run",
+            "--rm",
+            "--network",
+            "none",
+            "--read-only",
+            "--cap-drop",
+            "ALL",
+            "--security-opt",
+            "no-new-privileges",
+            "--pids-limit",
+            "64",
+            "--memory",
+            "256m",
+            "--cpus",
+            "0.5",
+            "--user",
+            "65534:65534",
+            "--tmpfs",
+            "/tmp:rw,noexec,nosuid,size=64m",
+            "--mount",
+            f"type=bind,src={repo_path.resolve()},dst=/workspace,readonly",
+            "--workdir",
+            "/workspace",
+            container_image,
+            *container_argv,
+        ]
+        cwd = None
+    else:
+        raise ValueError(f"unknown verifier execution backend: {execution_backend}")
     try:
         completed = subprocess.run(
             popen_args,
-            cwd=repo_path,
+            cwd=cwd,
             capture_output=True,
             text=True,
             timeout=timeout_seconds,
@@ -898,6 +948,9 @@ def _verify_behavioral(
     receipt: EvidenceReceipt,
     repo_root: Path,
     timeout_seconds: float,
+    *,
+    execution_backend: str,
+    container_image: str,
 ) -> VerificationResult:
     if receipt.verification_command is None:
         return VerificationResult(
@@ -935,6 +988,8 @@ def _verify_behavioral(
             receipt.verification_command,
             repo_root,
             timeout_seconds=timeout_seconds,
+            execution_backend=execution_backend,
+            container_image=container_image,
         )
     except ValueError as exc:
         return VerificationResult(
@@ -1013,8 +1068,18 @@ class DeterministicVerifier:
     def __init__(
         self,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+        execution_backend: str = "local",
+        container_image: str = DEFAULT_CONTAINER_IMAGE,
     ) -> None:
         self.timeout_seconds = timeout_seconds
+        self.execution_backend = execution_backend
+        self.container_image = container_image
 
     def verify(self, receipt: EvidenceReceipt, repo_path: Path) -> VerificationResult:
-        return verify_evidence(receipt, repo_path, timeout_seconds=self.timeout_seconds)
+        return verify_evidence(
+            receipt,
+            repo_path,
+            timeout_seconds=self.timeout_seconds,
+            execution_backend=self.execution_backend,
+            container_image=self.container_image,
+        )

@@ -3,7 +3,9 @@ from __future__ import annotations
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
+from types import SimpleNamespace
 
 from evar.benchmark.cases.toy_calculator_receipts import (
     SUPPORTED_RECEIPT,
@@ -694,6 +696,53 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertIn("verified from repo cwd", result.stdout)
         self.assertEqual(result.stderr, "")
+
+    def test_container_backend_is_read_only_networkless_and_unprivileged(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("# referenced file\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.BEHAVIORAL,
+                file="sample.py",
+                verification_command=f"{sys.executable} probe.py",
+                expected_exit_code=0,
+                expected_stdout_contains="EVAR_WITNESS_PASS",
+            )
+            completed = SimpleNamespace(stdout="EVAR_WITNESS_PASS\n", stderr="", returncode=0)
+            with patch("evar.verifier.verify.subprocess.run", return_value=completed) as run:
+                result = verify_evidence(
+                    receipt,
+                    repo,
+                    execution_backend="container",
+                    container_image="python:test",
+                )
+
+        self.assertEqual(result.status, VerificationStatus.VERIFIED)
+        argv = run.call_args.args[0]
+        self.assertEqual(argv[:3], ["docker", "run", "--rm"])
+        self.assertIn("none", argv[argv.index("--network") + 1 : argv.index("--network") + 2])
+        self.assertIn("--read-only", argv)
+        self.assertEqual(argv[argv.index("--cap-drop") + 1], "ALL")
+        self.assertEqual(argv[argv.index("--user") + 1], "65534:65534")
+        self.assertIn(f"type=bind,src={repo.resolve()},dst=/workspace,readonly", argv)
+        self.assertEqual(argv[-3:], ["python:test", "python", "probe.py"])
+        self.assertIsNone(run.call_args.kwargs["cwd"])
+
+    def test_unknown_execution_backend_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            (repo / "sample.py").write_text("# referenced file\n", encoding="utf-8")
+            receipt = _receipt(
+                evidence_type=EvidenceType.BEHAVIORAL,
+                file="sample.py",
+                verification_command="python probe.py",
+                expected_exit_code=0,
+                expected_stdout_contains="EVAR_WITNESS_PASS",
+            )
+            result = verify_evidence(receipt, repo, execution_backend="other")
+
+        self.assertEqual(result.status, VerificationStatus.UNVERIFIABLE)
+        self.assertIn("unknown verifier execution backend", result.reason)
 
     def test_behavioral_verifier_handles_quoted_python_c_command(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

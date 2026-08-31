@@ -89,6 +89,18 @@ def _check_config(config: PilotConfig, issues: list[PreflightIssue]) -> None:
         issues.append(
             PreflightIssue("error", "BAD_VERIFIER_TIMEOUT", "verifier_timeout_seconds must be positive.")
         )
+    if config.protocol.verifier_execution_backend not in {"local", "container"}:
+        issues.append(
+            PreflightIssue(
+                "error",
+                "BAD_VERIFIER_BACKEND",
+                "verifier_execution_backend must be 'local' or 'container'.",
+            )
+        )
+    if config.protocol.verifier_execution_backend == "container" and not config.protocol.verifier_container_image.strip():
+        issues.append(
+            PreflightIssue("error", "BAD_CONTAINER_IMAGE", "verifier_container_image must be non-empty.")
+        )
     if config.protocol.reviewer_parse_retries < 0:
         issues.append(
             PreflightIssue("error", "BAD_REVIEWER_RETRIES", "reviewer_parse_retries must be non-negative.")

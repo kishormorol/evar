@@ -55,5 +55,36 @@ Open the local annotation tool by serving the repository root and visiting
 PYTHONPATH=. python3 -m http.server 4173
 ```
 
-Each annotator exports their own JSONL file. Merge the completed annotations and
-render accepted temporal pairs with `scripts/render_human_pr_200.py`.
+Each annotator exports their own JSONL file. Keep those files private from the other
+annotator until both passes are complete. Merge exact agreements and create a blinded
+queue for a third adjudicator with:
+
+```bash
+PYTHONPATH=. python3 scripts/adjudicate_human_pr_annotations.py \
+  --annotator-a private/annotator_a.jsonl \
+  --annotator-b private/annotator_b.jsonl \
+  --resolved benchmarks/human_pr_200/resolved_annotations.jsonl \
+  --disagreements private/adjudication_queue.jsonl \
+  --audit benchmarks/human_pr_200/adjudication_audit.json
+```
+
+After the adjudicator exports the disagreement queue, repeat the command with
+`--adjudications private/adjudicator.jsonl`. The renderer rejects rows without two
+independent reviewer IDs and, for disagreements, a distinct adjudicator ID:
+
+```bash
+PYTHONPATH=. python3 scripts/select_human_pr_200.py \
+  --input benchmarks/human_pr_200/resolved_annotations.jsonl \
+  --output benchmarks/human_pr_200/final_100.jsonl \
+  --manifest benchmarks/human_pr_200/selection_manifest.json
+
+PYTHONPATH=. python3 scripts/render_human_pr_200.py \
+  --input benchmarks/human_pr_200/final_100.jsonl \
+  --output-dir benchmarks/human_pr_200/frozen \
+  --audit benchmarks/human_pr_200/render_audit.json
+```
+
+Selection uses a fixed seed, first enforces repository breadth, and then balances
+language and claim-family counts subject to the six-comments-per-repository cap. It
+fails closed unless 100 eligible, provenance-complete comments from at least 20
+repositories are available.

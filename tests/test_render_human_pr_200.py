@@ -10,7 +10,7 @@ from scripts.render_human_pr_200 import accepted, render
 
 class HumanPR200RendererTests(unittest.TestCase):
     def _row(self, **annotation: object) -> dict[str, object]:
-        return {
+        row = {
             "candidate_id": "hpr-test",
             "review_excerpt": "review excerpt",
             "merge_excerpt": "merge excerpt",
@@ -25,7 +25,17 @@ class HumanPR200RendererTests(unittest.TestCase):
             "source_comment_path": "src/widget.py",
             "source_comment_line": 2,
             "annotation": annotation,
+            "annotation_provenance": {
+                "status": "resolved",
+                "resolution": "agreement",
+                "annotator_ids": ["reviewer-a", "reviewer-b"],
+                "adjudicator_id": None,
+            },
         }
+        candidate_id = annotation.pop("candidate_id", None)
+        if candidate_id:
+            row["candidate_id"] = candidate_id
+        return row
 
     def test_only_fully_adjudicated_rows_are_accepted(self) -> None:
         base = {
@@ -37,6 +47,9 @@ class HumanPR200RendererTests(unittest.TestCase):
         }
         self.assertTrue(accepted(self._row(**base)))
         self.assertFalse(accepted(self._row(**{**base, "unsupported_at_merge": False})))
+        unprovenanced = self._row(**base)
+        unprovenanced.pop("annotation_provenance")
+        self.assertFalse(accepted(unprovenanced))
 
     def test_renderer_creates_temporal_pair_and_rejects_pending_rows(self) -> None:
         rows = [
