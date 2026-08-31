@@ -390,6 +390,34 @@ python -m evar.demo_compare
 
 Model-backed experiments require an explicit configuration and API credentials. The artifact records replicate labels, prompt hashes, model settings, per-case failures, token usage, duration, and transcripts to support auditing and later replication.
 
+## Appendix: Experimental Details
+
+### Case construction
+
+Each Human PR 20 case stores the public pull-request URL, comment author, reviewed commit, merge commit, path, line location, claim text, label, and the source excerpts shown to the model. The reviewed snapshot is the positive member of the pair; the merge snapshot is the negative member. Both commits remain available for audit. The set is balanced between ten supported and ten unsupported cases across five repositories. The model-visible task excludes the label and construction notes. Context is clipped to the target file and, where needed, a companion changed file. This makes the test reproducible and focuses it on evidence selection rather than repository navigation.
+
+### Per-case execution
+
+For each case, the runner loads a frozen configuration, starts a transcript, and records every backend call. The reviewer receives the task and repository context. The critic receives the finding alone (AR), the finding plus textual evidence (AR-Text), or a parsed and verified receipt (EVAR-Hard). Parse failures are retried only within the configured budget and are still emitted with a failure type. The verifier has a ten-second command timeout and never calls a language model. Rows record actionability, ground-truth label, critic decision, verifier status, token counts, latency, and transcript path.
+
+### Run inventory and failures
+
+Human PR 20 contains 120 decisions; the GPT-5.6 extension contains 180. The exploratory cross-provider accounting contains 60 valid Claude rows, 60 valid Gemini rows, 22 valid and 15 failed DeepSeek rows, 19 Kimi pilot rows, and three Qwen pilot rows. `ModelOutputError` covers invalid JSON; `HTTPError`, `URLError`, and timeout records identify provider failures. EVAR-specific failures include missing files, invalid ranges, source mismatches, disallowed commands, failed witnesses, missing pass markers, and gate inconsistencies. Failed rows remain visible and are excluded only from FCR/SCR denominators.
+
+### Audit and reproduction
+
+The audit checks transcript completeness, model/protocol metadata, frozen prompt hashes, token consistency, nonnegative latency, and the EVAR implication that actionability requires both `VERIFIED` and critic `ACCEPT`.
+
+```bash
+python -m unittest discover -s tests
+python scripts/summarize_cross_provider.py \
+  results/cross_provider_human_pr_20_final \
+  --output benchmarks/human_pr_20/cross_provider_summary.json
+python -m evar.audit_results --results RESULTS/*.jsonl
+```
+
+The cross-provider transport uses a process-level curl deadline because some chunked responses left a Python socket read open beyond its nominal timeout. The replacement bounds the subprocess, preserves HTTP status codes for retry accounting, and records a timeout instead of hanging the experiment.
+
 ## References
 
 1. Aman Madaan et al. "Self-Refine: Iterative Refinement with Self-Feedback." arXiv:2303.17651, 2023. https://arxiv.org/abs/2303.17651
