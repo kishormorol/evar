@@ -12,9 +12,9 @@ This extension evaluates whether EVAR's operating point generalizes beyond OpenA
 | DeepSeek | `deepseek/deepseek-v4-pro-0813` | `low` |
 | Qwen | `qwen/qwen3.8-max` | `low` |
 
-Each model runs AR, AR-Text, and EVAR-Hard once over all 20 cases, for 300 attempted decisions. Seed 67 is a provenance label; it is not a claim of deterministic inference. Temperature is omitted, output is capped at 2,400 tokens per model call, and OpenRouter routing is restricted to endpoints that accept the requested JSON-schema parameter.
+Each model runs AR, AR-Text, and EVAR-Hard once over all 20 cases, for 300 attempted decisions. Seed 67 is a provenance label; it is not a claim of deterministic inference. Temperature is omitted, output is capped at 2,400 tokens per model call, the runner uses a fixed 20-second HTTP deadline, and OpenRouter routing is restricted to endpoints that accept the requested JSON-schema parameter.
 
-The canonical matrix produced 267 valid decisions and retained 33 failed rows: Claude and Gemini completed 60/60, DeepSeek 43/60, Kimi 55/60, and Qwen 49/60. Only 20/20-valid cells receive FCR/SCR estimates. The canonical token estimate is $3.350; diagnostics and superseded retries are excluded from that estimate but included in the reported $9.241 gateway usage.
+The canonical matrix produced 267 valid decisions and retained 33 failed rows: Claude and Gemini completed 60/60, DeepSeek 43/60, Kimi 55/60, and Qwen 49/60. Of those failures, 32 reached the runner's fixed 20-second HTTP deadline and one failed schema parsing. Only 20/20-valid cells receive FCR/SCR estimates, and incomplete cells are not used to rank model reliability. The canonical token estimate is $3.350; diagnostics and superseded retries are excluded from that estimate but included in the reported $9.241 gateway usage.
 
 ## Interpretation Boundary
 

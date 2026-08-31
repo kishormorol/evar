@@ -1749,6 +1749,48 @@
   ],
   "completed_attempts": 267,
   "failed_attempts": 33,
+  "failure_accounting": [
+    {
+      "attempted": 60,
+      "model": "Claude Sonnet 5",
+      "other": 0,
+      "schema_or_parse": 0,
+      "transport_timeout": 0,
+      "valid": 60
+    },
+    {
+      "attempted": 60,
+      "model": "DeepSeek V4 Pro",
+      "other": 0,
+      "schema_or_parse": 1,
+      "transport_timeout": 16,
+      "valid": 43
+    },
+    {
+      "attempted": 60,
+      "model": "Gemini 3.1 Pro Preview",
+      "other": 0,
+      "schema_or_parse": 0,
+      "transport_timeout": 0,
+      "valid": 60
+    },
+    {
+      "attempted": 60,
+      "model": "Kimi K3",
+      "other": 0,
+      "schema_or_parse": 0,
+      "transport_timeout": 5,
+      "valid": 55
+    },
+    {
+      "attempted": 60,
+      "model": "Qwen3.8 Max",
+      "other": 0,
+      "schema_or_parse": 0,
+      "transport_timeout": 11,
+      "valid": 49
+    }
+  ],
   "overall": [
     {
       "completed_cases": 20,

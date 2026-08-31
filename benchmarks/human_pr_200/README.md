@@ -88,3 +88,10 @@ Selection uses a fixed seed, first enforces repository breadth, and then balance
 language and claim-family counts subject to the six-comments-per-repository cap. It
 fails closed unless 100 eligible, provenance-complete comments from at least 20
 repositories are available.
+
+The 100-comment threshold is a coverage target, not a guarantee of statistical power.
+It reduces the contribution of one independent comment to a label-specific rate from
+0.100 in Human PR 20 to 0.010 and supports the repository and claim-family strata.
+Before any model call, preregister a paired power calculation using the adjudicated
+pilot's protocol-discordance rate. If that calculation requires more than 100 eligible
+comments, acquire more data instead of changing the target after observing outcomes.

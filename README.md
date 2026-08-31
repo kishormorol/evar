@@ -154,7 +154,7 @@ Exploratory extension on the same Human PR 20 cases, using explicit reasoning ef
 
 All 180 extension decisions completed and passed the judge-free audit. The outcomes are heterogeneous: EVAR-Hard trades FCR for SCR with Luna, matches AR with Terra, and matches AR-Text with Sol. The estimated standard token cost was $1.411; see the linked report for intervals, token counts, prices, and limitations.
 
-The matched cross-provider extension attempted another 300 decisions with Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. It retained 267 valid decisions and all 33 structured-output failures. Claude and Gemini completed every cell; DeepSeek, Kimi, and Qwen had model-dependent incomplete cells, so the report does not turn surviving subsets into protocol rankings. The canonical matrix cost an estimated $3.350 in standard token charges; diagnostics and superseded retries brought total gateway usage to $9.241.
+The matched cross-provider extension attempted another 300 decisions with Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. It retained 267 valid decisions and all 33 failed rows. Thirty-two failures reached the runner's fixed 20-second HTTP deadline; one failed schema parsing. Claude and Gemini completed every cell, but the incomplete DeepSeek, Kimi, and Qwen cells cannot support model-reliability or protocol rankings. The canonical matrix cost an estimated $3.350 in standard token charges; diagnostics and superseded retries brought total gateway usage to $9.241.
 
 Held-out 50-case `gpt-4.1` result:
 

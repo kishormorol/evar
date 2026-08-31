@@ -1,6 +1,6 @@
 # Human PR 20 Cross-Provider Results
 
-Matched 300-attempt comparison on the unchanged 20-case temporal holdout. Every attempted row is retained. Quality metrics are shown only for 20/20-valid cells; incomplete cells are operational reliability evidence.
+Matched 300-attempt comparison on the unchanged 20-case temporal holdout. Every attempted row is retained. Quality metrics are shown only for 20/20-valid cells; incomplete cells document this fixed-timeout client/gateway configuration.
 
 > Seed 67 is a provenance label; OpenRouter sampling is not asserted to be deterministic. Each entry contains 20 attempted cases, including failures.
 
@@ -39,8 +39,18 @@ Each interval resamples the ten temporal source-comment pairs. Negative FCR and 
 
 ## Operational accounting
 
-Across all cells, 267 of 300 attempts produced valid decisions and 33 failed before scoring. Failures remain in denominators for reliability but not in FCR/SCR denominators. Because missingness is model-dependent, we do not pool the surviving decisions.
+Across all cells, 267 of 300 attempts produced valid decisions and 33 failed before scoring. Failures remain in denominators for operational accounting but not in FCR/SCR denominators. Because missingness is model-dependent, we do not pool the surviving decisions.
+
+| Model | Valid / attempted | Client timeout | Schema / parse | Other |
+| --- | ---: | ---: | ---: | ---: |
+| Claude Sonnet 5 | 60 / 60 | 0 | 0 | 0 |
+| DeepSeek V4 Pro | 43 / 60 | 16 | 1 | 0 |
+| Gemini 3.1 Pro Preview | 60 / 60 | 0 | 0 | 0 |
+| Kimi K3 | 55 / 60 | 5 | 0 | 0 |
+| Qwen3.8 Max | 49 / 60 | 11 | 0 | 0 |
+
+Thirty-two of the 33 failed rows hit the runner's 20-second HTTP transport deadline; one DeepSeek row failed schema parsing. These observations characterize this client/gateway configuration, not intrinsic model reliability. No failed row is interpreted as a negative review decision.
 
 ## Scope
 
-This is a model-diversity extension, not a new-data extension. It improves cross-provider validity but does not increase the number of independent human review comments. The larger Human PR 200 pool remains unlabeled until two independent experts and a third adjudicator complete the frozen protocol.
+This is a model-diversity extension, not a new-data extension. It probes cross-provider portability but does not increase the number of independent human review comments, and timeout-censored cells cannot support reliability comparisons. The larger Human PR 200 pool remains unlabeled until two independent experts and a third adjudicator complete the frozen protocol.

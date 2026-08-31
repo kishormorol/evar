@@ -3,11 +3,12 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from report_external_pr_50 import build_report
+from scripts.report_external_pr_50 import build_report
 
 
 def _load_runs(index: dict[str, object]) -> list[dict[str, object]]:
@@ -22,11 +23,37 @@ def _load_runs(index: dict[str, object]) -> list[dict[str, object]]:
     return runs
 
 
+def summarize_failures(runs: list[dict[str, object]]) -> list[dict[str, object]]:
+    by_model: dict[str, dict[str, int]] = defaultdict(
+        lambda: {"attempted": 0, "valid": 0, "transport_timeout": 0, "schema_or_parse": 0, "other": 0}
+    )
+    for run in runs:
+        bucket = by_model[str(run["model"])]
+        for row in run["rows"]:
+            bucket["attempted"] += 1
+            if row.get("run_status") == "ok":
+                bucket["valid"] += 1
+                continue
+            failure = row.get("failure") or {}
+            failure_type = str(failure.get("type", ""))
+            reason = str(failure.get("reason", "")).lower()
+            if failure_type == "URLError" and "timed out" in reason:
+                bucket["transport_timeout"] += 1
+            elif failure_type == "ModelOutputError":
+                bucket["schema_or_parse"] += 1
+            else:
+                bucket["other"] += 1
+    return [
+        {"model": model, **counts}
+        for model, counts in sorted(by_model.items())
+    ]
+
+
 def render_markdown(report: dict[str, object], index: dict[str, object]) -> str:
     lines = [
         "# Human PR 20 Cross-Provider Results",
         "",
-        "Matched 300-attempt comparison on the unchanged 20-case temporal holdout. Every attempted row is retained. Quality metrics are shown only for 20/20-valid cells; incomplete cells are operational reliability evidence.",
+        "Matched 300-attempt comparison on the unchanged 20-case temporal holdout. Every attempted row is retained. Quality metrics are shown only for 20/20-valid cells; incomplete cells document this fixed-timeout client/gateway configuration.",
         "",
         f"> {index['replicate_note']}",
         "",
@@ -66,13 +93,25 @@ def render_markdown(report: dict[str, object], index: dict[str, object]) -> str:
         "",
         "## Operational accounting",
         "",
-        f"Across all cells, {report['completed_attempts']} of {report['attempted_decisions']} attempts produced valid decisions and {report['failed_attempts']} failed before scoring. Failures remain in denominators for reliability but not in FCR/SCR denominators. Because missingness is model-dependent, we do not pool the surviving decisions.",
+        f"Across all cells, {report['completed_attempts']} of {report['attempted_decisions']} attempts produced valid decisions and {report['failed_attempts']} failed before scoring. Failures remain in denominators for operational accounting but not in FCR/SCR denominators. Because missingness is model-dependent, we do not pool the surviving decisions.",
+        "",
+        "| Model | Valid / attempted | Client timeout | Schema / parse | Other |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ])
+    for row in report["failure_accounting"]:
+        lines.append(
+            f"| {row['model']} | {row['valid']} / {row['attempted']} | {row['transport_timeout']} | "
+            f"{row['schema_or_parse']} | {row['other']} |"
+        )
+    lines.extend([
+        "",
+        "Thirty-two of the 33 failed rows hit the runner's 20-second HTTP transport deadline; one DeepSeek row failed schema parsing. These observations characterize this client/gateway configuration, not intrinsic model reliability. No failed row is interpreted as a negative review decision.",
     ])
     lines.extend([
         "",
         "## Scope",
         "",
-        "This is a model-diversity extension, not a new-data extension. It improves cross-provider validity but does not increase the number of independent human review comments. The larger Human PR 200 pool remains unlabeled until two independent experts and a third adjudicator complete the frozen protocol.",
+        "This is a model-diversity extension, not a new-data extension. It probes cross-provider portability but does not increase the number of independent human review comments, and timeout-censored cells cannot support reliability comparisons. The larger Human PR 200 pool remains unlabeled until two independent experts and a third adjudicator complete the frozen protocol.",
         "",
     ])
     return "\n".join(lines)
@@ -92,6 +131,7 @@ def main() -> int:
     report["attempted_decisions"] = sum(row["total_cases"] for row in report["overall"])
     report["completed_attempts"] = sum(row["completed_cases"] for row in report["overall"])
     report["failed_attempts"] = sum(row["failed_runs"] for row in report["overall"])
+    report["failure_accounting"] = summarize_failures(runs)
     args.json.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     args.markdown.write_text(render_markdown(report, index), encoding="utf-8")
     print(args.json)

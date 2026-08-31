@@ -21,7 +21,7 @@
 
 \begin{document}
 \begin{abstract}
-When a code-review agent cites the wrong lines, asking a second language model whether the finding sounds reasonable can reproduce the same mistake. We test a stricter alternative. Evidence-Verified Adversarial Review (\evar) requires the reviewer to submit a structured receipt---a file, line range, expected observation, falsification condition, and optionally a bounded command---and makes deterministic verification a precondition for actionability. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched prompts, cases, and call budgets. Our final holdout contains 120 decisions over temporal pairs derived from ten public pull-request comments. On this holdout, GPT-4.1-mini gives the same \fcr/\scr operating point for AR-Text and \evar-Hard (.200/.700), while GPT-4.1 favors AR-Text (.200/.700 versus .300/.600). Results from three newer OpenAI models are similarly mixed. A five-provider extension records 300 further attempts under a shared 2,400-token cap: Claude and Gemini complete every cell, while DeepSeek, Kimi, and Qwen expose 33 schema-generation failures. Across the full artifact, 1,167 of 1,200 attempts produce scored decisions. The hard gate changes which findings survive but does not consistently improve decision quality. What it does provide is a reproducible acceptance boundary: an actionable \evar finding has a machine-checked receipt, and failed evidence remains visible in the record.
+When a code-review agent cites the wrong lines, asking a second language model whether the finding sounds reasonable can reproduce the same mistake. We test a stricter alternative. Evidence-Verified Adversarial Review (\evar) requires the reviewer to submit a structured receipt---a file, line range, expected observation, falsification condition, and optionally a bounded command---and makes deterministic verification a precondition for actionability. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched prompts, cases, and call budgets. Our final holdout contains 120 decisions over temporal pairs derived from ten public pull-request comments. On this holdout, GPT-4.1-mini gives the same \fcr/\scr operating point for AR-Text and \evar-Hard (.200/.700), while GPT-4.1 favors AR-Text (.200/.700 versus .300/.600). Results from three newer OpenAI models are similarly mixed. A five-provider extension records 300 further attempts under a shared 2,400-token cap: 267 produce decisions, 32 hit the runner's 20-second HTTP deadline, and one fails schema parsing. Across the full artifact, 1,167 of 1,200 attempts produce scored decisions. The hard gate changes which findings survive but does not consistently improve decision quality. What it does provide is a reproducible acceptance boundary: an actionable \evar finding has a machine-checked receipt, and failed evidence remains visible in the record.
 \end{abstract}
 
 \keywords{code review, language-model agents, evidence verification, benchmark, reliability}
@@ -50,7 +50,7 @@ Our contributions are:
   \item \textbf{Protocol:} a structured evidence receipt and deterministic gate that make acceptance conditions externally inspectable;
   \item \textbf{Benchmark:} a temporally paired holdout built from public human review comments at reviewed and merged commits;
   \item \textbf{Evidence:} matched AR, AR-Text, and \evar-Hard experiments that expose a model-sensitive safety--retention tradeoff; and
-  \item \textbf{Artifact:} frozen inputs, transcripts, result manifests, and judge-free audits for 1,200 attempted decisions, including 33 provider failures retained explicitly.
+  \item \textbf{Artifact:} frozen inputs, transcripts, result manifests, and judge-free audits for 1,200 attempted decisions, including 33 failed calls retained explicitly.
 \end{enumerate}
 
 \section{Related Work}
@@ -72,6 +72,8 @@ Modern code review is not reducible to defect detection. Interviews at Microsoft
 \subsection{Automated code review and benchmarks}
 
 CodeReviewer pre-trains on code changes and review activities, evaluating quality estimation, comment generation, and refinement \cite{codereviewer}. That line of work asks whether a system can generate or improve reviews. Our task begins later in the pipeline: a candidate claim already exists, and the system must decide whether the repository snapshot supports actionability.
+
+A recent survey of 99 code-review studies organizes the area into 18 tasks \cite{review-survey}. That heterogeneity is important here: EVAR is a claim-validation benchmark, not a substitute for issue discovery, localization, comment generation, or developer-utility evaluation.
 
 Hybrid review systems combine learned generation with rule-based analyzers to recover some precision without surrendering broad issue coverage \cite{hybrid-static}. \evar shares the motivation but assigns the deterministic component a different role: it validates the submitted observation and controls actionability; it neither generates a parallel comment nor establishes semantic relevance by itself.
 
@@ -166,6 +168,8 @@ External PR 50 contains 50 balanced claims grounded in 25 commits from Click, pl
 
 Human PR 20 was created after v2 development. Ten comments by non-bot GitHub reviewers were selected from Black, pytest, Rich, Pydantic, and Poetry, none of which appeared in External PR 50. Each comment yields a temporal pair: the reviewed commit supports the claim and the merged commit no longer does. Cases preserve the exact public comment URL, author, path, line, pull request, and commit. Each contains a focused changed-target excerpt and a companion changed-file excerpt when available, with less than 30 KB total context. This yields ten supported and ten unsupported cases.
 
+The ten source comments are not evenly distributed: Black contributes three, pytest, Pydantic, and Poetry two each, and Rich one. At the source-comment level, five claims concern causal mislocalization, two behavior inversion, two stale evidence, and one an incorrect call relationship. There are no missing-guard examples. This composition is fixed before evaluation and is reported because a nominally balanced label set can still be narrow in repository and claim coverage.
+
 \subsection{Temporal-pair construction}
 
 The temporal design controls claim wording within each pair. At the reviewed commit, the human comment states a condition that is present in the code and the case is labeled supported. At the merge commit, the relevant code has changed such that the same claim is no longer supported. Pairing reduces wording and topic variation between labels, but it also means the two rows derived from one comment are statistically related. Bootstrap resampling therefore clusters on the source case identifier.
@@ -200,7 +204,7 @@ After the original Human PR 20 study was released, we specified an exploratory m
 
 \subsection{Exploratory cross-provider design}
 
-We evaluated five exact OpenRouter model slugs: Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. The canonical extension reused Human PR 20, seed label 67, low reasoning effort, a shared 2,400-token output cap, and the frozen prompts, verifier, and scoring code. Gateway routing was restricted to endpoints accepting the requested JSON Schema. Every model attempted all 60 decisions. We do not selectively retry failed cases or treat a transport failure as a negative prediction. Instead, only 20/20-valid cells receive FCR/SCR estimates, and incomplete cells contribute operational reliability evidence.
+We evaluated five exact OpenRouter model slugs: Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. The canonical extension reused Human PR 20, seed label 67, low reasoning effort, a shared 2,400-token output cap, a fixed 20-second HTTP transport deadline, and the frozen prompts, verifier, and scoring code. Gateway routing was restricted to endpoints accepting the requested JSON Schema. Every model attempted all 60 decisions. We do not selectively retry failed cases or treat a transport failure as a negative prediction. Instead, only 20/20-valid cells receive FCR/SCR estimates, and incomplete cells contribute evidence about this particular client--gateway configuration.
 
 \section{Metrics and Analysis}
 
@@ -273,6 +277,8 @@ GPT-4.1-mini & 8 & 1 & 1 & 10 & 0 & 0 \\
 
 The case-level view rules out a simple interpretation of the gate as a conservative filter. On the untouched holdout it neither outperforms textual evidence nor merely removes claims that AR-Text would have accepted. The outcome depends on whether the receipt verifies and on what the critic makes of the verified observation.
 
+Exact two-sided McNemar tests for AR-Text versus \evar-Hard are $p=1.0$ for both labels and both models. This is not evidence of equivalence: each test contains at most three discordant pairs. We report the result to make the inferential limit explicit rather than treating a tied point estimate as a stable effect.
+
 \subsection{Exploratory GPT-5.6 model extension}
 
 All 180 extension attempts completed, and the judge-free audit reported no inconsistency. Table~\ref{tab:extension} shows one run per model and protocol. Verified counts apply to the 20 \evar-Hard receipts; other protocols do not submit receipts. Standard token prices at the August 30, 2026 freeze came from the official OpenAI model comparison.\footnote{\url{https://developers.openai.com/api/docs/models/compare}}
@@ -334,22 +340,22 @@ Taken together, the five OpenAI configurations show that verification is not a m
 
 \subsection{Exploratory cross-provider results}
 
-Table~\ref{tab:cross-provider-accounting} reports a fresh matched run in which every model attempted all three 20-case cells. Claude and Gemini produced 60 valid decisions each. Kimi produced 55, Qwen 49, and DeepSeek 43. The 33 failures were overwhelmingly empty reviewer responses after the endpoint consumed the output allowance in reasoning; the runner records them as \texttt{ModelOutputError}. We retain these gaps because they describe whether the experiment is operationally viable, not because they can be filled by imputation.
+Table~\ref{tab:cross-provider-accounting} reports a fresh matched run in which every model attempted all three 20-case cells. Claude and Gemini produced 60 valid decisions each. Kimi produced 55, Qwen 49, and DeepSeek 43. Of the 33 failed rows, 32 are \texttt{URLError} records from the runner's 20-second HTTP deadline and one DeepSeek row is a \texttt{ModelOutputError} caused by an invalid receipt field. We retain these gaps, but they do not estimate intrinsic model reliability: the dominant event is censoring by our client timeout.
 
 \begin{table}[h]
 \centering
-\caption{Canonical cross-provider accounting. ``Complete cells'' counts 20-case protocol blocks.}
+\caption{Canonical cross-provider accounting. Timeout is the fixed client-side HTTP deadline; schema denotes model-output parsing.}
 \label{tab:cross-provider-accounting}
 \small
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrrrr@{}}
 \toprule
-Model & Attempted & Valid & Failed & Complete cells \\
+Model & Attempted & Valid & Timeout & Schema & Complete cells \\
 \midrule
-Claude Sonnet 5 & 60 & 60 & 0 & 3/3 \\
-Gemini 3.1 Pro & 60 & 60 & 0 & 3/3 \\
-DeepSeek V4 Pro & 60 & 43 & 17 & 0/3 \\
-Kimi K3 & 60 & 55 & 5 & 2/3 \\
-Qwen3.8 Max & 60 & 49 & 11 & 0/3 \\
+Claude Sonnet 5 & 60 & 60 & 0 & 0 & 3/3 \\
+Gemini 3.1 Pro & 60 & 60 & 0 & 0 & 3/3 \\
+DeepSeek V4 Pro & 60 & 43 & 16 & 1 & 0/3 \\
+Kimi K3 & 60 & 55 & 5 & 0 & 2/3 \\
+Qwen3.8 Max & 60 & 49 & 11 & 0 & 0/3 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -377,7 +383,7 @@ Kimi & \evar-Hard & .000 & .800 & 19/20 \\
 \end{tabular}
 \end{table}
 
-The cross-provider run therefore adds two lessons. Gemini provides one favorable paired point: both evidence protocols remove one AR false consensus without losing a supported claim. Claude provides the counterexample: \evar-Hard loses one supported claim while all protocols already have zero FCR. More basically, model reasoning quality cannot be compared until the serving path reliably returns the receipt schema. DeepSeek and Qwen did not meet that prerequisite, even after the shared cap was doubled from the earlier pilot setting. The canonical run cost an estimated \$3.350 from recorded tokens; exploratory retries and diagnostics raised total gateway usage to \$9.241.
+The cross-provider run therefore adds two lessons. Gemini provides one favorable paired point: both evidence protocols remove one AR false consensus without losing a supported claim. Claude provides the counterexample: \evar-Hard loses one supported claim while all protocols already have zero FCR. For the other models, the experiment mainly diagnoses an inadequate timeout choice: the available rows cannot distinguish slow completion from endpoint or model failure. The canonical run cost an estimated \$3.350 from recorded tokens; exploratory retries and diagnostics raised total gateway usage to \$9.241.
 
 \subsection{Earlier frozen External PR 50 experiment}
 
@@ -445,7 +451,7 @@ The sample is too small to rank protocols in a broader population: one changed d
 
 \textbf{RQ2: model sensitivity.} Receipt construction varies sharply with the model, especially in the earlier external study. Even so, the later extension shows that a higher verification rate does not order the final outcomes. The protocol behaves as an interaction among the reviewer, critic, receipt language, and verifier, not as a fixed post-processing step.
 
-\textbf{RQ3: auditability.} Here the result is clearer. Invalid JSON, missing paths, source mismatches, failing witnesses, timeouts, and gate inconsistencies become named records rather than unobserved reasoning errors. That record makes it possible to reconstruct why a finding crossed---or failed to cross---the actionability boundary.
+\textbf{RQ3: auditability.} Here the result is clearer. Invalid JSON, missing paths, source mismatches, failing witnesses, transport timeouts, and gate inconsistencies become named records rather than unobserved reasoning errors. The distinction matters: the cross-provider trace shows that 32 apparent ``model failures'' were actually client-deadline events. Typed records make it possible to reconstruct why a finding crossed---or failed to cross---the actionability boundary without conflating infrastructure with reasoning.
 
 \subsection{Design implications}
 
@@ -473,7 +479,7 @@ Human PR 20 treats the reviewed commit and the later merge edit as temporal evid
 The final holdout is ten source comments from five Python repositories, paired into ten cases per label. Requiring a clean temporal contrast favors localized, explicit claims. Diffuse architectural concerns, other programming languages, and review comments that depend on an unavailable runtime are largely absent. Focused excerpts also offer much less context than a full pull request---less to search, but also less to misunderstand.
 
 \paragraph{Reliability and conclusion validity.}
-Most holdout cells contain one stochastic call per case, and the configured seeds are provenance labels rather than guaranteed inference controls. With ten eligible cases, a single decision moves a metric by .100. The cluster bootstrap shows sensitivity to the observed pairs; it does not create a sampled population. Gateway routing, throttling, and structured-output failures add further variability to the provider extension, so incomplete cells are excluded from performance comparisons.
+Most holdout cells contain one stochastic call per case, and the configured seeds are provenance labels rather than guaranteed inference controls. With ten eligible cases, a single decision moves a metric by .100. The cluster bootstrap shows sensitivity to the observed pairs; it does not create a sampled population. Exact paired tests are likewise uninformative with zero to three discordances. In the provider extension, 32 rows are censored by a fixed 20-second client deadline and one fails output parsing. These are not random missing observations and cannot support a model-reliability ranking, so incomplete cells are excluded from performance comparisons.
 
 \paragraph{Data ethics.}
 The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers.
@@ -505,7 +511,7 @@ Model-backed reproduction requires the corresponding API credential and will not
 
 \evar began with a simple premise: agreement between two language models should not be enough to make a code-review claim actionable. Requiring a checked receipt does enforce a clearer boundary, and it turns several hidden failures into inspectable records. The experiments also show the limit of that idea. A receipt can verify and still be irrelevant, while a sound claim can be lost because its receipt fails. On the final human-comment holdout, the hard gate offers no decision-quality advantage over textual evidence; across later models, its effect varies.
 
-That leaves a narrower but useful result. Deterministic evidence improves the provenance of an accepted finding, not necessarily the finding itself. The five-provider extension sharpens rather than overturns that conclusion: Gemini gives a favorable point, Claude gives a retention counterexample, and 33 provider failures show that schema reliability is itself part of the system. Establishing a performance benefit still requires more independent review comments, expert adjudication, repeated calls, and full pull-request context. The artifact now includes the acquisition and adjudication machinery for that larger test without presenting unreviewed candidates as ground truth.
+That leaves a narrower but useful result. Deterministic evidence improves the provenance of an accepted finding, not necessarily the finding itself. The five-provider extension sharpens rather than overturns that conclusion: Gemini gives a favorable point, Claude gives a retention counterexample, and the failed-call trace reveals that evaluation infrastructure is itself part of the measured system. Establishing a performance benefit still requires more independent review comments, expert adjudication, repeated calls, full pull-request context, and a transport budget chosen independently of model latency. The artifact now includes the acquisition and adjudication machinery for that larger test without presenting unreviewed candidates as ground truth.
 
 \appendix
 
@@ -563,7 +569,7 @@ Token cost is computed from recorded input and output tokens and the price table
 
 \section{Representative Failure Cases}
 
-The most common EVAR failure on the frozen external benchmark was not a verifier bug but a receipt that cited a nearby true line which did not establish the claim. Other examples included a command that passed but never printed the required marker, a line range copied from a display excerpt rather than the repository file, and a contradiction receipt submitted with the support role. On the cross-provider run, DeepSeek frequently returned an empty or non-JSON reviewer response after consuming its output budget; those rows are `ModelOutputError`, not negative review decisions. These examples explain why the paper reports receipt validity, critic decisions, and actionability as separate fields.
+The most common EVAR failure on the frozen external benchmark was not a verifier bug but a receipt that cited a nearby true line which did not establish the claim. Other examples included a command that passed but never printed the required marker, a line range copied from a display excerpt rather than the repository file, and a contradiction receipt submitted with the support role. In the cross-provider run, 32 calls reached the 20-second HTTP deadline after receiving a partial response and are stored as \texttt{URLError}; one DeepSeek receipt had an empty claim identifier and is stored as \texttt{ModelOutputError}. Neither category is a negative review decision. These examples explain why the paper reports transport, serialization, receipt validity, critic decisions, and actionability as separate fields.
 
 \section{What a Larger Replication Should Add}
 
@@ -578,6 +584,8 @@ The first annotation tranche contains 276 candidates, selected before annotation
 Exact agreements are resolved automatically. Any difference in eligibility, normalized claim, family, temporal judgment, or exclusion reason enters a third, blinded adjudication queue. The adjudicator must have an identifier distinct from both reviewers. The merger stores reviewer identifiers, resolution mode, adjudicator identifier when used, and SHA-256 hashes of every input export. The case renderer rejects a row unless that provenance is complete. This closes a weakness in the earlier draft, whose renderer could accept one filled annotation object even though the written protocol called for two reviewers.
 
 After adjudication, deterministic selection first establishes at least 20 represented repositories and then balances language and claim family while enforcing the six-comment repository cap. It fails closed unless 100 eligible source comments remain. Those comments yield 200 temporal cases, one supported review snapshot and one unsupported merge snapshot per claim. The frozen manifest records the source and output hashes, seed, candidate identifiers, repository count, and stratum counts. Until experts complete this process, the 682 records remain an acquisition artifact and no Human PR 200 performance result is reported.
+
+The 100-comment target is a coverage target, not a post-hoc claim of statistical power. It changes the granularity of a label-specific rate from .100 to .010 and permits a minimum of 20 repositories while retaining claim-family strata. Before model calls, the replication should preregister a paired power analysis using the adjudicated pilot's discordance rate; if that analysis requires more than 100 eligible comments, acquisition must continue rather than relaxing the target after observing model outcomes.
 
 \section{Cross-Provider Frozen Configuration}
 
@@ -599,7 +607,7 @@ Qwen & \texttt{qwen/qwen3.8-max} & low reasoning, 2,400-token cap & 3 \\
 \end{tabularx}
 \end{table}
 
-Temperature is omitted for all five models. Structured output uses strict JSON Schema, and gateway provider routing requires endpoints that accept the requested parameters. Seed 67 is stored only as provenance unless the routed endpoint explicitly honors it.
+Temperature is omitted for all five models. Structured output uses strict JSON Schema, gateway provider routing requires endpoints that accept the requested parameters, and the HTTP client deadline is 20 seconds. Seed 67 is stored only as provenance unless the routed endpoint explicitly honors it.
 
 \section{Audit Invariants}
 
@@ -646,10 +654,12 @@ U. Cihan et al. Automated Code Review in Practice. In \emph{Proceedings of ICSE-
 K. Tantithamthavorn et al. RovoDev Code Reviewer: A Large-Scale Online Evaluation of LLM-based Code Review Automation at Atlassian. In \emph{Proceedings of ICSE-SEIP}, 2026. doi:10.1145/3786583.3786851.
 
 \bibitem{hybrid-static}
-I. Jaoua, O. Ben Sghaier, and H. A. Sahraoui. Combining Large Language Models with Static Analyzers for Code Review Generation. In \emph{Proceedings of MSR}, pp. 174--186, 2025.
+I. Jaoua, O. Ben Sghaier, and H. A. Sahraoui. Combining Large Language Models with Static Analyzers for Code Review Generation. In \emph{Proceedings of MSR}, pp. 174--186, 2025. doi:10.1109/MSR66628.2025.00038.
 
 \bibitem{contextcrbench}
-R. Hu et al. Benchmarking LLMs for Fine-Grained Code Review with Enriched Context in Practice. In \emph{Proceedings of FSE Industry Papers}, 2026. \emph{arXiv:2511.07017}.
+R. Hu et al. Benchmarking LLMs for Fine-Grained Code Review with Enriched Context in Practice. In \emph{Proceedings of FSE Companion}, pp. 620--631, 2026. doi:10.1145/3803437.3805235.
+\bibitem{review-survey}
+T. I. Khan, S. Wang, H. Zhang, and T.-H. Chen. A Survey of Code Review Benchmarks and Evaluation Practices in Pre-LLM and LLM Era. \emph{arXiv:2602.13377}, 2026.
 \end{thebibliography}
 
 \end{document}
