@@ -71,13 +71,29 @@
       "ok": 16,
       "protocol": "ar",
       "rows": 16
+    },
+    {
+      "failed": 0,
+      "file": "results/cross_provider_human_pr_20_final/20260831T014047Z-629b6f8a_ar.jsonl",
+      "model": "moonshotai/kimi-k3",
+      "ok": 20,
+      "protocol": "ar",
+      "rows": 20
+    },
+    {
+      "failed": 0,
+      "file": "results/cross_provider_human_pr_20_final/20260831T014437Z-0376d8c4_ar_text.jsonl",
+      "model": "moonshotai/kimi-k3",
+      "ok": 13,
+      "protocol": "ar_text",
+      "rows": 13
     }
   ],
   "source": "results/cross_provider_human_pr_20_final",
   "totals": {
     "failed": 15,
-    "files": 9,
-    "ok": 158,
-    "rows": 173
+    "files": 11,
+    "ok": 191,
+    "rows": 206
   }
 }
