@@ -71,6 +71,7 @@ def audit_results(
                 str(_nested(row, "metadata", "experiment", "seed")),
             )
             for row in records
+            if row.get("run_status") == "ok"
         )
         summaries.append(
             {
@@ -151,8 +152,7 @@ def _audit_result_file(
         issues.append(AuditIssue("UNEXPECTED_CASE", str(path), case_id))
 
     signatures = {
-        (row.get("run_id"), row.get("protocol"), _nested(row, "metadata", "model", "model"),
-         _nested(row, "metadata", "experiment", "seed"))
+        (row.get("run_id"), row.get("protocol"), _nested(row, "metadata", "model", "model"))
         for row in records
     }
     if len(signatures) != 1:
