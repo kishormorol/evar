@@ -156,6 +156,16 @@ The extension cost an estimated $1.411 in standard API token charges. Receipt ve
 
 We additionally ran a pre-specified cross-provider extension through OpenRouter with the cases, prompts, budgets, verifier semantics, and scoring held fixed. Claude Sonnet 5 and Gemini 3.1 Pro Preview each completed all 60 protocol decisions (AR, AR-Text, and EVAR-Hard; 120/120 successful rows). DeepSeek V4 completed 20 AR cases (11 valid and 9 invalid-output failures) and 17 AR-Text cases before stopping. Kimi K3 completed 16 full AR cases plus a separate three-case pilot; Qwen3.8 Max completed a three-case AR pilot. These exploratory rows are not pooled as independent evidence. Invalid model outputs and incomplete cells remain visible as failures. A process-level curl deadline was added after some OpenRouter chunked responses stayed open indefinitely.
 
+| Model | Attempted rows | Valid rows | Failed/incomplete |
+|---|---:|---:|---:|
+| Claude Sonnet 5 | 60 | 60 | 0 |
+| Gemini 3.1 Pro | 60 | 60 | 0 |
+| DeepSeek V4 Pro | 37 | 22 | 15 |
+| Kimi K3 | 19 | 19 | 0 |
+| Qwen3.8 Max | 3 | 3 | 0 |
+
+These are attempted rows rather than independent cases; repeated pilot rows are not pooled into performance estimates.
+
 ### 5.4 Frozen External PR 50 Evaluation
 
 The primary evaluation contains 600 attempted case decisions: 50 cases × 3 protocols × 2 models × 2 replicates. One `gpt-4.1-mini` EVAR-Hard case failed because the reviewer returned truncated invalid JSON; it remains an explicit failed record and is excluded from FCR/SCR denominators. Seeds 7 and 17 are frozen replicate labels, but the Responses API backend did not transmit an explicit inference seed, so they are independent repetitions rather than controlled seeded inference.

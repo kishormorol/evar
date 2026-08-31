@@ -151,6 +151,24 @@ After the original Human PR 20 study was released, we specified an exploratory m
 
 We also ran a pre-specified exploratory extension through OpenRouter, holding cases, prompts, budgets, verifier semantics, and scoring fixed. The completed blocks cover Claude Sonnet 5 and Gemini 3.1 Pro Preview (20 cases under each of AR, AR-Text, and \evar-Hard; 120/120 successful rows). DeepSeek V4 Pro completed 20 AR cases (11 valid, 9 invalid-output failures) and 17 AR-Text cases before the run was stopped; Kimi K3 completed 16 AR cases plus a separate three-case pilot, and Qwen3.8 Max completed a three-case AR pilot. These rows are exploratory and are not pooled as independent evidence. Invalid model outputs and incomplete cells are retained as failures rather than silently excluded. The OpenRouter transport uses a process-level curl deadline because some chunked responses otherwise remained open indefinitely.
 
+\begin{table}[h]
+\centering
+\caption{Cross-provider exploratory run accounting. Counts are attempted rows, not independent cases.}
+\label{tab:cross-provider-accounting}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Model & Attempted & Valid & Failed/incomplete \\
+\midrule
+Claude Sonnet 5 & 60 & 60 & 0 \\
+Gemini 3.1 Pro & 60 & 60 & 0 \\
+DeepSeek V4 Pro & 37 & 22 & 15 \\
+Kimi K3 & 19 & 19 & 0 \\
+Qwen3.8 Max & 3 & 3 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Metrics and Analysis}
 
 For completed cases, false consensus rate and supported-claim retention are
