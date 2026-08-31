@@ -420,6 +420,32 @@ python -m evar.audit_results --results RESULTS/*.jsonl
 
 The cross-provider transport uses a process-level curl deadline because some chunked responses left a Python socket read open beyond its nominal timeout. The replacement bounds the subprocess, preserves HTTP status codes for retry accounting, and records a timeout instead of hanging the experiment.
 
+### Case and output schemas
+
+Each benchmark case is a JSON object with stable identifiers and no hidden state. The principal fields are `case_id`, `claim_family`, `claim`, `repo_path`, `context`, `ground_truth`, and `provenance`. Ground truth is evaluator-only and contains the support label, source commit, and expected interpretation. Context is a named set of target-file and changed-file excerpts, serialized in a fixed order. The runner records the SHA-256 hash of the prompt template.
+
+The reviewer output is intentionally narrower than a full review report. AR and AR-Text require a decision and short finding. EVAR-Hard additionally requires receipts. Each receipt identifies a claim, evidence role, evidence type, repository-relative file, optional line interval, optional command, and falsification condition. Behavioral receipts add an expected exit code, output marker, and observation string. Missing required fields produce a parse failure; they are not repaired during scoring.
+
+### Interaction schedule
+
+The protocols share the same call budget. The reviewer proposes a finding, the critic challenges it, and the reviewer gets one revision opportunity. AR exposes only proposal text to the critic. AR-Text adds natural-language evidence. EVAR-Hard adds the final receipt and verifier result and does not allow the critic to override a failed receipt. Every request role, prompt hash, timestamp, token count, response, parser outcome, and retry number is recorded. This makes an empty receipt list distinguishable from invalid JSON or a valid receipt that points at the wrong commit.
+
+### Receipt validation rules
+
+Structural validation removes only display artifacts such as Markdown fences, leading line numbers, and trailing whitespace. It checks the repository-relative path, line interval, and normalized source observation. Behavioral validation runs an allow-listed command in an isolated fixture with a fixed working directory and timeout, then checks exit status and the `EVAR_WITNESS_PASS` marker. Commands cannot access the network or write outside the fixture. Evidence role is checked independently of textual similarity; role-repair experiments are development diagnostics, not evaluation results.
+
+### Statistical and cost details
+
+FCR and SCR are calculated only from completed rows of the relevant ground-truth class, with numerators and denominators retained in the report. Bootstrap intervals resample source case identifiers so both temporal members of a human comment remain together. Paired deltas join protocols on `(model, replicate, case_id)` before resampling. Token cost uses recorded input/output tokens and the frozen price table; retries count toward cost and latency. Cross-provider rows are reported as validity accounting rather than a pooled quality estimate because gateway routing and duplicate pilots make the cells non-independent.
+
+### Representative failure cases
+
+Common EVAR failures were receipts that quoted a nearby true line without establishing the claim, commands that passed without printing the required marker, line ranges copied from display excerpts rather than repository files, and contradiction receipts submitted with the support role. DeepSeek also produced empty or non-JSON reviewer responses after consuming its output budget. These are recorded as `ModelOutputError`, not as negative review decisions. Receipt validity, critic decisions, and final actionability are therefore reported separately.
+
+### Larger replication
+
+A stronger replication should sample review comments before observing their outcomes, include complete pull-request snapshots, obtain two independent expert labels with adjudication, preregister the sampling frame, repeat every model-protocol cell, report calibration and abstention, and include multilingual repositories. The present artifact supplies the receipt and audit machinery for that study; 20 temporal cases are not a representative sample of code review.
+
 ## References
 
 1. Aman Madaan et al. "Self-Refine: Iterative Refinement with Self-Feedback." arXiv:2303.17651, 2023. https://arxiv.org/abs/2303.17651

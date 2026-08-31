@@ -382,6 +382,38 @@ emit result row and complete transcript
 
 The pseudocode elides bounded parse retry and error recording but preserves the acceptance semantics. The same interaction budget is used across protocols; AR-Text changes evidence instructions, and \evar-Hard changes both the reviewer schema and gate.
 
+\section{Case and Output Schemas}
+
+Each benchmark case is a JSON object with stable identifiers and no hidden state. The principal fields are `case_id`, `claim_family`, `claim`, `repo_path`, `context`, `ground_truth`, and `provenance`. The `ground_truth` object is available only to the evaluator and contains the binary support label, the source commit, and the expected interpretation of the claim. `context` contains named excerpts rather than an opaque concatenated prompt: target path, target lines, changed-file lines, and optional repository metadata. The runner serializes these fields into the protocol prompt in a fixed order and records the SHA-256 hash of the prompt template.
+
+The reviewer's structured output is intentionally narrower than a full code-review report. AR and AR-Text require a decision and a short finding. \evar-Hard additionally requires a list of receipts. A receipt has eight required concepts: a stable claim identifier, claim text, evidence role (`supports_claim` or `contradicts_claim`), evidence type (`structural` or `behavioral`), repository-relative file, optional line interval, optional verification command, and a falsification condition. Behavioral receipts also specify an expected exit code, an output marker, and an observation string. Unknown fields are ignored only after schema validation; missing required fields cause a recorded parse failure.
+
+\section{Interaction Schedule}
+
+The protocols are matched by call budget. In the first pass, the reviewer proposes a finding. The critic then tests the proposal. If the protocol permits revision, the reviewer receives the critic's challenge once and returns a final proposal. AR exposes only the proposal text to the critic. AR-Text exposes the same proposal plus the reviewer's natural-language evidence. \evar-Hard exposes the final receipt and the verifier's machine result; it does not allow a critic to override a failed receipt. This schedule prevents a stronger protocol from receiving extra opportunities simply because it has more machinery.
+
+The runner records a call-level trace with request role, model slug, prompt hash, request start/end timestamps, token counts, response text, parser outcome, and retry number. A transcript is written even when the first call fails. This is useful in practice: invalid JSON, a valid JSON object with an empty receipt list, and a valid receipt that points at the wrong commit are different observations and should not collapse into one generic failure.
+
+\section{Receipt Validation Rules}
+
+Structural validation normalizes only display artifacts that cannot change source meaning: Markdown fences, leading line numbers, and trailing whitespace. It then reads the requested file from the frozen snapshot, checks that the interval is within bounds, and compares the normalized observation to the selected lines. Behavioral validation runs an allow-listed command in the isolated fixture with a fixed working directory, environment, and timeout. It checks exit status and a required `EVAR_WITNESS_PASS` marker. Commands cannot write outside the fixture, access the network, or invoke a shell pipeline. The verifier returns a typed failure so an audit can distinguish a missing path from a wrong observation.
+
+The evidence role is checked independently of textual similarity. A receipt that exactly quotes a source line but labels it as contradiction when the case expects support is not silently repaired during evaluation. Role-repair experiments belong to development diagnostics and are excluded from the frozen scores. This conservative policy is what makes the actionability gate reproducible, though it can reject a semantically reasonable but poorly formatted receipt.
+
+\section{Statistical and Cost Details}
+
+FCR and SCR are computed after filtering to completed rows of the relevant ground-truth class. We report the numerator and denominator alongside each rate. Bootstrap intervals resample source case identifiers, not individual protocol rows, so the two temporal members of a human comment remain together. Paired deltas first join protocols on `(model, replicate, case_id)` and then resample those joined case clusters. A zero-width interval can occur for a metric that is identical in every resampled cluster; it is not evidence of a large population certainty.
+
+Token cost is computed from recorded input and output tokens and the price table frozen with each model configuration. Retries are included in cost and latency. Failed requests therefore consume budget and remain part of operational reporting even though they do not enter FCR/SCR denominators. The cross-provider table is restricted to validity accounting because gateway routing, model availability, and duplicate pilot attempts make a pooled quality estimate inappropriate.
+
+\section{Representative Failure Cases}
+
+The most common EVAR failure on the frozen external benchmark was not a verifier bug but a receipt that cited a nearby true line which did not establish the claim. Other examples included a command that passed but never printed the required marker, a line range copied from a display excerpt rather than the repository file, and a contradiction receipt submitted with the support role. On the cross-provider run, DeepSeek frequently returned an empty or non-JSON reviewer response after consuming its output budget; those rows are `ModelOutputError`, not negative review decisions. These examples explain why the paper reports receipt validity, critic decisions, and actionability as separate fields.
+
+\section{What a Larger Replication Should Add}
+
+The current design deliberately controls context and claim wording. A stronger replication should sample review comments before seeing their outcome, include complete pull-request snapshots, obtain two independent expert labels with adjudication, and preregister the sampling frame. It should also repeat each model-protocol cell, report calibration and abstention, and evaluate multilingual repositories. The present artifact supplies the receipt and audit machinery needed for that study; it should not be mistaken for evidence that 20 temporal cases represent the wider code-review population.
+
 \section{Cross-Provider Frozen Configuration}
 
 \begin{table}[H]
