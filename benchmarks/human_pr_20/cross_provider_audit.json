@@ -1,0 +1,205 @@
+{
+  "expected_cases_per_run": 20,
+  "issue_counts": {},
+  "issues": [],
+  "ok": true,
+  "records": 300,
+  "result_files": 15,
+  "run_summaries": [
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154505Z-acbaf2f1_ar.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "anthropic/claude-sonnet-5",
+          "protocol": "ar",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154731Z-8029dc0e_ar_text.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "anthropic/claude-sonnet-5",
+          "protocol": "ar_text",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154957Z-f97c6b66_evar_hard.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "anthropic/claude-sonnet-5",
+          "protocol": "evar_hard",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154502Z-3279d8f8_ar.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "google/gemini-3.1-pro-preview",
+          "protocol": "ar",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154746Z-1316b2e3_ar_text.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "google/gemini-3.1-pro-preview",
+          "protocol": "ar_text",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T155026Z-0e8f2e65_evar_hard.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "google/gemini-3.1-pro-preview",
+          "protocol": "evar_hard",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 7,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154504Z-ea87acd2_ar.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "deepseek/deepseek-v4-pro-0813",
+          "protocol": "ar",
+          "records": 13,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 4,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T155339Z-a36cefea_ar_text.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "deepseek/deepseek-v4-pro-0813",
+          "protocol": "ar_text",
+          "records": 16,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 6,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T160258Z-448263cb_evar_hard.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "deepseek/deepseek-v4-pro-0813",
+          "protocol": "evar_hard",
+          "records": 14,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 5,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154505Z-20ba623f_ar.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "moonshotai/kimi-k3",
+          "protocol": "ar",
+          "records": 15,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T155334Z-8df16f1f_ar_text.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "moonshotai/kimi-k3",
+          "protocol": "ar_text",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 0,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T155821Z-21703696_evar_hard.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "moonshotai/kimi-k3",
+          "protocol": "evar_hard",
+          "records": 20,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 4,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T154503Z-43c3f367_ar.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "qwen/qwen3.8-max",
+          "protocol": "ar",
+          "records": 16,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 2,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T155423Z-1a7fd9b0_ar_text.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "qwen/qwen3.8-max",
+          "protocol": "ar_text",
+          "records": 18,
+          "seed": "67"
+        }
+      ]
+    },
+    {
+      "failed_records": 5,
+      "path": "results/cross_provider_human_pr_20_v2/20260831T160331Z-4a47d1f9_evar_hard.jsonl",
+      "records": 20,
+      "run_signatures": [
+        {
+          "model": "qwen/qwen3.8-max",
+          "protocol": "evar_hard",
+          "records": 15,
+          "seed": "67"
+        }
+      ]
+    }
+  ]
+}

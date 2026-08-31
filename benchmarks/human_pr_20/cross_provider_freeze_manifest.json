@@ -1,17 +1,18 @@
 {
+  "artifact_commit": "ae5ed31a493abb4bba98d1d6e8ea501a04c9ead4",
   "benchmark": {
     "cases": 20,
     "name": "human_pr_20",
     "supported": 10,
     "unsupported": 10
   },
-  "created_at": "2026-08-30T04:23:08.332184+00:00",
-  "evaluator_commit": "df16dc5eb5e71429891b84b6242bc560e0b0f863",
+  "created_at": "2026-08-31T18:54:26.418777+00:00",
+  "evaluator_commit": "e3189d1093679cbe6e820f1b1a31d0baeb3321d3",
   "experiment": {
     "attempted_decisions": 300,
     "backend": "openrouter",
     "endpoint": "https://openrouter.ai/api/v1/chat/completions",
-    "max_output_tokens": 1200,
+    "max_output_tokens": 2400,
     "models": [
       "anthropic/claude-sonnet-5",
       "deepseek/deepseek-v4-pro-0813",
@@ -26,7 +27,7 @@
     ],
     "provider_require_parameters": true,
     "reasoning_effort": "low",
-    "seed_label": 53,
+    "seed_label": 67,
     "temperature": null
   },
   "files": {
@@ -235,30 +236,30 @@
       "category": "snapshot",
       "sha256": "2792e8fb7365113e4c77d489ffac0ef377e4a512ca364bd07146ef20e60d1291"
     },
-    "configs/cross_provider_human_pr_20/claude_sonnet5_seed53.yaml": {
+    "configs/cross_provider_human_pr_20_v2/claude_sonnet5_seed67.yaml": {
       "bytes": 302,
       "category": "config",
-      "sha256": "e165ad61f54e2f8c48c5a7f4c6c2cde79ed4af426a5554b6c854d05e40556ecb"
+      "sha256": "cc698773fbb0ace909964fa9678c22fdf281d0fa5c9cab2792593e82a0645d5d"
     },
-    "configs/cross_provider_human_pr_20/deepseek_v4_pro_seed53.yaml": {
+    "configs/cross_provider_human_pr_20_v2/deepseek_v4_pro_seed67.yaml": {
       "bytes": 306,
       "category": "config",
-      "sha256": "d39ad7e0f64b95e5bb09a653ee5b7d1c86168b2416cd129780aabcc2f179df41"
+      "sha256": "54d5a17fa0529bcbd99766a8c59731d9df7afd410e00042062ed9239bd0dcb38"
     },
-    "configs/cross_provider_human_pr_20/gemini31_pro_seed53.yaml": {
+    "configs/cross_provider_human_pr_20_v2/gemini31_pro_seed67.yaml": {
       "bytes": 306,
       "category": "config",
-      "sha256": "19db259dc995eacbc52eec0cffbb3725d1d3337c37df5f03c2afcc48d9637efb"
+      "sha256": "04acd3bdf0dc1b7cc334ee80b2502a4ae99eee38f05541e7dd876ba191a610c0"
     },
-    "configs/cross_provider_human_pr_20/kimi_k3_seed53.yaml": {
+    "configs/cross_provider_human_pr_20_v2/kimi_k3_seed67.yaml": {
       "bytes": 295,
       "category": "config",
-      "sha256": "18bf805094cdbc2be15658f283f729a2d3c8198777a8f115a2cd19802d34cd4e"
+      "sha256": "66fd4409d44e7c114d9c1b98a10f1d47d799951347881da98d153ea6fed72f5c"
     },
-    "configs/cross_provider_human_pr_20/qwen38_max_seed53.yaml": {
+    "configs/cross_provider_human_pr_20_v2/qwen38_max_seed67.yaml": {
       "bytes": 293,
       "category": "config",
-      "sha256": "8f6689882dc0ace3665dcb16d235b71efc75386ce660cf2acb91206f8945640b"
+      "sha256": "ffea25a640a4c561e83a811dc24937dba8455f0d998732c6c2d7c6d9cfa4c2e8"
     },
     "evar/__init__.py": {
       "bytes": 89,
@@ -296,9 +297,9 @@
       "sha256": "91a449ad9120d147786732bcea95808b8d4b2f44b5a583a73696f18cfacd2122"
     },
     "evar/audit_results.py": {
-      "bytes": 10419,
+      "bytes": 10999,
       "category": "evaluator",
-      "sha256": "e3f50a39245be5aa8c34e0261bac89d1537a0cfcc1563ff2d6f3ef0d624cb463"
+      "sha256": "b8396622c54c6f5521d7fed2c7ea6e81b0c53b35b75c8da883e9170d5cdb584c"
     },
     "evar/benchmark/__init__.py": {
       "bytes": 41,
@@ -335,6 +336,11 @@
       "category": "evaluator",
       "sha256": "56c49ec7d45bb657f8e97be512287629faead2c56cda879f273d230f8648af1d"
     },
+    "evar/benchmark/human_pr_candidates.py": {
+      "bytes": 16736,
+      "category": "evaluator",
+      "sha256": "5b7507fea4bd8f170c6de28a79ef5db0bb35e6bd545d8c393834025c19fd7ec6"
+    },
     "evar/benchmark/loader.py": {
       "bytes": 5455,
       "category": "evaluator",
@@ -346,9 +352,9 @@
       "sha256": "f40a9ddcfbc0249b73ebcd71506979b4dfe05b33c0658f6005440190f95332ad"
     },
     "evar/config.py": {
-      "bytes": 3172,
+      "bytes": 3542,
       "category": "evaluator",
-      "sha256": "903acb78dfbcbcf7c5c0e0ebd0c29d255e74652d50c653d0822fce5bc80ad675"
+      "sha256": "3895a65aca8af5978a51f5002e27bb505351e0179c7ab8faa9f959edb2179b64"
     },
     "evar/demo_compare.py": {
       "bytes": 1245,
@@ -396,14 +402,14 @@
       "sha256": "c7bf315706e5ea859325eb12287b2581cf55f5845e273de44fec0cb87216f4bf"
     },
     "evar/model_backend.py": {
-      "bytes": 10499,
+      "bytes": 13924,
       "category": "evaluator",
-      "sha256": "1cbb12f0c2a2433e834f82a08bd22c9e1be382201b5d315d49615996612de09e"
+      "sha256": "04cae19a0becad7d7293d49519c493e0d6ee17988d32d5292b2a7c6a7a51bbad"
     },
     "evar/preflight.py": {
-      "bytes": 6533,
+      "bytes": 7094,
       "category": "evaluator",
-      "sha256": "ab72a8261c78cb2d86d866ebf0e1adfa7aff1bd003ff70aeb7101603d4763e4f"
+      "sha256": "5540cf9f970d6dfa89d598394261912b28812d6f08f467138110bc6fdd4b3dfd"
     },
     "evar/prompts.py": {
       "bytes": 672,
@@ -446,9 +452,9 @@
       "sha256": "17046a37d9a7ad358997a88842b6b62e288a7f4cf584fe4a415da90aebdf71cc"
     },
     "evar/run.py": {
-      "bytes": 17040,
+      "bytes": 17705,
       "category": "evaluator",
-      "sha256": "07ad260dcfd6f72c56eecfd8bd13e622b27b3fa553dea4c536fb02e851a4a8e6"
+      "sha256": "c5d0062c3489dcadf4757847bbce00cb276a75275ebd4d18d4508efc3f507d0b"
     },
     "evar/run_model.py": {
       "bytes": 2245,
@@ -476,9 +482,9 @@
       "sha256": "12ae79fdab7968861ab1b6d6df09fb0cf2c8b15062a8854d50b35ede8f92a4a5"
     },
     "evar/verifier/verify.py": {
-      "bytes": 36247,
+      "bytes": 38340,
       "category": "evaluator",
-      "sha256": "409381f00ee68b375a0bfdb96c410d879c51126dbde9f937aed3eec23be186f2"
+      "sha256": "76bfe7b264c8b0e1a37fe24a69f470f1b96ada02e867ec2cfd7da4c5862ce56d"
     },
     "prompts/critic_ar_text_v1.txt": {
       "bytes": 887,
