@@ -1,0 +1,51 @@
+{
+  "case_id": "humanpr20_005",
+  "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": {
+    "attempt_count": 1,
+    "input_tokens": 480,
+    "latency_seconds": 0.9611428749922197,
+    "model_name": "deepseek/deepseek-v4-pro-0813",
+    "output_tokens": 97,
+    "parsed_output": {
+      "decision": "COUNTEREXAMPLE"
+    },
+    "text": "{\"decision\":\"COUNTEREXAMPLE\"}"
+  },
+  "failure": {
+    "reason": "<urlopen error curl: (28) Operation timed out after 20005 milliseconds with 517 bytes received\n>",
+    "type": "URLError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3774173657; exact reviewed snapshot e25d981ec0ca25a6bda1f5513d6df61e5240e69e.",
+  "protocol": "ar",
+  "repo_path": "benchmarks/human_pr_20/repos/case_005",
+  "reviewer_model": {
+    "attempt_count": 1,
+    "input_tokens": 1986,
+    "latency_seconds": 4.652226459002122,
+    "model_name": "deepseek/deepseek-v4-pro-0813",
+    "output_tokens": 744,
+    "parsed_output": {
+      "receipts": [
+        {
+          "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+          "claim_id": "",
+          "evidence_role": "contradicts_claim",
+          "evidence_type": "structural",
+          "expected_exit_code": null,
+          "expected_stdout_contains": "",
+          "falsification_condition": "",
+          "file": "context/target.md",
+          "line_end": 26,
+          "line_start": 26,
+          "verification_command": "grep -nF 'Preserve blank lines that come immediately before a `# fmt: on` comment (#5300)' context/target.md"
+        }
+      ]
+    },
+    "text": "{\"receipts\":[{\"claim\":\"The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.\",\"claim_id\":\"\" ,\"evidence_role\":\"contradicts_claim\",\"evidence_type\":\"structural\",\"expected_exit_code\":null,\"expected_stdout_contains\":\"\",\"falsification_condition\":\"\",\"file\":\"context/target.md\",\"line_end\":26,\"line_start\":26,\"verification_command\":\"grep -nF 'Preserve blank lines that come immediately before a `# fmt: on` comment (#5300)' context/target.md\"}]}"
+  },
+  "run_id": "20260831T154504Z-ea87acd2",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available."
+}

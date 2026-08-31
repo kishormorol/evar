@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_003",
+  "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+      "claim_id": "pr5300-changes-entry",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "claim_id": "pr5300-changes-entry",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Preserve blank lines that come immediately before a `# fmt: on` comment. They are\n  inside the opted-out region, but they live in the prefix of the `# fmt: on` comment\n  rather than in the verbatim block, so they were being capped like any ordinary blank\n  run (#5300)",
+        "falsification_condition": "If the CHANGES entry were shown to contain internal-only jargon or implementation details unintelligible to end users rather than a plain-language description of user-visible behavior change, the claim would be supported; here the entry describes the observable bug (blank lines being capped) in understandable terms, refuting the claim.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the CHANGES entry were shown to contain internal-only jargon or implementation details unintelligible to end users rather than a plain-language description of user-visible behavior change, the claim would be supported; here the entry describes the observable bug (blank lines being capped) in understandable terms, refuting the claim.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "quoted_or_paraphrased_support": "Preserve blank lines that come immediately before a `# fmt: on` comment. They are\n  inside the opted-out region, but they live in the prefix of the `# fmt: on` comment\n  rather than in the verbatim block, so they were being capped like any ordinary blank\n  run (#5300)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/psf/black/pull/5300#discussion_r3813438763; exact reviewed snapshot 6ca34c38c7706bf74bf408bb8ba12f086dc1fe45.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260831T154731Z-8029dc0e",
+    "seed": 67
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+      "claim_id": "pr5300-changes-entry",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "claim_id": "pr5300-changes-entry",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Preserve blank lines that come immediately before a `# fmt: on` comment. They are\n  inside the opted-out region, but they live in the prefix of the `# fmt: on` comment\n  rather than in the verbatim block, so they were being capped like any ordinary blank\n  run (#5300)",
+        "falsification_condition": "If the CHANGES entry were shown to contain internal-only jargon or implementation details unintelligible to end users rather than a plain-language description of user-visible behavior change, the claim would be supported; here the entry describes the observable bug (blank lines being capped) in understandable terms, refuting the claim.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the CHANGES entry were shown to contain internal-only jargon or implementation details unintelligible to end users rather than a plain-language description of user-visible behavior change, the claim would be supported; here the entry describes the observable bug (blank lines being capped) in understandable terms, refuting the claim.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "quoted_or_paraphrased_support": "Preserve blank lines that come immediately before a `# fmt: on` comment. They are\n  inside the opted-out region, but they live in the prefix of the `# fmt: on` comment\n  rather than in the verbatim block, so they were being capped like any ordinary blank\n  run (#5300)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_003",
+  "run_id": "20260831T154731Z-8029dc0e",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "pr5300-changes-entry",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "claim_id": "pr5300-changes-entry",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Preserve blank lines that come immediately before a `# fmt: on` comment. They are\n  inside the opted-out region, but they live in the prefix of the `# fmt: on` comment\n  rather than in the verbatim block, so they were being capped like any ordinary blank\n  run (#5300)",
+        "falsification_condition": "If the CHANGES entry were shown to contain internal-only jargon or implementation details unintelligible to end users rather than a plain-language description of user-visible behavior change, the claim would be supported; here the entry describes the observable bug (blank lines being capped) in understandable terms, refuting the claim.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "The CHANGES entry for pull request 5300 includes internal prefix and verbatim-block details instead of a concise user-facing summary.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the CHANGES entry were shown to contain internal-only jargon or implementation details unintelligible to end users rather than a plain-language description of user-visible behavior change, the claim would be supported; here the entry describes the observable bug (blank lines being capped) in understandable terms, refuting the claim.",
+        "file": "context/target.md",
+        "line_end": 27,
+        "line_start": 24,
+        "quoted_or_paraphrased_support": "Preserve blank lines that come immediately before a `# fmt: on` comment. They are\n  inside the opted-out region, but they live in the prefix of the `# fmt: on` comment\n  rather than in the verbatim block, so they were being capped like any ordinary blank\n  run (#5300)"
+      },
+      "timestamp": "2026-08-31T15:47:53.972820+00:00"
+    },
+    {
+      "claim_id": "pr5300-changes-entry",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T15:47:56.326870+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "pr5300-changes-entry",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T15:47:56.327017+00:00"
+    }
+  ]
+}

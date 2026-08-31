@@ -38,6 +38,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--protocol", required=True, choices=["ar", "ar_text", "evar", "evar_hard"])
     parser.add_argument("--cases", required=True, type=Path)
     parser.add_argument("--config", type=Path)
+    parser.add_argument(
+        "--case-id",
+        action="append",
+        help="Run only the named case; repeat this option to select multiple cases.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=Path("results"))
     args = parser.parse_args(argv)
@@ -47,6 +52,15 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, BenchmarkValidationError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
+
+    if args.case_id:
+        requested = set(args.case_id)
+        available = {case.case_id for case in cases}
+        missing = sorted(requested - available)
+        if missing:
+            print(f"error: unknown case IDs: {', '.join(missing)}", file=sys.stderr)
+            return 2
+        cases = [case for case in cases if case.case_id in requested]
 
     if args.config is not None:
         try:

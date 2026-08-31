@@ -1,0 +1,120 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_008",
+  "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Original path: testing/test_pathlib.py",
+        "falsification_condition": "The provided repository context is testing/test_pathlib.py, not the pytest changelog, so it cannot support a claim about what the changelog exposes.",
+        "file": "context/companion.py",
+        "line_end": 1,
+        "line_start": 1,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "Original path: testing/test_pathlib.py"
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3789351958; exact merged snapshot d6f66d42df86624ed128b84ce57df3d173fe1b95.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "EVAR-Hard",
+    "run_id": "20260831T160258Z-448263cb",
+    "seed": 67
+  },
+  "protocol": "evar_hard",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Original path: testing/test_pathlib.py",
+        "falsification_condition": "The provided repository context is testing/test_pathlib.py, not the pytest changelog, so it cannot support a claim about what the changelog exposes.",
+        "file": "context/companion.py",
+        "line_end": 1,
+        "line_start": 1,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "Original path: testing/test_pathlib.py"
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_008",
+  "run_id": "20260831T160258Z-448263cb",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+        "claim_id": "causal_mislocalization",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "Original path: testing/test_pathlib.py",
+        "falsification_condition": "The provided repository context is testing/test_pathlib.py, not the pytest changelog, so it cannot support a claim about what the changelog exposes.",
+        "file": "context/companion.py",
+        "line_end": 1,
+        "line_start": 1,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-31T16:07:01.588935+00:00"
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "event_type": "VERIFICATION_RESULT",
+      "timestamp": "2026-08-31T16:07:01.590784+00:00",
+      "verification_result": {
+        "exit_code": 0,
+        "reason": "Structural evidence verified.",
+        "status": "VERIFIED",
+        "stderr": "",
+        "stdout": "Original path: testing/test_pathlib.py"
+      }
+    },
+    {
+      "claim_id": "causal_mislocalization",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T16:07:03.075271+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "causal_mislocalization",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T16:07:03.075479+00:00"
+    }
+  ]
+}

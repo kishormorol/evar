@@ -1,0 +1,51 @@
+{
+  "case_id": "humanpr20_020",
+  "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": {
+    "attempt_count": 1,
+    "input_tokens": 561,
+    "latency_seconds": 3.442730415990809,
+    "model_name": "deepseek/deepseek-v4-pro-0813",
+    "output_tokens": 167,
+    "parsed_output": {
+      "decision": "ACCEPT"
+    },
+    "text": "{\"decision\":\"ACCEPT\"}"
+  },
+  "failure": {
+    "reason": "<urlopen error curl: (28) Operation timed out after 20009 milliseconds with 517 bytes received\n>",
+    "type": "URLError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10987#discussion_r3615603172; exact merged snapshot 62ffee2c98f36c065bc45f482837229ee142db06.",
+  "protocol": "ar_text",
+  "repo_path": "benchmarks/human_pr_20/repos/case_020",
+  "reviewer_model": {
+    "attempt_count": 1,
+    "input_tokens": 2846,
+    "latency_seconds": 15.470142457983457,
+    "model_name": "deepseek/deepseek-v4-pro-0813",
+    "output_tokens": 1026,
+    "parsed_output": {
+      "receipts": [
+        {
+          "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+          "claim_id": "claim_0",
+          "evidence_role": "supports_claim",
+          "evidence_type": "structural",
+          "expected_exit_code": null,
+          "expected_stdout_contains": "extra_dependency_by_name.setdefault(\n            extra_dependency.name, extra_dependency\n        )",
+          "falsification_condition": "setdefault does not overwrite an existing key, so later same-name dependencies are ignored despite different markers or constraints.",
+          "file": "context/target.py",
+          "line_end": 62,
+          "line_start": 60,
+          "verification_command": null
+        }
+      ]
+    },
+    "text": "{\"receipts\":[{\"claim_id\":\"claim_0\",\"claim\":\"setdefault drops duplicate same-name extra dependencies that have different markers or constraints.\",\"evidence_type\":\"structural\",\"evidence_role\":\"supports_claim\",\"file\":\"context/target.py\",\"line_start\":60,\"line_end\":62,\"verification_command\":null,\"expected_exit_code\":null,\"expected_stdout_contains\":\"extra_dependency_by_name.setdefault(\\n            extra_dependency.name, extra_dependency\\n        )\",\"falsification_condition\":\"setdefault does not overwrite an existing key, so later same-name dependencies are ignored despite different markers or constraints.\"}]}"
+  },
+  "run_id": "20260831T155339Z-a36cefea",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available."
+}

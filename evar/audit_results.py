@@ -34,6 +34,8 @@ def audit_results(
     cases_path: Path,
     manifest_path: Path,
     result_paths: Iterable[Path],
+    *,
+    allow_failed_runs: bool = False,
 ) -> AuditReport:
     root = project_root.resolve()
     cases = {str(row["case_id"]): row for row in _load_jsonl(cases_path)}
@@ -52,7 +54,16 @@ def audit_results(
     for path in paths:
         records = _load_jsonl(path)
         total_records += len(records)
-        issues.extend(_audit_result_file(root, path, records, cases, prompt_hashes))
+        issues.extend(
+            _audit_result_file(
+                root,
+                path,
+                records,
+                cases,
+                prompt_hashes,
+                allow_failed_runs=allow_failed_runs,
+            )
+        )
         signatures = Counter(
             (
                 str(row.get("protocol")),
@@ -91,10 +102,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--cases", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--allow-failed-runs",
+        action="store_true",
+        help="Treat explicitly retained run_status=failed rows as valid operational evidence.",
+    )
     parser.add_argument("results", nargs="+", type=Path)
     args = parser.parse_args(argv)
     try:
-        report = audit_results(args.project_root, args.cases, args.manifest, args.results)
+        report = audit_results(
+            args.project_root,
+            args.cases,
+            args.manifest,
+            args.results,
+            allow_failed_runs=args.allow_failed_runs,
+        )
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
@@ -114,6 +136,8 @@ def _audit_result_file(
     records: list[dict[str, Any]],
     cases: dict[str, dict[str, Any]],
     prompt_hashes: dict[str, str],
+    *,
+    allow_failed_runs: bool,
 ) -> list[AuditIssue]:
     issues: list[AuditIssue] = []
     ids = [str(row.get("case_id")) for row in records]
@@ -144,7 +168,8 @@ def _audit_result_file(
             if row.get(key) != expected.get(key):
                 issues.append(AuditIssue("CASE_METADATA_MISMATCH", location, key))
         if row.get("run_status") != "ok":
-            issues.append(AuditIssue("FAILED_RUN", location, str(row.get("failure"))))
+            if not allow_failed_runs:
+                issues.append(AuditIssue("FAILED_RUN", location, str(row.get("failure"))))
             continue
         if not isinstance(row.get("duration"), (int, float)) or row["duration"] < 0:
             issues.append(AuditIssue("BAD_DURATION", location, repr(row.get("duration"))))

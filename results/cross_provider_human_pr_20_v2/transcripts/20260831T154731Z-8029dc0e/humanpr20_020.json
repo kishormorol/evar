@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_020",
+  "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+      "claim_id": "case_020-setdefault-drops-duplicates",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "claim_id": "case_020-setdefault-drops-duplicates",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "optional_dependencies.add(extra_dependency.name)",
+        "falsification_condition": "If the code used dict.setdefault to store extra dependencies keyed by name, dropping duplicates, the claim would be supported; instead it uses a set.add() call which does not store or drop dependency objects with different markers/constraints, only tracks names, so the claimed setdefault-based dropping mechanism does not exist in this code.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code used dict.setdefault to store extra dependencies keyed by name, dropping duplicates, the claim would be supported; instead it uses a set.add() call which does not store or drop dependency objects with different markers/constraints, only tracks names, so the claimed setdefault-based dropping mechanism does not exist in this code.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "optional_dependencies.add(extra_dependency.name)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10987#discussion_r3615603172; exact merged snapshot 62ffee2c98f36c065bc45f482837229ee142db06.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260831T154731Z-8029dc0e",
+    "seed": 67
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+      "claim_id": "case_020-setdefault-drops-duplicates",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "claim_id": "case_020-setdefault-drops-duplicates",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "optional_dependencies.add(extra_dependency.name)",
+        "falsification_condition": "If the code used dict.setdefault to store extra dependencies keyed by name, dropping duplicates, the claim would be supported; instead it uses a set.add() call which does not store or drop dependency objects with different markers/constraints, only tracks names, so the claimed setdefault-based dropping mechanism does not exist in this code.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code used dict.setdefault to store extra dependencies keyed by name, dropping duplicates, the claim would be supported; instead it uses a set.add() call which does not store or drop dependency objects with different markers/constraints, only tracks names, so the claimed setdefault-based dropping mechanism does not exist in this code.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "optional_dependencies.add(extra_dependency.name)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_020",
+  "run_id": "20260831T154731Z-8029dc0e",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "case_020-setdefault-drops-duplicates",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "claim_id": "case_020-setdefault-drops-duplicates",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "optional_dependencies.add(extra_dependency.name)",
+        "falsification_condition": "If the code used dict.setdefault to store extra dependencies keyed by name, dropping duplicates, the claim would be supported; instead it uses a set.add() call which does not store or drop dependency objects with different markers/constraints, only tracks names, so the claimed setdefault-based dropping mechanism does not exist in this code.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the code used dict.setdefault to store extra dependencies keyed by name, dropping duplicates, the claim would be supported; instead it uses a set.add() call which does not store or drop dependency objects with different markers/constraints, only tracks names, so the claimed setdefault-based dropping mechanism does not exist in this code.",
+        "file": "context/target.py",
+        "line_end": 59,
+        "line_start": 59,
+        "quoted_or_paraphrased_support": "optional_dependencies.add(extra_dependency.name)"
+      },
+      "timestamp": "2026-08-31T15:49:55.090065+00:00"
+    },
+    {
+      "claim_id": "case_020-setdefault-drops-duplicates",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T15:49:57.610026+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "case_020-setdefault-drops-duplicates",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T15:49:57.610226+00:00"
+    }
+  ]
+}

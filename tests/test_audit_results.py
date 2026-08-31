@@ -59,8 +59,27 @@ class ResultAuditTests(unittest.TestCase):
 
             report = audit_results(Path("."), cases, manifest_path, [results])
 
+            failed_record = {
+                "case_id": "c1", "run_id": "r2", "protocol": "evar_hard",
+                "ground_truth": "SUPPORTED", "claim_family": "missing_guard",
+                "run_status": "failed", "failure": {"type": "ModelOutputError"},
+                "metadata": {
+                    "model": {"model": "gpt-4.1-mini"},
+                    "experiment": {"seed": 7},
+                },
+            }
+            results.write_text(json.dumps(failed_record) + "\n", encoding="utf-8")
+            strict_failed_report = audit_results(Path("."), cases, manifest_path, [results])
+            retained_failed_report = audit_results(
+                Path("."), cases, manifest_path, [results], allow_failed_runs=True
+            )
+
         self.assertTrue(report.ok, report.issues)
         self.assertEqual(report.records, 1)
+        self.assertFalse(strict_failed_report.ok)
+        self.assertEqual(strict_failed_report.issue_counts, {"FAILED_RUN": 1})
+        self.assertTrue(retained_failed_report.ok, retained_failed_report.issues)
+        self.assertEqual(retained_failed_report.run_summaries[0]["failed_records"], 1)
 
 
 if __name__ == "__main__":

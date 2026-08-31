@@ -1,0 +1,133 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "case_017",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "cmd = WINDOWS_CMD_TEMPLATE.format(python=self._env.python, script=name)",
+        "falsification_condition": "If the WINDOWS branch used a pythonw.exe or a windowed launcher template instead of self._env.python and WINDOWS_CMD_TEMPLATE with a .cmd wrapper, the claim would be falsified.",
+        "file": "context/target.py",
+        "line_end": 114,
+        "line_start": 106,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the WINDOWS branch used a pythonw.exe or a windowed launcher template instead of self._env.python and WINDOWS_CMD_TEMPLATE with a .cmd wrapper, the claim would be falsified.",
+        "file": "context/target.py",
+        "line_end": 114,
+        "line_start": 106,
+        "quoted_or_paraphrased_support": "cmd = WINDOWS_CMD_TEMPLATE.format(python=self._env.python, script=name)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_017",
+  "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "case_017",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "cmd = WINDOWS_CMD_TEMPLATE.format(python=self._env.python, script=name)",
+        "falsification_condition": "If the WINDOWS branch used a pythonw.exe or a windowed launcher template instead of self._env.python and WINDOWS_CMD_TEMPLATE with a .cmd wrapper, the claim would be falsified.",
+        "file": "context/target.py",
+        "line_end": 114,
+        "line_start": 106,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the WINDOWS branch used a pythonw.exe or a windowed launcher template instead of self._env.python and WINDOWS_CMD_TEMPLATE with a .cmd wrapper, the claim would be falsified.",
+        "file": "context/target.py",
+        "line_end": 114,
+        "line_start": 106,
+        "quoted_or_paraphrased_support": "cmd = WINDOWS_CMD_TEMPLATE.format(python=self._env.python, script=name)"
+      },
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR-Text does not execute textual evidence.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10973#discussion_r3621508821; exact reviewed snapshot 6208f6e1f5a6eb945c8d8c101b89def75a111d24.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR-Text",
+    "run_id": "20260831T154731Z-8029dc0e",
+    "seed": 67
+  },
+  "protocol": "ar_text",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_017",
+  "run_id": "20260831T154731Z-8029dc0e",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "case_017",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "cmd = WINDOWS_CMD_TEMPLATE.format(python=self._env.python, script=name)",
+        "falsification_condition": "If the WINDOWS branch used a pythonw.exe or a windowed launcher template instead of self._env.python and WINDOWS_CMD_TEMPLATE with a .cmd wrapper, the claim would be falsified.",
+        "file": "context/target.py",
+        "line_end": 114,
+        "line_start": 106,
+        "verification_command": null
+      },
+      "text_evidence": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "explanation": "Reviewer supplied textual evidence; AR-Text does not execute it.",
+        "falsification_condition": "If the WINDOWS branch used a pythonw.exe or a windowed launcher template instead of self._env.python and WINDOWS_CMD_TEMPLATE with a .cmd wrapper, the claim would be falsified.",
+        "file": "context/target.py",
+        "line_end": 114,
+        "line_start": 106,
+        "quoted_or_paraphrased_support": "cmd = WINDOWS_CMD_TEMPLATE.format(python=self._env.python, script=name)"
+      },
+      "timestamp": "2026-08-31T15:49:32.580211+00:00"
+    },
+    {
+      "claim_id": "case_017",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T15:49:34.838243+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "case_017",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T15:49:34.838367+00:00"
+    }
+  ]
+}

@@ -10,7 +10,9 @@ This is not a production application. It supports deterministic dummy-agent smok
 
 Current writeup:
 
-- [Paper draft](PAPER.md)
+- [Anonymous FSE-format paper (PDF)](paper/arxiv/main.pdf)
+- [LaTeX source](paper/arxiv/main.tex)
+- [Earlier narrative draft](PAPER.md)
 - [Manual 50 benchmark results](benchmarks/manual_50/RESULTS.md)
 - [Real 10 pilot results](benchmarks/real_10/RESULTS.md)
 - [External 10 pilot results](benchmarks/external_10/RESULTS.md)
@@ -19,6 +21,8 @@ Current writeup:
 - [Frozen External PR 50 results](benchmarks/external_pr_50/RESULTS.md)
 - [Untouched Human PR 20 results](benchmarks/human_pr_20/RESULTS.md)
 - [GPT-5.6 model extension results](benchmarks/human_pr_20/MODEL_EXTENSION_RESULTS.md)
+- [Claude, Gemini, DeepSeek, Kimi, and Qwen extension](benchmarks/human_pr_20/CROSS_PROVIDER_RESULTS.md)
+- [Human PR 200 expert-annotation protocol](benchmarks/human_pr_200/README.md)
 - [Independent review packet](review/INDEPENDENT_REVIEW.md)
 
 ## Protocols
@@ -81,7 +85,7 @@ Cross-provider runs use the same command with an `openrouter` config, for exampl
 ```bash
 python -m evar.run --protocol evar_hard \
   --cases benchmarks/human_pr_20/cases.jsonl \
-  --config configs/cross_provider_human_pr_20/claude_sonnet5_seed53.yaml
+  --config configs/cross_provider_human_pr_20_v2/claude_sonnet5_seed67.yaml
 ```
 
 Each command writes JSONL results to stdout for later statistical analysis.
@@ -150,6 +154,8 @@ Exploratory extension on the same Human PR 20 cases, using explicit reasoning ef
 
 All 180 extension decisions completed and passed the judge-free audit. The outcomes are heterogeneous: EVAR-Hard trades FCR for SCR with Luna, matches AR with Terra, and matches AR-Text with Sol. The estimated standard token cost was $1.411; see the linked report for intervals, token counts, prices, and limitations.
 
+The matched cross-provider extension attempted another 300 decisions with Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. It retained 267 valid decisions and all 33 structured-output failures. Claude and Gemini completed every cell; DeepSeek, Kimi, and Qwen had model-dependent incomplete cells, so the report does not turn surviving subsets into protocol rankings. The canonical matrix cost an estimated $3.350 in standard token charges; diagnostics and superseded retries brought total gateway usage to $9.241.
+
 Held-out 50-case `gpt-4.1` result:
 
 | Protocol | FCR | SCR |
@@ -201,3 +207,5 @@ External commit-grounded `external_pr_20` benchmark with `gpt-4.1-mini`:
 - Per-case run failures are emitted as JSONL rows with `run_status: "failed"` instead of being dropped.
 - Seeds are set in the default runner config.
 - Experiments are reproducible from the `python -m evar.run ...` commands above.
+
+Behavioral verification defaults to local subprocess execution for compatibility. For untrusted repositories, set `verifier_execution_backend: container` and `verifier_container_image` in the run config. The Docker backend disables networking, mounts the repository read-only, drops Linux capabilities, runs as a non-root user, and applies CPU, memory, PID, timeout, and temporary-filesystem limits.

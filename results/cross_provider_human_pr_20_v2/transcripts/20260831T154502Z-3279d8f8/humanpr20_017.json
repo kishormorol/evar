@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [
+    {
+      "actionable": true,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "case_017",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )",
+        "falsification_condition": "gui_scripts are separated from console_scripts and use a different template or python executable on Windows.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "case_id": "humanpr20_017",
+  "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": true,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "case_017",
+      "critic_decision": "ACCEPT",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )",
+        "falsification_condition": "gui_scripts are separated from console_scripts and use a different template or python executable on Windows.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10973#discussion_r3621508821; exact reviewed snapshot 6208f6e1f5a6eb945c8d8c101b89def75a111d24.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260831T154502Z-3279d8f8",
+    "seed": 67
+  },
+  "protocol": "ar",
+  "rejected_findings": [],
+  "repo_path": "benchmarks/human_pr_20/repos/case_017",
+  "run_id": "20260831T154502Z-3279d8f8",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "case_017",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "supports_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "scripts = entry_points.get(\"console_scripts\", []) + entry_points.get(\n            \"gui_scripts\", []\n        )",
+        "falsification_condition": "gui_scripts are separated from console_scripts and use a different template or python executable on Windows.",
+        "file": "context/target.py",
+        "line_end": 61,
+        "line_start": 59,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-31T15:47:17.447267+00:00"
+    },
+    {
+      "claim_id": "case_017",
+      "critic_decision": "ACCEPT",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T15:47:20.196867+00:00"
+    },
+    {
+      "actionable": true,
+      "claim_id": "case_017",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T15:47:20.196983+00:00"
+    }
+  ]
+}

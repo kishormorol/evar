@@ -1,29 +1,33 @@
-\documentclass[10pt]{article}
+\documentclass[acmsmall,screen,review,anonymous]{acmart}
 
-\usepackage[margin=1in]{geometry}
-\usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabularx}
-\usepackage{hyperref}
-\usepackage{xcolor}
 \usepackage{xspace}
 
-\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+\setcopyright{none}
+\settopmatter{printfolios=true}
+\raggedbottom
+\acmConference[FSE 2027]{ACM International Conference on the Foundations of Software Engineering}{July 2027}{Trondheim, Norway}
+\acmBooktitle{ACM International Conference on the Foundations of Software Engineering (FSE 2027)}
+\acmDOI{}
+\acmISBN{}
 \newcommand{\evar}{\textsc{Evar}\xspace}
 \newcommand{\fcr}{\textsc{Fcr}\xspace}
 \newcommand{\scr}{\textsc{Scr}\xspace}
 
 \title{Evidence-Verified Adversarial Review for Code-Review Claims}
-\author{Kishor Morol}
-\date{August 2026}
+\author{Anonymous Author(s)}
 
 \begin{document}
-\maketitle
-
 \begin{abstract}
-When a code-review agent cites the wrong lines, asking a second language model whether the finding sounds reasonable can reproduce the same mistake. We test a stricter alternative. Evidence-Verified Adversarial Review (\evar) requires the reviewer to submit a structured receipt---a file, line range, expected observation, falsification condition, and optionally a bounded command---and makes deterministic verification a precondition for actionability. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched prompts, cases, and call budgets. Our final holdout contains 120 decisions over temporal pairs derived from ten public pull-request comments. On this holdout, GPT-4.1-mini gives the same \fcr/\scr operating point for AR-Text and \evar-Hard (.200/.700), while GPT-4.1 favors AR-Text (.200/.700 versus .300/.600). Results from three newer OpenAI models are similarly mixed. A separate cross-provider run completes only seven of fifteen protocol cells and reveals a practical obstacle: schema and serving failures can prevent the comparison from being run at all. Across 900 completed matched decisions, the hard gate changes which findings survive but does not consistently improve decision quality. What it does provide is a reproducible acceptance boundary: an actionable \evar finding has a machine-checked receipt, and failed evidence remains visible in the record.
+When a code-review agent cites the wrong lines, asking a second language model whether the finding sounds reasonable can reproduce the same mistake. We test a stricter alternative. Evidence-Verified Adversarial Review (\evar) requires the reviewer to submit a structured receipt---a file, line range, expected observation, falsification condition, and optionally a bounded command---and makes deterministic verification a precondition for actionability. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched prompts, cases, and call budgets. Our final holdout contains 120 decisions over temporal pairs derived from ten public pull-request comments. On this holdout, GPT-4.1-mini gives the same \fcr/\scr operating point for AR-Text and \evar-Hard (.200/.700), while GPT-4.1 favors AR-Text (.200/.700 versus .300/.600). Results from three newer OpenAI models are similarly mixed. A five-provider extension records 300 further attempts under a shared 2,400-token cap: Claude and Gemini complete every cell, while DeepSeek, Kimi, and Qwen expose 33 schema-generation failures. Across the full artifact, 1,167 of 1,200 attempts produce scored decisions. The hard gate changes which findings survive but does not consistently improve decision quality. What it does provide is a reproducible acceptance boundary: an actionable \evar finding has a machine-checked receipt, and failed evidence remains visible in the record.
 \end{abstract}
+
+\keywords{code review, language-model agents, evidence verification, benchmark, reliability}
+\ccsdesc[500]{Software and its engineering~Software testing and debugging}
+\ccsdesc[300]{Computing methodologies~Natural language processing}
+\maketitle
 
 \section{Introduction}
 
@@ -46,7 +50,7 @@ Our contributions are:
   \item \textbf{Protocol:} a structured evidence receipt and deterministic gate that make acceptance conditions externally inspectable;
   \item \textbf{Benchmark:} a temporally paired holdout built from public human review comments at reviewed and merged commits;
   \item \textbf{Evidence:} matched AR, AR-Text, and \evar-Hard experiments that expose a model-sensitive safety--retention tradeoff; and
-  \item \textbf{Artifact:} frozen inputs, transcripts, result manifests, and judge-free audits for 900 completed matched decisions, plus canonical accounting for 180 cross-provider attempts with failures retained explicitly.
+  \item \textbf{Artifact:} frozen inputs, transcripts, result manifests, and judge-free audits for 1,200 attempted decisions, including 33 provider failures retained explicitly.
 \end{enumerate}
 
 \section{Related Work}
@@ -59,7 +63,7 @@ Prior work also questions whether intrinsic self-correction is reliable without 
 
 \subsection{Tool-using software-engineering agents}
 
-SWE-agent shows that the interface between a model and a computer materially affects software-engineering performance \cite{sweagent}. Executable feedback can reveal failures that are invisible in a textual conversation, but unrestricted agent execution also introduces a large design surface. \evar uses a deliberately narrow interface: structural source checks or a shell-free verification process launched from the benchmark fixture under a timeout. This makes the acceptance boundary easier to audit, at the cost of incomplete coverage for repository-scale semantic claims. The current prototype does not claim operating-system isolation; production use requires a disposable container or stronger sandbox.
+SWE-agent shows that the interface between a model and a computer materially affects software-engineering performance \cite{sweagent}. Executable feedback can reveal failures that are invisible in a textual conversation, but unrestricted agent execution also introduces a large design surface. \evar uses a deliberately narrow interface: structural source checks or a shell-free verification process launched from the benchmark fixture under a timeout. This makes the acceptance boundary easier to audit, at the cost of incomplete coverage for repository-scale semantic claims. The current code includes a hardened container option for future runs; the experiments reported here used trusted fixtures and the local backend.
 
 \subsection{Code review as a sociotechnical practice}
 
@@ -98,8 +102,8 @@ AR-Text & Reviewer adds textual evidence when challenged. & Critic returns \text
 
 \begin{figure}[h]
 \centering
-\small
-\setlength{\tabcolsep}{4pt}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
 \begin{tabular}{@{}rclclcl@{}}
 & \fbox{Claim + snapshot} & $\rightarrow$ & \fbox{Reviewer receipt} & & & \\
 AR & & & $\rightarrow$ & \fbox{Critic} & $\rightarrow$ & Accept/Reject \\
@@ -107,6 +111,7 @@ AR-Text & & & $\rightarrow$ & \fbox{Text projection} $\rightarrow$ \fbox{Critic}
 \evar-Hard & & & $\rightarrow$ & \fbox{Verifier} $\rightarrow$ \fbox{Critic} & $\rightarrow$ & Verified $\land$ Accept
 \end{tabular}
 \caption{Matched protocol flow. All variants use the same reviewer and critic call count; only \evar-Hard makes deterministic verification a necessary gate.}
+\Description{The same claim and repository snapshot enter a reviewer for all protocols. AR sends the receipt directly to a critic, AR-Text sends a textual projection to a critic, and EVAR-Hard sends a deterministic verifier result to the critic and requires both verification and acceptance.}
 \label{fig:protocol-flow}
 \end{figure}
 
@@ -186,7 +191,7 @@ External PR 50 & 50 & 600 & Frozen first evaluation; later inspected to diagnose
 Development PR 20 & 20 & diagnostic & Prompt and verifier development only; no generalization claim. \\
 Human PR 20 & 20 & 120 & Untouched final holdout and primary evidence for RQ1. \\
 GPT-5.6 extension & 20 reused & 180 & Pre-specified exploratory model-sensitivity analysis. \\
-Cross-provider pilots & 20 reused & partial & Operational validity accounting; not a balanced performance comparison. \\
+Cross-provider extension & 20 reused & 300 attempted & Five models and three matched protocols; 267 decisions valid. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -195,7 +200,7 @@ After the original Human PR 20 study was released, we specified an exploratory m
 
 \subsection{Exploratory cross-provider design}
 
-We specified five exact OpenRouter model slugs before calls: Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. The extension reused Human PR 20, seed label 53, low reasoning effort, a 1,200-token output cap, and the frozen prompts, verifier, and scoring code. Gateway routing was restricted to endpoints accepting the requested JSON Schema. Because provider availability and structured-output reliability prevented a complete balanced matrix, this extension is analyzed as operational validity evidence; only complete within-model protocol blocks receive descriptive FCR/SCR values.
+We evaluated five exact OpenRouter model slugs: Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. The canonical extension reused Human PR 20, seed label 67, low reasoning effort, a shared 2,400-token output cap, and the frozen prompts, verifier, and scoring code. Gateway routing was restricted to endpoints accepting the requested JSON Schema. Every model attempted all 60 decisions. We do not selectively retry failed cases or treat a transport failure as a negative prediction. Instead, only 20/20-valid cells receive FCR/SCR estimates, and incomplete cells contribute operational reliability evidence.
 
 \section{Metrics and Analysis}
 
@@ -329,7 +334,7 @@ Taken together, the five OpenAI configurations show that verification is not a m
 
 \subsection{Exploratory cross-provider results}
 
-Table~\ref{tab:cross-provider-accounting} separates the canonical attempts from duplicate retries and abandoned files. Claude and Gemini completed all three protocols, whereas Kimi completed only AR. DeepSeek returned a valid response in 22 of 37 attempts (59.5\%); with 15 invalid outputs and no complete protocol block, a quality comparison would be misleading. Qwen reached only a three-case connectivity pilot. We retain these gaps because they describe whether the experiment is operationally viable, not because they can be filled by imputation.
+Table~\ref{tab:cross-provider-accounting} reports a fresh matched run in which every model attempted all three 20-case cells. Claude and Gemini produced 60 valid decisions each. Kimi produced 55, Qwen 49, and DeepSeek 43. The 33 failures were overwhelmingly empty reviewer responses after the endpoint consumed the output allowance in reasoning; the runner records them as \texttt{ModelOutputError}. We retain these gaps because they describe whether the experiment is operationally viable, not because they can be filled by imputation.
 
 \begin{table}[h]
 \centering
@@ -342,14 +347,14 @@ Model & Attempted & Valid & Failed & Complete cells \\
 \midrule
 Claude Sonnet 5 & 60 & 60 & 0 & 3/3 \\
 Gemini 3.1 Pro & 60 & 60 & 0 & 3/3 \\
-DeepSeek V4 Pro & 37 & 22 & 15 & 0/3 \\
-Kimi K3 & 20 & 20 & 0 & 1/3 \\
-Qwen3.8 Max & 3 & 3 & 0 & 0/3 \\
+DeepSeek V4 Pro & 60 & 43 & 17 & 0/3 \\
+Kimi K3 & 60 & 55 & 5 & 2/3 \\
+Qwen3.8 Max & 60 & 49 & 11 & 0/3 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Within the seven complete cells, every Claude and Gemini protocol produced zero false consensus on the ten unsupported cases. Claude retention was .600 for AR and .700 for both evidence protocols. Gemini retention was .800 for all three protocols; 19/20 \evar receipts verified. Kimi AR scored \fcr/\scr=.100/.900, but its missing matched protocols prevent an EVAR comparison. The complete cells therefore add no evidence of EVAR dominance: where FCR has already reached zero, the only observed differences concern supported-claim retention.
+Eight cells are complete. Claude yields zero false consensus under all protocols, with supported-claim retention of .600, .600, and .500 for AR, AR-Text, and \evar-Hard. Gemini moves from .100/.800 under AR to .000/.800 under both evidence protocols. Kimi's complete AR-Text and \evar-Hard cells score .000/.700 and .000/.800, respectively, but its incomplete AR cell prevents the intended three-way comparison. Claude's 18/20 verified receipts and Gemini's 20/20 again show that a high receipt-verification rate does not imply a retention gain.
 
 \begin{table}[h]
 \centering
@@ -361,17 +366,18 @@ Within the seven complete cells, every Claude and Gemini protocol produced zero 
 Model & Protocol & \fcr & \scr & Verified \\
 \midrule
 Claude & AR & .000 & .600 & -- \\
-Claude & AR-Text & .000 & .700 & -- \\
-Claude & \evar-Hard & .000 & .700 & 20/20 \\
-Gemini & AR & .000 & .800 & -- \\
+Claude & AR-Text & .000 & .600 & -- \\
+Claude & \evar-Hard & .000 & .500 & 18/20 \\
+Gemini & AR & .100 & .800 & -- \\
 Gemini & AR-Text & .000 & .800 & -- \\
-Gemini & \evar-Hard & .000 & .800 & 19/20 \\
-Kimi & AR & .100 & .900 & -- \\
+Gemini & \evar-Hard & .000 & .800 & 20/20 \\
+Kimi & AR-Text & .000 & .700 & -- \\
+Kimi & \evar-Hard & .000 & .800 & 19/20 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The cross-provider run therefore adds a different lesson. Before reasoning quality can be compared, the model and serving path must reliably satisfy the receipt schema. For DeepSeek and Qwen, that prerequisite was not met in this run.
+The cross-provider run therefore adds two lessons. Gemini provides one favorable paired point: both evidence protocols remove one AR false consensus without losing a supported claim. Claude provides the counterexample: \evar-Hard loses one supported claim while all protocols already have zero FCR. More basically, model reasoning quality cannot be compared until the serving path reliably returns the receipt schema. DeepSeek and Qwen did not meet that prerequisite, even after the shared cap was doubled from the earlier pilot setting. The canonical run cost an estimated \$3.350 from recorded tokens; exploratory retries and diagnostics raised total gateway usage to \$9.241.
 
 \subsection{Earlier frozen External PR 50 experiment}
 
@@ -453,7 +459,7 @@ Replacing the deterministic gate with another semantic judge would improve cover
 
 \subsection{What the study does not establish}
 
-This experiment evaluates supplied claims, not open-ended review. It says nothing directly about how many defects an agent discovers, whether developers value its comments, or whether review becomes faster. We also leave the relative cost of a false alarm and a missed finding unspecified; that is why FCR and SCR remain separate. The five fully evaluated OpenAI configurations are not a stand-in for the model ecosystem, and the partial cross-provider run cannot repair that limitation. It reuses the same cases and contributes operational evidence, not new independent examples.
+This experiment evaluates supplied claims, not open-ended review. It says nothing directly about how many defects an agent discovers, whether developers value its comments, or whether review becomes faster. We also leave the relative cost of a false alarm and a missed finding unspecified; that is why FCR and SCR remain separate. The cross-provider extension broadens model coverage, but it reuses the same cases and contributes repeated and operational evidence, not new independent examples. Incomplete provider cells cannot be used to rank protocols because the missing outputs are neither random nor negative decisions.
 
 \section{Threats to Validity}
 
@@ -473,21 +479,16 @@ Most holdout cells contain one stochastic call per case, and the configured seed
 The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers.
 
 \paragraph{Extension validity.}
-Both model extensions reuse Human PR 20 after the original outcomes were known. They are repeated measurements, not additional benchmark examples. Reasoning settings are not necessarily comparable across vendors, and exact model aliases, routing, behavior, and prices can change after the freeze. The gateway may also choose among eligible serving providers. These facts are why we report the OpenAI extension as exploratory and the incomplete provider run primarily as validity accounting.
+Both model extensions reuse Human PR 20 after the original outcomes were known. They are repeated measurements, not additional benchmark examples. Reasoning settings are not necessarily comparable across vendors, and exact model aliases, routing, behavior, and prices can change after the freeze. The gateway may also choose among eligible serving providers. These facts are why the provider analysis separates complete-cell quality estimates from 300-attempt reliability accounting.
 
 \paragraph{Implementation scope and safety.}
-The verifier is Python-specific and recognizes a limited set of structural and behavioral observations. Behavioral witnesses use \texttt{shell=False} and a timeout, but they are not isolated by the operating system. The released fixtures are trusted; receipts from untrusted models or repositories should run with network denial, process isolation, and a disposable filesystem. Broader claims require a larger independently labeled benchmark and a containerized evaluator.
+The verifier is Python-specific and recognizes a limited set of structural and behavioral observations. The reported experiments used trusted fixtures and shell-free local execution under a timeout. The current evaluator additionally offers a hardened Docker backend with a read-only repository mount, no network, no Linux capabilities, a non-root user, a no-new-privileges policy, and CPU, memory, process, and temporary-filesystem limits. Its command construction is covered by tests, but Docker Desktop was unavailable for an end-to-end smoke run in this environment; we therefore do not retroactively describe the reported results as containerized.
 
 \section{Reproducibility and Availability}
 
-Release \texttt{v0.2.0} contains evaluator code, prompts, configs, benchmark snapshots, all 720 original canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The 180-decision GPT-5.6 extension is prepared locally for a later revision and is not part of that public release; its input freeze, run index, report, audit, transcripts, and results manifest preserve the extension artifact. The public repository and project site are available at
-\begin{center}
-\url{https://github.com/kishormorol/evar}\\
-\url{https://evar-research.elitelab-ai.chatgpt.site}
-\end{center}
-The release notes provide the archival DOI when the Zenodo deposit is complete.
+The existing artifact contains evaluator code, prompts, configs, benchmark snapshots, all 720 original canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The 180-decision GPT-5.6 extension and 300-attempt cross-provider extension are prepared for the revised artifact; their configs, run indices, reports, transcripts, and failed rows preserve the extension evidence. The Human PR 200 acquisition pool and annotation software are work in progress, and the paper makes no result claim from those unlabeled candidates. Identifying repository and project-site URLs are omitted during double-blind review. An anonymized snapshot will be supplied through the venue's artifact mechanism; archival DOI and public links will be restored in the non-anonymous version.
 
-The artifact has four layers. Input manifests hash cases, repository snapshots, prompts, model configs, evaluator code, verifier code, and scoring code. Run indices identify canonical JSONL outputs. Judge-free audit reports check completeness and invariants. Output manifests hash every canonical result and transcript. The cross-provider input manifest additionally freezes the gateway endpoint, exact model slugs, reasoning setting, token cap, and schema-routing requirement.
+The artifact has four layers. Input manifests hash cases, repository snapshots, prompts, model configs, evaluator code, verifier code, and scoring code. Run indices identify canonical JSONL outputs. Judge-free audit reports check completeness and invariants. Output manifests hash every canonical result and transcript. The cross-provider manifest additionally records the gateway endpoint, exact model slugs, reasoning setting, token cap, and schema-routing requirement.
 
 The core deterministic reproduction path is:
 \begin{verbatim}
@@ -495,10 +496,8 @@ python -m unittest discover -s tests
 python -m evar.preflight --config CONFIG --cases CASES
 python -m evar.run --protocol PROTOCOL --cases CASES \
   --config CONFIG --output-dir RESULTS
-python scripts/summarize_cross_provider.py \
-  --manifest benchmarks/human_pr_20/ \
-    cross_provider_canonical_manifest.json \
-  --output benchmarks/human_pr_20/cross_provider_summary.json
+python scripts/report_human_pr_20_cross_provider.py
+python scripts/audit_human_pr_20_cross_provider.py
 \end{verbatim}
 Model-backed reproduction requires the corresponding API credential and will not be byte-identical because provider inference is not guaranteed deterministic. The preserved transcripts and metadata support outcome-level rather than bit-level replication.
 
@@ -506,7 +505,7 @@ Model-backed reproduction requires the corresponding API credential and will not
 
 \evar began with a simple premise: agreement between two language models should not be enough to make a code-review claim actionable. Requiring a checked receipt does enforce a clearer boundary, and it turns several hidden failures into inspectable records. The experiments also show the limit of that idea. A receipt can verify and still be irrelevant, while a sound claim can be lost because its receipt fails. On the final human-comment holdout, the hard gate offers no decision-quality advantage over textual evidence; across later models, its effect varies.
 
-That leaves a narrower but useful result. Deterministic evidence improves the provenance of an accepted finding, not necessarily the finding itself. Establishing a performance benefit will require more independent review comments, expert adjudication, repeated calls, full pull-request context, and complete cross-provider cells. The artifact is intended to make that larger test possible without hiding the awkward outcomes that motivated it.
+That leaves a narrower but useful result. Deterministic evidence improves the provenance of an accepted finding, not necessarily the finding itself. The five-provider extension sharpens rather than overturns that conclusion: Gemini gives a favorable point, Claude gives a retention counterexample, and 33 provider failures show that schema reliability is itself part of the system. Establishing a performance benefit still requires more independent review comments, expert adjudication, repeated calls, and full pull-request context. The artifact now includes the acquisition and adjudication machinery for that larger test without presenting unreviewed candidates as ground truth.
 
 \appendix
 
@@ -552,7 +551,7 @@ The runner records a call-level trace with request role, model slug, prompt hash
 
 \section{Receipt Validation Rules}
 
-Structural validation normalizes display artifacts such as Markdown fences, leading line numbers, and surrounding whitespace. It reads the requested file from the frozen snapshot and normally compares the normalized observation with the selected interval. Two conservative recovery paths are part of the frozen verifier: an unambiguous suffix, function-name, or sole-Python-file match can recover a stale structural path; and an interval extending beyond end-of-file can search the recovered file for the submitted observation. Behavioral receipts receive neither recovery. Behavioral validation parses the command into an argument vector, launches it with \texttt{shell=False} from the fixture directory, applies a five-second default timeout, and checks exit status plus a required \texttt{EVAR\_WITNESS\_PASS} marker. These controls prevent shell-pipeline interpretation and bound elapsed execution, but they do not prevent the child process from accessing the network or writing elsewhere under the evaluator's operating-system permissions. The verifier returns typed failure reasons for missing paths, wrong observations, exit mismatches, and timeouts. Generic successful structural recovery is deterministic but is not separately tagged, an auditability limitation for a future version.
+Structural validation normalizes display artifacts such as Markdown fences, leading line numbers, and surrounding whitespace. It reads the requested file from the frozen snapshot and normally compares the normalized observation with the selected interval. Two conservative recovery paths are part of the frozen verifier: an unambiguous suffix, function-name, or sole-Python-file match can recover a stale structural path; and an interval extending beyond end-of-file can search the recovered file for the submitted observation. Behavioral receipts receive neither recovery. Behavioral validation parses the command into an argument vector, applies a timeout, and checks exit status plus a required \texttt{EVAR\_WITNESS\_PASS} marker. The local backend uses \texttt{shell=False}. The optional container backend invokes Docker without a shell and adds \texttt{--network none}, a read-only bind mount, capability dropping, \texttt{no-new-privileges}, a non-root UID, PID/CPU/memory limits, and a bounded temporary filesystem. The verifier returns typed failure reasons for missing paths, wrong observations, exit mismatches, and timeouts. Generic successful structural recovery is deterministic but is not separately tagged, an auditability limitation for a future version.
 
 The evidence role is checked independently of textual similarity. The evaluator performs only two frozen deterministic repairs: it aligns the role with an explicit opposite-role AST observation, or falls back from a syntactically invalid inline-Python behavioral witness to structural checking. Each repair is logged and re-verified. It does not rewrite claims, choose new files or ranges, or ask a model for semantic repair.
 
@@ -570,6 +569,16 @@ The most common EVAR failure on the frozen external benchmark was not a verifier
 
 The current design deliberately controls context and claim wording. A stronger replication should sample review comments before seeing their outcome, include complete pull-request snapshots, obtain two independent expert labels with adjudication, and preregister the sampling frame. It should also repeat each model-protocol cell, report calibration and abstention, and evaluate multilingual repositories. The present artifact supplies the receipt and audit machinery needed for that study; it should not be mistaken for evidence that 20 temporal cases represent the wider code-review population.
 
+\section{Human PR 200 Expansion Protocol}
+
+We have acquired, but not labeled, the candidate pool for the larger replication. The combined pool contains 682 public review-comment candidates from 63 repositories. Acquisition requires a human-authored inline review comment, a merged pull request, an exact reviewed commit and merge commit, a changed anchored target, hashes of both complete files, and stable source URLs. It retains at most one candidate per pull request and excludes repositories used by Human PR 20. These filters establish provenance; they do not establish eligibility or a benchmark label.
+
+The first annotation tranche contains 276 candidates, selected before annotation with up to 50 comments per available language and no more than six per repository. Two experts receive independently randomized, label-free records containing the comment, review snapshot, merge snapshot, and provenance. Each marks eligibility, writes a short normalized claim, chooses one of the five frozen claim families, and separately judges support at review and absence at merge. An excluded item requires a reason. The two exports must contain identical candidate sets, distinct stable reviewer identifiers, and complete decisions.
+
+Exact agreements are resolved automatically. Any difference in eligibility, normalized claim, family, temporal judgment, or exclusion reason enters a third, blinded adjudication queue. The adjudicator must have an identifier distinct from both reviewers. The merger stores reviewer identifiers, resolution mode, adjudicator identifier when used, and SHA-256 hashes of every input export. The case renderer rejects a row unless that provenance is complete. This closes a weakness in the earlier draft, whose renderer could accept one filled annotation object even though the written protocol called for two reviewers.
+
+After adjudication, deterministic selection first establishes at least 20 represented repositories and then balances language and claim family while enforcing the six-comment repository cap. It fails closed unless 100 eligible source comments remain. Those comments yield 200 temporal cases, one supported review snapshot and one unsupported merge snapshot per claim. The frozen manifest records the source and output hashes, seed, candidate identifiers, repository count, and stratum counts. Until experts complete this process, the 682 records remain an acquisition artifact and no Human PR 200 performance result is reported.
+
 \section{Cross-Provider Frozen Configuration}
 
 \begin{table}[H]
@@ -581,16 +590,16 @@ The current design deliberately controls context and claim wording. A stronger r
 \toprule
 Family & Exact model slug & Shared settings & Cells \\
 \midrule
-Claude & \texttt{anthropic/claude-sonnet-5} & low reasoning, 1,200-token cap & 3 \\
-Gemini & \texttt{google/gemini-3.1-pro-preview} & low reasoning, 1,200-token cap & 3 \\
-Kimi & \texttt{moonshotai/kimi-k3} & low reasoning, 1,200-token cap & 3 \\
-DeepSeek & \texttt{deepseek/deepseek-v4-pro-0813} & low reasoning, 1,200-token cap & 3 \\
-Qwen & \texttt{qwen/qwen3.8-max} & low reasoning, 1,200-token cap & 3 \\
+Claude & \texttt{anthropic/claude-sonnet-5} & low reasoning, 2,400-token cap & 3 \\
+Gemini & \texttt{google/gemini-3.1-pro-preview} & low reasoning, 2,400-token cap & 3 \\
+Kimi & \texttt{moonshotai/kimi-k3} & low reasoning, 2,400-token cap & 3 \\
+DeepSeek & \texttt{deepseek/deepseek-v4-pro-0813} & low reasoning, 2,400-token cap & 3 \\
+Qwen & \texttt{qwen/qwen3.8-max} & low reasoning, 2,400-token cap & 3 \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Temperature is omitted for all five models. Structured output uses strict JSON Schema, and gateway provider routing requires endpoints that accept the requested parameters. Seed 53 is stored only as provenance unless the routed endpoint explicitly honors it.
+Temperature is omitted for all five models. Structured output uses strict JSON Schema, and gateway provider routing requires endpoints that accept the requested parameters. Seed 67 is stored only as provenance unless the routed endpoint explicitly honors it.
 
 \section{Audit Invariants}
 

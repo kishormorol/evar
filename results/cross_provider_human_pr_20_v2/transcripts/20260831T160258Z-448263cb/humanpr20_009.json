@@ -1,0 +1,51 @@
+{
+  "case_id": "humanpr20_009",
+  "claim": "docs/integrations/editors.md redundantly links vim-plug in an example even though the section already links it.",
+  "claim_family": "stale_evidence",
+  "critic_model": {
+    "attempt_count": 1,
+    "input_tokens": 680,
+    "latency_seconds": 1.4840010409825481,
+    "model_name": "deepseek/deepseek-v4-pro-0813",
+    "output_tokens": 152,
+    "parsed_output": {
+      "decision": "COUNTEREXAMPLE"
+    },
+    "text": "{\"decision\":\"COUNTEREXAMPLE\"}"
+  },
+  "failure": {
+    "reason": "<urlopen error curl: (28) Operation timed out after 20010 milliseconds with 517 bytes received\n>",
+    "type": "URLError"
+  },
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/psf/black/pull/5288#discussion_r3723956142; exact reviewed snapshot 83da43a3bd43fc832fc41c5aa448338c25c7d7cb.",
+  "protocol": "evar_hard",
+  "repo_path": "benchmarks/human_pr_20/repos/case_009",
+  "reviewer_model": {
+    "attempt_count": 1,
+    "input_tokens": 1191,
+    "latency_seconds": 9.672076249989914,
+    "model_name": "deepseek/deepseek-v4-pro-0813",
+    "output_tokens": 1296,
+    "parsed_output": {
+      "receipts": [
+        {
+          "claim": "The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.",
+          "claim_id": "causal_mislocalization",
+          "evidence_role": "contradicts_claim",
+          "evidence_type": "structural",
+          "expected_exit_code": null,
+          "expected_stdout_contains": "Original path: testing/test_pathlib.py",
+          "falsification_condition": "The provided repository context is testing/test_pathlib.py, not the pytest changelog, so it cannot support a claim about what the changelog exposes.",
+          "file": "context/companion.py",
+          "line_end": 1,
+          "line_start": 1,
+          "verification_command": null
+        }
+      ]
+    },
+    "text": "{\n  \"receipts\": [\n    {\n      \"claim\": \"The pytest changelog exposes the samefile_nofollow implementation detail instead of only describing the user-visible Windows collection fix.\",\n      \"claim_id\": \"causal_mislocalization\",\n      \"evidence_role\": \"contradicts_claim\",\n      \"evidence_type\": \"structural\",\n      \"expected_exit_code\": null,\n      \"expected_stdout_contains\": \"Original path: testing/test_pathlib.py\",\n      \"falsification_condition\": \"The provided repository context is testing/test_pathlib.py, not the pytest changelog, so it cannot support a claim about what the changelog exposes.\",\n      \"file\": \"context/companion.py\",\n      \"line_end\": 1,\n      \"line_start\": 1\n   \n  ,\n  \"verification_command\": null\n  }\n]\n\n\n\n\n  \n  }"
+  },
+  "run_id": "20260831T160258Z-448263cb",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available."
+}

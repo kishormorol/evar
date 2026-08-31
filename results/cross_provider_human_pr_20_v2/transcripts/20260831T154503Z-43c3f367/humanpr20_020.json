@@ -1,0 +1,51 @@
+{
+  "case_id": "humanpr20_020",
+  "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints.",
+  "claim_family": "causal_mislocalization",
+  "critic_model": {
+    "attempt_count": 1,
+    "input_tokens": 467,
+    "latency_seconds": 11.840474374999758,
+    "model_name": "qwen/qwen3.8-max",
+    "output_tokens": 442,
+    "parsed_output": {
+      "decision": "ACCEPT"
+    },
+    "text": "{\"decision\":\"ACCEPT\"}"
+  },
+  "failure": {
+    "reason": "<urlopen error curl: (28) Operation timed out after 20005 milliseconds with 517 bytes received\n>",
+    "type": "URLError"
+  },
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10987#discussion_r3615603172; exact merged snapshot 62ffee2c98f36c065bc45f482837229ee142db06.",
+  "protocol": "ar",
+  "repo_path": "benchmarks/human_pr_20/repos/case_020",
+  "reviewer_model": {
+    "attempt_count": 1,
+    "input_tokens": 2674,
+    "latency_seconds": 15.158578458998818,
+    "model_name": "qwen/qwen3.8-max",
+    "output_tokens": 652,
+    "parsed_output": {
+      "receipts": [
+        {
+          "claim": "setdefault drops duplicate same-name extra dependencies that have different markers or constraints",
+          "claim_id": "setdefault-drops-duplicate-extra-deps",
+          "evidence_role": "supports_claim",
+          "evidence_type": "structural",
+          "expected_exit_code": null,
+          "expected_stdout_contains": "                    extra_dependency_by_name.setdefault(\n                            extra_dependency.name, extra_dependency\n                        )",
+          "falsification_condition": "The code does not use setdefault, or it collects all extra dependencies into a list instead of keying by name only",
+          "file": "context/target.py",
+          "line_end": 62,
+          "line_start": 60,
+          "verification_command": null
+        }
+      ]
+    },
+    "text": "{\"receipts\":[{\"claim_id\":\"setdefault-drops-duplicate-extra-deps\",\"claim\":\"setdefault drops duplicate same-name extra dependencies that have different markers or constraints\",\"evidence_type\":\"structural\",\"evidence_role\":\"supports_claim\",\"file\":\"context/target.py\",\"line_start\":60,\"line_end\":62,\"verification_command\":null,\"expected_exit_code\":null,\"expected_stdout_contains\":\"                    extra_dependency_by_name.setdefault(\\n                            extra_dependency.name, extra_dependency\\n                        )\",\"falsification_condition\":\"The code does not use setdefault, or it collects all extra dependencies into a list instead of keying by name only\"}]}"
+  },
+  "run_id": "20260831T154503Z-43c3f367",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available."
+}

@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_017",
+  "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+  "claim_family": "behavior_inversion",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "case_017",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "cmd_script = script_file.with_suffix(\".cmd\")",
+        "falsification_condition": "If the code created separate console/gui wrappers or used pythonw.exe for gui scripts distinctly, claim would be contradicted; here all scripts (console and gui) are treated identically with the same .cmd wrapper and self._env.python, showing no distinct windowed launcher handling exists at all, contradicting the claim's implication that a windowed launcher normally exists but is bypassed.",
+        "file": "context/target.py",
+        "line_end": 108,
+        "line_start": 106,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "SUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/python-poetry/poetry/pull/10973#discussion_r3621508821; exact reviewed snapshot 6208f6e1f5a6eb945c8d8c101b89def75a111d24.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260831T154505Z-acbaf2f1",
+    "seed": 67
+  },
+  "protocol": "ar",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+      "claim_id": "case_017",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "cmd_script = script_file.with_suffix(\".cmd\")",
+        "falsification_condition": "If the code created separate console/gui wrappers or used pythonw.exe for gui scripts distinctly, claim would be contradicted; here all scripts (console and gui) are treated identically with the same .cmd wrapper and self._env.python, showing no distinct windowed launcher handling exists at all, contradicting the claim's implication that a windowed launcher normally exists but is bypassed.",
+        "file": "context/target.py",
+        "line_end": 108,
+        "line_start": 106,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_017",
+  "run_id": "20260831T154505Z-acbaf2f1",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "case_017",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "On Windows, editable GUI scripts use the console-script wrapper and python.exe instead of the windowed launcher.",
+        "claim_id": "case_017",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "cmd_script = script_file.with_suffix(\".cmd\")",
+        "falsification_condition": "If the code created separate console/gui wrappers or used pythonw.exe for gui scripts distinctly, claim would be contradicted; here all scripts (console and gui) are treated identically with the same .cmd wrapper and self._env.python, showing no distinct windowed launcher handling exists at all, contradicting the claim's implication that a windowed launcher normally exists but is bypassed.",
+        "file": "context/target.py",
+        "line_end": 108,
+        "line_start": 106,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-31T15:47:07.573429+00:00"
+    },
+    {
+      "claim_id": "case_017",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T15:47:09.796679+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "case_017",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T15:47:09.796879+00:00"
+    }
+  ]
+}

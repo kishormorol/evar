@@ -12,12 +12,13 @@ from evar.config import load_config
 
 ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK = ROOT / "benchmarks/human_pr_20"
-CONFIG_DIR = ROOT / "configs/cross_provider_human_pr_20"
+CONFIG_DIR = ROOT / "configs/cross_provider_human_pr_20_v2"
 OUTPUT = BENCHMARK / "cross_provider_freeze_manifest.json"
 
 
 def main() -> None:
     cases_path = BENCHMARK / "cases.jsonl"
+    run_index = json.loads((BENCHMARK / "cross_provider_run_index.json").read_text(encoding="utf-8"))
     configs = sorted(CONFIG_DIR.glob("*.yaml"))
     categorized: dict[Path, str] = {cases_path: "cases"}
     categorized.update({path: "snapshot" for path in sorted((BENCHMARK / "repos").rglob("*")) if path.is_file()})
@@ -40,7 +41,8 @@ def main() -> None:
     payload = {
         "schema_version": 1,
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "evaluator_commit": subprocess.check_output(
+        "evaluator_commit": run_index["evaluator_freeze_commit"],
+        "artifact_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
         "benchmark": {
@@ -56,8 +58,8 @@ def main() -> None:
             "protocols": ["ar", "ar_text", "evar_hard"],
             "reasoning_effort": "low",
             "temperature": None,
-            "max_output_tokens": 1200,
-            "seed_label": 53,
+            "max_output_tokens": 2400,
+            "seed_label": 67,
             "attempted_decisions": len(cases) * len(configs) * 3,
             "provider_require_parameters": True,
         },

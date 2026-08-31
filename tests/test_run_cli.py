@@ -12,6 +12,18 @@ from evar import run
 
 
 class RunCliTests(unittest.TestCase):
+    def test_case_id_filters_configured_input(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cases = root / "cases.jsonl"
+            rows = [{**_raw_case(root), "case_id": case_id} for case_id in ("one", "two")]
+            cases.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                code = run.main(["--protocol", "ar", "--cases", str(cases), "--case-id", "two"])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(output.getvalue())["case_id"], "two")
+
     def test_run_ar_outputs_jsonl_result(self) -> None:
         record = self._run_protocol("ar")
 

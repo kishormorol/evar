@@ -17,6 +17,11 @@ PRICE_PER_MILLION = {
     "gpt-5.6-luna": {"input": 0.20, "output": 1.20},
     "gpt-5.6-terra": {"input": 2.00, "output": 12.00},
     "gpt-5.6-sol": {"input": 4.00, "output": 20.00},
+    "Claude Sonnet 5": {"input": 2.00, "output": 10.00},
+    "Gemini 3.1 Pro Preview": {"input": 2.00, "output": 12.00},
+    "DeepSeek V4 Pro": {"input": 0.66, "output": 1.98},
+    "Kimi K3": {"input": 3.00, "output": 15.00},
+    "Qwen3.8 Max": {"input": 2.00, "output": 6.00},
 }
 
 

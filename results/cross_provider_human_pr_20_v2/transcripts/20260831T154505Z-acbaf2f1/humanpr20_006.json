@@ -1,0 +1,108 @@
+{
+  "accepted_findings": [],
+  "case_id": "humanpr20_006",
+  "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+  "claim_family": "causal_mislocalization",
+  "findings": [
+    {
+      "actionable": false,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "case_006_samefile_nofollow_docstring",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "case_006_samefile_nofollow_docstring",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "# On Windows st_ino is the file ID, which file systems are free to not support,",
+        "falsification_condition": "If the implementation detail about st_ino/WinFsp were located inside the docstring (lines 53-56) rather than in a '#' comment below the code, the claim would be supported.",
+        "file": "context/target.py",
+        "line_end": 62,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "ground_truth": "UNSUPPORTED",
+  "ground_truth_evidence": "Human review thread https://github.com/pytest-dev/pytest/pull/14865#discussion_r3774173657; exact merged snapshot d6f66d42df86624ed128b84ce57df3d173fe1b95.",
+  "metadata": {
+    "critic_rounds": 1,
+    "protocol": "AR",
+    "run_id": "20260831T154505Z-acbaf2f1",
+    "seed": 67
+  },
+  "protocol": "ar",
+  "rejected_findings": [
+    {
+      "actionable": false,
+      "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+      "claim_id": "case_006_samefile_nofollow_docstring",
+      "critic_decision": "COUNTEREXAMPLE",
+      "evidence_receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "case_006_samefile_nofollow_docstring",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "# On Windows st_ino is the file ID, which file systems are free to not support,",
+        "falsification_condition": "If the implementation detail about st_ino/WinFsp were located inside the docstring (lines 53-56) rather than in a '#' comment below the code, the claim would be supported.",
+        "file": "context/target.py",
+        "line_end": 62,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "text_evidence": null,
+      "verification_result": {
+        "exit_code": null,
+        "reason": "AR does not use external verification.",
+        "status": "UNVERIFIABLE",
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "repo_path": "benchmarks/human_pr_20/repos/case_006",
+  "run_id": "20260831T154505Z-acbaf2f1",
+  "task_description": "Evaluate a candidate finding derived from a public pull-request review comment. The context files are focused excerpts from one exact repository snapshot and include a second changed file when available.",
+  "transcript": [
+    {
+      "claim_id": "case_006_samefile_nofollow_docstring",
+      "event_type": "REVIEWER_FINDING",
+      "receipt": {
+        "claim": "src/_pytest/pathlib.py puts a samefile_nofollow implementation detail in the docstring instead of a code comment.",
+        "claim_id": "case_006_samefile_nofollow_docstring",
+        "evidence_role": "contradicts_claim",
+        "evidence_type": "structural",
+        "expected_exit_code": null,
+        "expected_stdout_contains": "# On Windows st_ino is the file ID, which file systems are free to not support,",
+        "falsification_condition": "If the implementation detail about st_ino/WinFsp were located inside the docstring (lines 53-56) rather than in a '#' comment below the code, the claim would be supported.",
+        "file": "context/target.py",
+        "line_end": 62,
+        "line_start": 58,
+        "verification_command": null
+      },
+      "timestamp": "2026-08-31T15:45:49.661409+00:00"
+    },
+    {
+      "claim_id": "case_006_samefile_nofollow_docstring",
+      "critic_decision": "COUNTEREXAMPLE",
+      "event_type": "CRITIC_DECISION",
+      "timestamp": "2026-08-31T15:45:52.053066+00:00"
+    },
+    {
+      "actionable": false,
+      "claim_id": "case_006_samefile_nofollow_docstring",
+      "event_type": "FINAL_DECISION",
+      "timestamp": "2026-08-31T15:45:52.053161+00:00"
+    }
+  ]
+}

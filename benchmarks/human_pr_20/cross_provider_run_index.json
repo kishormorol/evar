@@ -1,0 +1,25 @@
+{
+  "benchmark": "human_pr_20_cross_provider",
+  "evaluator_freeze_commit": "e3189d1093679cbe6e820f1b1a31d0baeb3321d3",
+  "replicate_note": "Seed 67 is a provenance label; OpenRouter sampling is not asserted to be deterministic. Each entry contains 20 attempted cases, including failures.",
+  "pricing_observed_at": "2026-08-31",
+  "pricing_source": "https://openrouter.ai/api/v1/models",
+  "max_output_tokens": 2400,
+  "canonical_runs": [
+    {"model": "Claude Sonnet 5", "seed": 67, "protocol": "ar", "result": "results/cross_provider_human_pr_20_v2/20260831T154505Z-acbaf2f1_ar.jsonl"},
+    {"model": "Claude Sonnet 5", "seed": 67, "protocol": "ar_text", "result": "results/cross_provider_human_pr_20_v2/20260831T154731Z-8029dc0e_ar_text.jsonl"},
+    {"model": "Claude Sonnet 5", "seed": 67, "protocol": "evar_hard", "result": "results/cross_provider_human_pr_20_v2/20260831T154957Z-f97c6b66_evar_hard.jsonl"},
+    {"model": "Gemini 3.1 Pro Preview", "seed": 67, "protocol": "ar", "result": "results/cross_provider_human_pr_20_v2/20260831T154502Z-3279d8f8_ar.jsonl"},
+    {"model": "Gemini 3.1 Pro Preview", "seed": 67, "protocol": "ar_text", "result": "results/cross_provider_human_pr_20_v2/20260831T154746Z-1316b2e3_ar_text.jsonl"},
+    {"model": "Gemini 3.1 Pro Preview", "seed": 67, "protocol": "evar_hard", "result": "results/cross_provider_human_pr_20_v2/20260831T155026Z-0e8f2e65_evar_hard.jsonl"},
+    {"model": "DeepSeek V4 Pro", "seed": 67, "protocol": "ar", "result": "results/cross_provider_human_pr_20_v2/20260831T154504Z-ea87acd2_ar.jsonl"},
+    {"model": "DeepSeek V4 Pro", "seed": 67, "protocol": "ar_text", "result": "results/cross_provider_human_pr_20_v2/20260831T155339Z-a36cefea_ar_text.jsonl"},
+    {"model": "DeepSeek V4 Pro", "seed": 67, "protocol": "evar_hard", "result": "results/cross_provider_human_pr_20_v2/20260831T160258Z-448263cb_evar_hard.jsonl"},
+    {"model": "Kimi K3", "seed": 67, "protocol": "ar", "result": "results/cross_provider_human_pr_20_v2/20260831T154505Z-20ba623f_ar.jsonl"},
+    {"model": "Kimi K3", "seed": 67, "protocol": "ar_text", "result": "results/cross_provider_human_pr_20_v2/20260831T155334Z-8df16f1f_ar_text.jsonl"},
+    {"model": "Kimi K3", "seed": 67, "protocol": "evar_hard", "result": "results/cross_provider_human_pr_20_v2/20260831T155821Z-21703696_evar_hard.jsonl"},
+    {"model": "Qwen3.8 Max", "seed": 67, "protocol": "ar", "result": "results/cross_provider_human_pr_20_v2/20260831T154503Z-43c3f367_ar.jsonl"},
+    {"model": "Qwen3.8 Max", "seed": 67, "protocol": "ar_text", "result": "results/cross_provider_human_pr_20_v2/20260831T155423Z-1a7fd9b0_ar_text.jsonl"},
+    {"model": "Qwen3.8 Max", "seed": 67, "protocol": "evar_hard", "result": "results/cross_provider_human_pr_20_v2/20260831T160331Z-4a47d1f9_evar_hard.jsonl"}
+  ]
+}
