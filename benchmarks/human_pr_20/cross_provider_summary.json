@@ -87,13 +87,21 @@
       "ok": 13,
       "protocol": "ar_text",
       "rows": 13
+    },
+    {
+      "failed": 0,
+      "file": "results/cross_provider_human_pr_20_final/20260831T015426Z-e472ee90_ar_text.jsonl",
+      "model": "moonshotai/kimi-k3",
+      "ok": 17,
+      "protocol": "ar_text",
+      "rows": 17
     }
   ],
   "source": "results/cross_provider_human_pr_20_final",
   "totals": {
     "failed": 15,
-    "files": 11,
-    "ok": 191,
-    "rows": 206
+    "files": 12,
+    "ok": 208,
+    "rows": 223
   }
 }
