@@ -4,7 +4,7 @@ Project preview: [evar-research.elitelab-ai.chatgpt.site](https://evar-research.
 
 ## Abstract
 
-Code-review agents often sound convincing before anyone checks whether the cited code actually supports the claim. This paper asks a deliberately narrow question: does requiring a machine-checkable observation reduce that failure mode? Evidence-Verified Adversarial Review (EVAR) adds a receipt to the usual reviewer/critic exchange. The receipt names the file, lines, observation, and (when needed) a bounded command; a deterministic verifier checks it before the critic can make the finding actionable. We keep the comparison concrete: the same 20 temporal cases, prompts, budgets, and models are run with ordinary textual review (AR), textual evidence (AR-Text), and the hard evidence gate (EVAR-Hard). On the untouched Human PR 20 holdout, EVAR-Hard lowers some false-consensus rates but also rejects supported claims, and it does not dominate AR or AR-Text. A later three-model OpenAI extension and an exploratory OpenRouter run show the same pattern: verification is useful as an audit boundary, but its outcome depends on whether the model can produce relevant, valid receipts. The result is therefore methodological rather than triumphal. EVAR makes an accepted finding inspectable; it is not a guarantee that the finding is correct.
+Code-review agents can agree on a plausible finding even when the cited code does not support it. We study whether a machine-checkable evidence requirement reduces this *false consensus*. Evidence-Verified Adversarial Review (EVAR) adds a structured receipt—file, lines, expected observation, falsification condition, and optionally a bounded command—to a reviewer/critic protocol. A deterministic verifier must accept the receipt before the finding can become actionable. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and EVAR-Hard under matched prompts, cases, and two-call budgets. The untouched Human PR 20 holdout contains 120 decisions over temporal pairs derived from ten public review comments. With `gpt-4.1-mini`, AR-Text and EVAR-Hard tie at FCR/SCR = 0.200/0.700; with `gpt-4.1`, EVAR-Hard scores 0.300/0.600 versus 0.200/0.700 for AR-Text. A 180-decision OpenAI model extension is likewise heterogeneous; a separate 180-attempt cross-provider study completes only seven of fifteen protocol cells, exposing schema and serving failures. Across 900 fully completed matched decisions, deterministic verification changes the safety-retention operating point but does not dominate textual evidence. Its robust benefit is procedural: every actionable EVAR finding carries an inspectable machine result, while invalid evidence becomes an explicit failure rather than silent agreement.
 
 ## 1. Research Question
 
@@ -12,26 +12,32 @@ Can external deterministic verification reduce false consensus between LLM revie
 
 We define false consensus as an unsupported candidate claim becoming actionable after reviewer/critic interaction. We also track supported-claim retention to ensure that stricter verification does not simply reject everything.
 
-This work makes six concrete contributions:
+One Human PR 20 pair makes the task concrete. In Black pull request 5272, a reviewer asked that an internal explanation involving `hug_power_op` and cloned leaves be replaced with a concise user-facing changelog entry. The claim is supported at the reviewed commit and unsupported after the merge edit. A textual critic can find the wording plausible in either snapshot; an evidence receipt must identify the exact changelog lines present in that snapshot. EVAR evaluates that narrow actionability question rather than open-ended defect discovery.
 
-1. It defines false consensus as a measurable failure mode for reviewer–critic code-review protocols.
-2. It introduces structured evidence receipts and a deterministic actionability gate.
-3. It provides a reproducible harness for comparing textual and verification-backed protocols under matched budgets.
-4. It provides input and output freeze manifests plus judge-free transcript audits for 900 model decisions.
-5. It introduces a temporal holdout derived from real human review comments across previously unseen repositories.
-6. It reports a mixed, non-dominance result across five evaluated models while separating the untouched study, exploratory model extension, development diagnostics, and post-hoc interpretation.
+This work makes four concrete contributions:
+
+1. **Protocol:** a structured evidence receipt and deterministic gate that make acceptance conditions externally inspectable.
+2. **Benchmark:** a temporally paired holdout built from public human review comments at reviewed and merged commits.
+3. **Evidence:** matched AR, AR-Text, and EVAR-Hard experiments showing a model-sensitive safety-retention tradeoff rather than universal dominance.
+4. **Artifact:** frozen inputs, transcripts, result manifests, and judge-free audits for 900 completed matched decisions, plus canonical accounting for 180 cross-provider attempts with failures retained explicitly.
 
 ### 1.1 Related Work
 
-EVAR builds on iterative critique and multi-agent deliberation but changes the acceptance condition. Self-Refine demonstrates that model-generated feedback can improve a model's own outputs across tasks [1], while multi-agent debate uses multiple model instances to improve reasoning and factuality through textual exchange [2]. Neither result implies that agreement is independently grounded. EVAR instead makes a verified external observation a necessary condition for actionability.
+EVAR builds on iterative critique and multi-agent deliberation but changes the acceptance condition. Self-Refine demonstrates that model-generated feedback can improve a model's own outputs across tasks [1], Reflexion carries linguistic feedback through agent memory [15], and multi-agent debate uses multiple model instances to improve reasoning and factuality through textual exchange [2]. Neither result implies that agreement is independently grounded. CRITIC shows the complementary value of tool-interactive feedback [6]. EVAR narrows that premise to a pre-specified review claim and makes a verified external observation a necessary condition for actionability rather than optional context for another revision.
+
+Modern code review is not only defect detection. Studies at Microsoft and Google describe knowledge transfer, alternative solutions, team awareness, and workflow integration as important parts of the practice [7, 8]. Industrial studies of deployed automated review systems further show why adoption, latency, and developer utility require direct measurement [9, 10]. EVAR's FCR and SCR therefore measure the fate of a supplied technical claim, not whether a generated comment is timely, understandable, or useful to a team.
+
+CodeReviewer evaluates learned quality estimation, comment generation, and refinement [11], while hybrid work combines LLM generation with static analyzers to trade broader coverage against rule-based precision [12]. EVAR begins later: a candidate claim already exists, and deterministic machinery validates its submitted observation and controls actionability. SWE-agent similarly demonstrates that the model--computer interface matters [14], but EVAR deliberately limits itself to structural checks or a shell-free timed process. The current prototype is not an operating-system sandbox.
 
 For software-engineering evaluation, SWE-bench grounds tasks in real GitHub issues and pull requests and highlights the need for repository context and executable environments [3]. More recent code-review work evaluates models against human pull-request feedback and reports low detection of human-flagged issues [4]. EVAR studies a narrower question: given a pre-specified candidate review claim, does an evidence gate prevent unsupported reviewer-critic consensus without discarding supported claims?
 
 SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues [5]. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable. A future larger benchmark should combine EVAR's receipt-level audit with the PR-scale context and manual verification used by SWR-Bench.
 
+ContextCRBench scales context-rich review evaluation to quality assessment, localization, and comment generation [13]. Its emphasis on issue context and fine-grained localization reinforces an external-validity limit here: EVAR's focused excerpts isolate the verification question, but cannot substitute for evaluating complete pull requests with developer intent.
+
 ## 2. Protocols
 
-We compare three protocols:
+We compare three protocols under the same two-call budget: one schema-constrained reviewer call followed by one critic call. The reviewer always returns exactly one receipt; the protocols differ in what happens to it before criticism.
 
 | Protocol | Evidence Handling | Actionability Gate |
 | --- | --- | --- |
@@ -41,7 +47,7 @@ We compare three protocols:
 
 The EVAR-Hard receipt contains the claim, evidence type, evidence role, referenced file and line range, optional verification command, expected observation, and falsification condition. The evidence role distinguishes evidence intended to support a claim from evidence intended to contradict it. Behavioral witnesses must print `EVAR_WITNESS_PASS` only when the claim is supported.
 
-In every run, the reviewer sees the candidate claim and the repository snapshot but not the benchmark label. In AR, the reviewer writes a finding and the critic sees that text. AR-Text gives the critic the reviewer's prose evidence as an additional input, but it still relies on the critic's judgment. EVAR-Hard inserts two deterministic checks: first, the receipt must point to an existing file and a valid line interval (or to an allowed command); second, the observation must match exactly enough to pass the verifier. Only then is the receipt shown to the critic. A critic acceptance without a verified receipt is recorded as non-actionable. This separation lets us tell apart three failures that are often conflated: a model can misunderstand the claim, cite the wrong evidence, or produce a mechanically valid but irrelevant citation.
+In every run, the reviewer sees the candidate claim and repository snapshot but not the label. AR passes the receipt fields to a critic with verification marked unused. AR-Text projects the receipt into textual evidence without executing it. EVAR-Hard verifies the receipt before the critic call; the critic sees failed verification, but cannot override the hard gate. Two frozen deterministic repairs may re-check an explicit opposite-role AST observation or fall back from invalid inline-Python syntax to structural verification. Both events are logged. There is no model revision turn in the reported configured runs.
 
 ## 3. Benchmark
 
@@ -61,6 +67,14 @@ The evaluation suite spans synthetic cases, isolated real source, and commit-gro
 The first primary frozen benchmark is `benchmarks/external_pr_50`. It contains 50 claim cases grounded in 25 public upstream commits. Every source change produces one supported and one unsupported claim about the same exact file-scoped patch. The benchmark is balanced across labels, repositories, and claim families: each of five repositories contributes one claim pair to every family.
 
 After inspecting that benchmark's receipt failures, no code or prompt change was evaluated against it again. EVAR v2 was developed on the separate `development_external_pr_20` split. The final `human_pr_20` evaluation was then generated from ten review comments written by non-bot GitHub users. For each comment, the code at the reviewed commit supports the comment's claim and the merged commit no longer does, yielding a controlled temporal pair. The 20 cases are balanced by label, span five repositories absent from `external_pr_50`, preserve exact public provenance, include a changed target excerpt plus a companion changed-file excerpt when available, and remain below 30 KB of context per case. Evaluator code, prompts, configs, and cases were frozen before the first model call.
+
+| Study phase | Cases | Decisions | Evidential role |
+|---|---:|---:|---|
+| External PR 50 | 50 | 600 | Frozen first evaluation; later inspected to diagnose receipt failures |
+| Development PR 20 | 20 | diagnostic | Prompt and verifier development only |
+| Human PR 20 | 20 | 120 | Untouched final holdout and primary RQ1 evidence |
+| GPT-5.6 extension | 20 reused | 180 | Pre-specified exploratory model-sensitivity analysis |
+| Cross-provider pilots | 20 reused | partial | Operational validity accounting, not a balanced leaderboard |
 
 After the original Human PR 20 study was publicly released, we specified an exploratory model-extension protocol before making any benchmark calls. The unchanged cases, prompts, verifier semantics, and scoring were evaluated with three current model tiers: `gpt-5.6-luna`, `gpt-5.6-terra`, and `gpt-5.6-sol`. All used explicit `reasoning.effort: none`, one run per protocol, identical budgets, and seed 41 as a provenance label. The extension required one transport-level backend change: omit the unsupported `temperature` parameter for these models. This change and the three configs were frozen at commit `9a72f36`; it did not change prompts, verification, or scoring.
 
@@ -136,6 +150,17 @@ Paired changes from AR are modest and uncertain. For `gpt-4.1-mini`, AR-Text and
 
 The v2 receipt format verifies 18 of 20 receipts for each model, a large diagnostic improvement over the earlier mini-model frozen run. This is not a causal comparison: `human_pr_20` differs in repositories, claims, context construction, and sample size. The full 120-record audit found no run failures, prompt-hash mismatch, transcript-integrity error, gate inconsistency, token inconsistency, or latency inconsistency.
 
+#### Case-level decision transitions
+
+Aggregate rates hide whether EVAR-Hard merely filters AR-Text decisions or changes the critic's reasoning. On `gpt-4.1-mini`, the two protocols differ on two supported cases in opposite directions—one accepted claim becomes rejected and one rejected claim becomes accepted—so their aggregate scores tie. On `gpt-4.1`, four decisions change: two supported claims are lost, one supported claim is recovered, and one unsupported claim becomes actionable.
+
+| Model | Supported keep | Supported accept→reject | Supported reject→accept | Unsupported keep | Unsupported accept→reject | Unsupported reject→accept |
+|---|---:|---:|---:|---:|---:|---:|
+| `gpt-4.1` | 7 | 2 | 1 | 9 | 0 | 1 |
+| `gpt-4.1-mini` | 8 | 1 | 1 | 10 | 0 | 0 |
+
+The unsupported reject→accept transition matters: EVAR-Hard is not a monotone post-filter because the critic sees a different evidence representation. Verified but irrelevant evidence can persuade the critic to accept a claim that textual evidence did not.
+
 ### 5.2 Exploratory GPT-5.6 Model Extension
 
 The post-release extension evaluates the unchanged Human PR 20 cases with three additional model tiers under explicit reasoning effort `none`. It contains 180 decisions: 20 cases × 3 protocols × 3 models. All runs completed, and the judge-free audit reported no issue across any record or transcript. Standard token prices at the August 30, 2026 freeze were $0.20/$1.20 per million input/output tokens for Luna, $2/$12 for Terra, and $4/$20 for Sol, following the [official OpenAI model comparison](https://developers.openai.com/api/docs/models/compare).
@@ -156,21 +181,52 @@ Luna EVAR-Hard changes FCR by -0.100 and SCR by -0.100 relative to AR; both pair
 
 The extension cost an estimated $1.411 in standard API token charges. Receipt verification varies from 85% for Luna to 90% for Terra and 95% for Sol, but higher receipt validity does not produce monotonic improvement in final FCR or SCR. These results reinforce that model capability, textual criticism, evidentiary relevance, and the deterministic gate interact rather than forming a simple quality ladder.
 
-### 5.3 Exploratory Cross-Provider Extension
+### 5.3 Cross-Model Pareto Synthesis
 
-We additionally ran a pre-specified cross-provider extension through OpenRouter with the cases, prompts, budgets, verifier semantics, and scoring held fixed. Claude Sonnet 5 and Gemini 3.1 Pro Preview each completed all 60 protocol decisions (AR, AR-Text, and EVAR-Hard; 120/120 successful rows). DeepSeek V4 completed 20 AR cases (11 valid and 9 invalid-output failures) and 17 AR-Text cases before stopping. Kimi K3 completed 16 full AR cases plus a separate three-case pilot; Qwen3.8 Max completed a three-case AR pilot. These exploratory rows are not pooled as independent evidence. Invalid model outputs and incomplete cells remain visible as failures. A process-level curl deadline was added after some OpenRouter chunked responses stayed open indefinitely.
+Comparing EVAR-Hard against each matched baseline without pooling gives the clearest summary. Negative FCR deltas and positive SCR deltas favor EVAR-Hard.
+
+| Model | Baseline | ΔFCR | ΔSCR | Relation |
+|---|---|---:|---:|---|
+| GPT-4.1 | AR | -0.100 | -0.100 | Tradeoff |
+| GPT-4.1 | AR-Text | +0.100 | -0.100 | Dominated |
+| GPT-4.1-mini | AR | -0.200 | -0.200 | Tradeoff |
+| GPT-4.1-mini | AR-Text | 0.000 | 0.000 | Tie |
+| GPT-5.6-luna | AR | -0.100 | -0.100 | Tradeoff |
+| GPT-5.6-luna | AR-Text | -0.100 | -0.100 | Tradeoff |
+| GPT-5.6-terra | AR | 0.000 | 0.000 | Tie |
+| GPT-5.6-terra | AR-Text | 0.000 | +0.200 | Dominates |
+| GPT-5.6-sol | AR | 0.000 | -0.100 | Dominated |
+| GPT-5.6-sol | AR-Text | 0.000 | 0.000 | Tie |
+
+Across ten comparisons, EVAR-Hard dominates once, is dominated twice, ties three times, and trades lower false consensus for lower supported-claim retention four times. Its single dominance result—Terra against AR-Text—is not reproduced against AR or by the adjacent Luna and Sol tiers. The effect is therefore an interaction among reviewer, evidence representation, verifier, and critic, not a stable wrapper benefit.
+
+### 5.4 Exploratory Cross-Provider Extension
+
+We additionally ran a pre-specified cross-provider extension through OpenRouter with cases, prompts, budgets, verifier semantics, and scoring fixed. Claude Sonnet 5 and Gemini 3.1 Pro Preview each completed all 60 decisions. DeepSeek produced 22 valid and 15 invalid-output rows across 37 attempts. Kimi completed AR only; Qwen has a three-case connectivity pilot. Duplicate retries and aborted files are excluded from canonical accounting. Incomplete model blocks are treated as operational reliability evidence, not imputed performance results.
 
 | Model | Attempted rows | Valid rows | Failed/incomplete |
 |---|---:|---:|---:|
 | Claude Sonnet 5 | 60 | 60 | 0 |
 | Gemini 3.1 Pro | 60 | 60 | 0 |
 | DeepSeek V4 Pro | 37 | 22 | 15 |
-| Kimi K3 | 19 | 19 | 0 |
+| Kimi K3 | 20 | 20 | 0 |
 | Qwen3.8 Max | 3 | 3 | 0 |
 
 These are attempted rows rather than independent cases; repeated pilot rows are not pooled into performance estimates.
 
-### 5.4 Frozen External PR 50 Evaluation
+| Model | Protocol | FCR | SCR | Verified receipts |
+|---|---|---:|---:|---:|
+| Claude | AR | 0.000 | 0.600 | — |
+| Claude | AR-Text | 0.000 | 0.700 | — |
+| Claude | EVAR-Hard | 0.000 | 0.700 | 20/20 |
+| Gemini | AR | 0.000 | 0.800 | — |
+| Gemini | AR-Text | 0.000 | 0.800 | — |
+| Gemini | EVAR-Hard | 0.000 | 0.800 | 19/20 |
+| Kimi | AR | 0.100 | 0.900 | — |
+
+These complete cells add no evidence of EVAR dominance. Claude and Gemini already have zero false consensus under every protocol, leaving only supported-claim retention to differ. DeepSeek's valid-response rate is 59.5% (22/37), so a protocol comparison would be misleading.
+
+### 5.5 Frozen External PR 50 Evaluation
 
 The primary evaluation contains 600 attempted case decisions: 50 cases × 3 protocols × 2 models × 2 replicates. One `gpt-4.1-mini` EVAR-Hard case failed because the reviewer returned truncated invalid JSON; it remains an explicit failed record and is excluded from FCR/SCR denominators. Seeds 7 and 17 are frozen replicate labels, but the Responses API backend did not transmit an explicit inference seed, so they are independent repetitions rather than controlled seeded inference.
 
@@ -194,7 +250,7 @@ Paired case-level changes from AR:
 
 The family analysis localizes the tradeoff. EVAR-Hard reaches zero FCR in four of five families for both models; `stale_evidence` remains at FCR = 0.200. With `gpt-4.1`, EVAR-Hard SCR ranges from 0.700 to 1.000 by family. With `gpt-4.1-mini`, SCR is 0.200 for `behavior_inversion` and `missing_guard`, 0.400 for `causal_mislocalization` and `stale_evidence`, and 0.900 for `incorrect_call_relationship`.
 
-### 5.4 GPT-4.1 Mini, Three Synthetic 50-Case Repetitions
+### 5.6 GPT-4.1 Mini, Three Synthetic 50-Case Repetitions
 
 | Protocol | Run | FCR | SCR | Failed |
 | --- | --- | ---: | ---: | ---: |
@@ -216,7 +272,7 @@ Mean results:
 | AR-Text | 0.000 | 0.987 |
 | EVAR-Hard | 0.000 | 0.987 |
 
-### 5.5 GPT-4.1, Synthetic 50 Cases
+### 5.7 GPT-4.1, Synthetic 50 Cases
 
 | Protocol | n | Completed | Failed | FCR | FCR Low | FCR High | SCR | SCR Low | SCR High |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -230,7 +286,7 @@ Result files:
 - `results/20260828T203246Z-fb1d8e13_ar_text.jsonl`
 - `results/20260828T203836Z-f25cfab0_evar_hard.jsonl`
 
-### 5.6 GPT-4.1 Mini, Real-Code 10-Case Pilot
+### 5.8 GPT-4.1 Mini, Real-Code 10-Case Pilot
 
 This pilot uses isolated copies of EVAR source files. It is more realistic than `manual_50`, but it is still drawn from the same repository and should be treated as diagnostic rather than paper-grade evidence.
 
@@ -246,7 +302,7 @@ Result files:
 - `results/20260828T210939Z-6efa3ef2_ar_text.jsonl`
 - `results/20260828T212156Z-0b4d5875_evar_hard.jsonl`
 
-### 5.7 GPT-4.1 Mini, External-Source 10-Case Pilot
+### 5.9 GPT-4.1 Mini, External-Source 10-Case Pilot
 
 This pilot uses isolated copies of source files from MarkupSafe and zipp at pinned commits. It is independent of EVAR source code, but still uses hand-authored static claims rather than real pull-request review comments.
 
@@ -262,7 +318,7 @@ Result files:
 - `results/20260828T225009Z-05a32dc4_ar_text.jsonl`
 - `results/20260828T225243Z-be058cc5_evar_hard.jsonl`
 
-### 5.8 GPT-4.1 Mini, External PR-Style 10-Case Pilot
+### 5.10 GPT-4.1 Mini, External PR-Style 10-Case Pilot
 
 This pilot uses post-commit source snapshots from MarkupSafe and zipp at pinned commits. It is more realistic than `external_10` because claims are grounded in real commits, but it still uses hand-authored candidate claims rather than actual pull-request comments.
 
@@ -278,7 +334,7 @@ Result files:
 - `results/20260829T003248Z-32311376_ar_text.jsonl`
 - `results/20260829T010200Z-0439f1c0_evar_hard.jsonl`
 
-### 5.9 GPT-4.1 Mini, External PR-Style 20-Case Benchmark
+### 5.11 GPT-4.1 Mini, External PR-Style 20-Case Benchmark
 
 This benchmark expands the commit-grounded setup to 20 cases from pinned MarkupSafe and zipp commits. It was added after the `external_pr_10` diagnostic loop and served as an earlier held-out development check before the frozen primary evaluation.
 
@@ -350,7 +406,7 @@ Prompts were improved after observing failures on the earlier development benchm
 
 The sample size remains small for statistical claims. Bootstrap intervals are useful as descriptive uncertainty checks, but stronger claims require more diverse cases and independent repetitions.
 
-The verifier is specialized to Python and to a limited set of structural and behavioral claim patterns. Some successful checks use targeted AST logic added after observing development failures. This improves the harness but means performance can reflect verifier coverage as much as protocol quality.
+The verifier is specialized to Python and to a limited set of structural and behavioral claim patterns. Some successful checks use targeted AST logic added after observing development failures. This improves the harness but means performance can reflect verifier coverage as much as protocol quality. Behavioral witnesses use `shell=False` and a timeout, but they do not run inside an operating-system sandbox. The released cases are trusted frozen fixtures; executing receipts from untrusted models or repositories would require process isolation, network denial, and disposable filesystems.
 
 The 20-case receipt-repair result is explicitly post-hoc. The same benchmark informed the repair logic, so the repaired score measures whether the diagnosed failures were corrected, not whether the correction generalizes.
 
@@ -398,14 +454,6 @@ Model-backed experiments require an explicit configuration and API credentials. 
 
 Each Human PR 20 case stores the public pull-request URL, comment author, reviewed commit, merge commit, path, line location, claim text, label, and the source excerpts shown to the model. The reviewed snapshot is the positive member of the pair; the merge snapshot is the negative member. Both commits remain available for audit. The set is balanced between ten supported and ten unsupported cases across five repositories. The model-visible task excludes the label and construction notes. Context is clipped to the target file and, where needed, a companion changed file. This makes the test reproducible and focuses it on evidence selection rather than repository navigation.
 
-### Per-case execution
-
-For each case, the runner loads a frozen configuration, starts a transcript, and records every backend call. The reviewer receives the task and repository context. The critic receives the finding alone (AR), the finding plus textual evidence (AR-Text), or a parsed and verified receipt (EVAR-Hard). Parse failures are retried only within the configured budget and are still emitted with a failure type. The verifier has a ten-second command timeout and never calls a language model. Rows record actionability, ground-truth label, critic decision, verifier status, token counts, latency, and transcript path.
-
-### Run inventory and failures
-
-Human PR 20 contains 120 decisions; the GPT-5.6 extension contains 180. The exploratory cross-provider accounting contains 60 valid Claude rows, 60 valid Gemini rows, 22 valid and 15 failed DeepSeek rows, 19 Kimi pilot rows, and three Qwen pilot rows. `ModelOutputError` covers invalid JSON; `HTTPError`, `URLError`, and timeout records identify provider failures. EVAR-specific failures include missing files, invalid ranges, source mismatches, disallowed commands, failed witnesses, missing pass markers, and gate inconsistencies. Failed rows remain visible and are excluded only from FCR/SCR denominators.
-
 ### Audit and reproduction
 
 The audit checks transcript completeness, model/protocol metadata, frozen prompt hashes, token consistency, nonnegative latency, and the EVAR implication that actionability requires both `VERIFIED` and critic `ACCEPT`.
@@ -413,7 +461,7 @@ The audit checks transcript completeness, model/protocol metadata, frozen prompt
 ```bash
 python -m unittest discover -s tests
 python scripts/summarize_cross_provider.py \
-  results/cross_provider_human_pr_20_final \
+  --manifest benchmarks/human_pr_20/cross_provider_canonical_manifest.json \
   --output benchmarks/human_pr_20/cross_provider_summary.json
 python -m evar.audit_results --results RESULTS/*.jsonl
 ```
@@ -422,17 +470,17 @@ The cross-provider transport uses a process-level curl deadline because some chu
 
 ### Case and output schemas
 
-Each benchmark case is a JSON object with stable identifiers and no hidden state. The principal fields are `case_id`, `claim_family`, `claim`, `repo_path`, `context`, `ground_truth`, and `provenance`. Ground truth is evaluator-only and contains the support label, source commit, and expected interpretation. Context is a named set of target-file and changed-file excerpts, serialized in a fixed order. The runner records the SHA-256 hash of the prompt template.
+Each benchmark case is a JSON object with stable identifiers. The principal fields are `case_id`, `claim`, `claim_family`, `ground_truth`, `paired_case_id`, `repo_path`, `snapshot_kind`, `source_commit`, `source_pull_request`, `target_context_file`, and optional `companion_context_file`. The model sees only the task description, candidate claim, claim family, valid repository paths, and file contents. Labels, pairing, snapshot kind, source-comment metadata, and construction evidence remain evaluator-only. The runner records the SHA-256 hash of every prompt template.
 
-The reviewer output is intentionally narrower than a full review report. AR and AR-Text require a decision and short finding. EVAR-Hard additionally requires receipts. Each receipt identifies a claim, evidence role, evidence type, repository-relative file, optional line interval, optional command, and falsification condition. Behavioral receipts add an expected exit code, output marker, and observation string. Missing required fields produce a parse failure; they are not repaired during scoring.
+All reviewer prompts use the same strict schema: an object containing exactly one receipt with `claim_id`, `claim`, evidence type and role, repository-relative file, nullable line bounds, nullable command, nullable expected exit code, nullable expected-output substring, and falsification condition. Additional properties are rejected. A response that remains invalid after the configured retry becomes `ModelOutputError`; the evaluator does not synthesize a replacement.
 
 ### Interaction schedule
 
-The protocols share the same call budget. The reviewer proposes a finding, the critic challenges it, and the reviewer gets one revision opportunity. AR exposes only proposal text to the critic. AR-Text adds natural-language evidence. EVAR-Hard adds the final receipt and verifier result and does not allow the critic to override a failed receipt. Every request role, prompt hash, timestamp, token count, response, parser outcome, and retry number is recorded. This makes an empty receipt list distinguishable from invalid JSON or a valid receipt that points at the wrong commit.
+The configured protocols use two model calls per case. The reviewer emits one receipt. AR calls the critic with verification marked unused. AR-Text derives a textual-evidence view from the receipt. EVAR-Hard verifies the receipt, optionally performs one frozen deterministic repair and re-verification, and then calls the critic. There is no model revision turn. Every request role, prompt hash, timestamp, token count, response, parser outcome, and retry number is recorded.
 
 ### Receipt validation rules
 
-Structural validation removes only display artifacts such as Markdown fences, leading line numbers, and trailing whitespace. It checks the repository-relative path, line interval, and normalized source observation. Behavioral validation runs an allow-listed command in an isolated fixture with a fixed working directory and timeout, then checks exit status and the `EVAR_WITNESS_PASS` marker. Commands cannot access the network or write outside the fixture. Evidence role is checked independently of textual similarity; role-repair experiments are development diagnostics, not evaluation results.
+Structural validation removes display artifacts such as Markdown fences, leading line numbers, and surrounding whitespace. It normally checks the repository-relative path, line interval, and normalized source observation. For structural receipts only, the frozen verifier may recover an unambiguous stale path by suffix, claimed function, or sole Python file, and may search that file when display-derived line numbers extend beyond end-of-file. Behavioral receipts receive neither recovery. Behavioral validation parses the command into an argument vector, launches it with `shell=False` from the fixture directory, applies a five-second default timeout, and checks exit status plus the `EVAR_WITNESS_PASS` marker. This prevents shell-pipeline interpretation and bounds elapsed execution, but it is not an operating-system sandbox: the child process retains the evaluator's network and filesystem permissions. Two deterministic repairs were frozen before Human PR 20: align the role with an explicit opposite-role AST observation, or fall back from invalid inline-Python syntax to structural checking. Each repair is logged and re-verified; no claim, file, or line range is generated during repair.
 
 ### Statistical and cost details
 
@@ -453,3 +501,13 @@ A stronger replication should sample review comments before observing their outc
 3. Carlos E. Jimenez et al. "SWE-bench: Can Language Models Resolve Real-World GitHub Issues?" arXiv:2310.06770, 2023. https://arxiv.org/abs/2310.06770
 4. Deepak Kumar. "SWE-PRBench: Benchmarking AI Code Review Quality Against Pull Request Feedback." arXiv:2603.26130, 2026. https://arxiv.org/abs/2603.26130
 5. Zhengran Zeng et al. "Benchmarking and Studying the LLM-based Code Review." arXiv:2509.01494, 2025. https://arxiv.org/abs/2509.01494
+6. Zhibin Gou et al. "CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing." arXiv:2305.11738, 2023. https://arxiv.org/abs/2305.11738
+7. Alberto Bacchelli and Christian Bird. "Expectations, Outcomes, and Challenges of Modern Code Review." ICSE, 2013. https://doi.org/10.1109/ICSE.2013.6606617
+8. Caitlin Sadowski, Emma Söderberg, Luke Church, Michal Sipko, and Alberto Bacchelli. "Modern Code Review: A Case Study at Google." ICSE-SEIP, 2018. https://research.google/pubs/modern-code-review-a-case-study-at-google/
+9. Umut Cihan et al. "Automated Code Review in Practice." ICSE-SEIP, 2025. https://doi.org/10.1109/ICSE-SEIP66354.2025.00043
+10. Kla Tantithamthavorn et al. "RovoDev Code Reviewer: A Large-Scale Online Evaluation of LLM-based Code Review Automation at Atlassian." ICSE-SEIP, 2026. https://doi.org/10.1145/3786583.3786851
+11. Zhiyu Li et al. "Automating Code Review Activities by Large-Scale Pre-training." ESEC/FSE, 2022. https://arxiv.org/abs/2203.09095
+12. Imen Jaoua, Oussama Ben Sghaier, and Houari A. Sahraoui. "Combining Large Language Models with Static Analyzers for Code Review Generation." MSR, 2025. https://arxiv.org/abs/2502.06633
+13. Ruida Hu et al. "Benchmarking LLMs for Fine-Grained Code Review with Enriched Context in Practice." FSE Industry Papers, 2026. https://arxiv.org/abs/2511.07017
+14. John Yang et al. "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering." arXiv:2405.15793, 2024. https://arxiv.org/abs/2405.15793
+15. Noah Shinn et al. "Reflexion: Language Agents with Verbal Reinforcement Learning." arXiv:2303.11366, 2023. https://arxiv.org/abs/2303.11366

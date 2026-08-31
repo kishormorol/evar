@@ -4,15 +4,14 @@ from __future__ import annotations
 import argparse
 import glob
 import json
-from collections import Counter
 from pathlib import Path
 
 
-def summarize(root: Path) -> list[dict[str, object]]:
+def summarize_files(files: list[Path]) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
-    for filename in sorted(glob.glob(str(root / "*.jsonl"))):
+    for filename in sorted(files):
         parsed = []
-        for line in Path(filename).read_text(encoding="utf-8").splitlines():
+        for line in filename.read_text(encoding="utf-8").splitlines():
             try:
                 parsed.append(json.loads(line))
             except json.JSONDecodeError:
@@ -22,7 +21,7 @@ def summarize(root: Path) -> list[dict[str, object]]:
         metadata = parsed[0].get("metadata", {})
         model = metadata.get("model", {}).get("model", "unknown")
         rows.append({
-            "file": str(Path(filename).relative_to(root.parent.parent)),
+            "file": str(filename),
             "model": model,
             "protocol": parsed[0].get("protocol"),
             "rows": len(parsed),
@@ -34,11 +33,21 @@ def summarize(root: Path) -> list[dict[str, object]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("root", type=Path)
+    parser.add_argument("root", nargs="?", type=Path)
+    parser.add_argument("--manifest", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    rows = summarize(args.root)
-    payload = {"source": str(args.root), "cells": rows, "totals": {
+    if args.manifest:
+        manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+        files = [Path(path) for path in manifest["result_files"]]
+        source = str(args.manifest)
+    elif args.root:
+        files = [Path(path) for path in glob.glob(str(args.root / "*.jsonl"))]
+        source = str(args.root)
+    else:
+        parser.error("provide ROOT or --manifest")
+    rows = summarize_files(files)
+    payload = {"source": source, "cells": rows, "totals": {
         "files": len(rows), "rows": sum(row["rows"] for row in rows),
         "ok": sum(row["ok"] for row in rows), "failed": sum(row["failed"] for row in rows),
     }}

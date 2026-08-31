@@ -66,14 +66,6 @@
     },
     {
       "failed": 0,
-      "file": "results/cross_provider_human_pr_20_final/20260831T005550Z-3eb72a70_ar.jsonl",
-      "model": "moonshotai/kimi-k3",
-      "ok": 16,
-      "protocol": "ar",
-      "rows": 16
-    },
-    {
-      "failed": 0,
       "file": "results/cross_provider_human_pr_20_final/20260831T014047Z-629b6f8a_ar.jsonl",
       "model": "moonshotai/kimi-k3",
       "ok": 20,
@@ -82,34 +74,18 @@
     },
     {
       "failed": 0,
-      "file": "results/cross_provider_human_pr_20_final/20260831T014437Z-0376d8c4_ar_text.jsonl",
-      "model": "moonshotai/kimi-k3",
-      "ok": 13,
-      "protocol": "ar_text",
-      "rows": 13
-    },
-    {
-      "failed": 0,
-      "file": "results/cross_provider_human_pr_20_final/20260831T015426Z-e472ee90_ar_text.jsonl",
-      "model": "moonshotai/kimi-k3",
-      "ok": 17,
-      "protocol": "ar_text",
-      "rows": 17
-    },
-    {
-      "failed": 0,
-      "file": "results/cross_provider_human_pr_20_final/20260831T020941Z-d7c29a89_ar_text.jsonl",
-      "model": "moonshotai/kimi-k3",
-      "ok": 6,
-      "protocol": "ar_text",
-      "rows": 6
+      "file": "results/cross_provider_human_pr_3_pilots/20260831T011745Z-b432d5f1_ar.jsonl",
+      "model": "qwen/qwen3.8-max",
+      "ok": 3,
+      "protocol": "ar",
+      "rows": 3
     }
   ],
-  "source": "results/cross_provider_human_pr_20_final",
+  "source": "benchmarks/human_pr_20/cross_provider_canonical_manifest.json",
   "totals": {
     "failed": 15,
-    "files": 13,
-    "ok": 214,
-    "rows": 229
+    "files": 10,
+    "ok": 165,
+    "rows": 180
   }
 }

@@ -1,0 +1,15 @@
+{
+  "description": "Canonical non-duplicate cross-provider attempts reported in the paper. Incomplete files are retained; duplicate retries are excluded.",
+  "result_files": [
+    "results/cross_provider_human_pr_20_final/20260830T200739Z-d465c7e2_ar.jsonl",
+    "results/cross_provider_human_pr_20_final/20260830T201005Z-8887b2b1_ar_text.jsonl",
+    "results/cross_provider_human_pr_20_final/20260830T201229Z-f6736093_evar_hard.jsonl",
+    "results/cross_provider_human_pr_20_final/20260830T201451Z-af26e504_ar.jsonl",
+    "results/cross_provider_human_pr_20_final/20260831T003827Z-53ff69b2_ar_text.jsonl",
+    "results/cross_provider_human_pr_20_final/20260831T004759Z-7aa943de_ar.jsonl",
+    "results/cross_provider_human_pr_20_final/20260831T005038Z-a87d9f21_ar_text.jsonl",
+    "results/cross_provider_human_pr_20_final/20260831T005316Z-05d01fe1_evar_hard.jsonl",
+    "results/cross_provider_human_pr_20_final/20260831T014047Z-629b6f8a_ar.jsonl",
+    "results/cross_provider_human_pr_3_pilots/20260831T011745Z-b432d5f1_ar.jsonl"
+  ]
+}
