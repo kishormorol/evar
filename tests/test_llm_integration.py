@@ -46,6 +46,47 @@ class LLMIntegrationTests(unittest.TestCase):
         self.assertIsNone(config.model.temperature)
         self.assertEqual(config.model.reasoning_effort, "none")
 
+    def test_config_loads_model_transport_budget(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config_path = Path(tmp) / "transport.yaml"
+            config_path.write_text(
+                "model:\n"
+                "  backend: openrouter\n"
+                "  model: vendor/model\n"
+                "  temperature: null\n"
+                "  request_timeout_seconds: 120\n"
+                "  max_attempts: 3\n"
+                "  max_total_seconds: 370\n"
+                "protocol:\n"
+                "  critic_rounds: 1\n"
+                "  verifier_timeout_seconds: 5\n"
+                "experiment:\n"
+                "  seed: 1\n"
+                "  repetitions: 3\n",
+                encoding="utf-8",
+            )
+
+            config = load_config(config_path)
+
+        self.assertEqual(config.model.request_timeout_seconds, 120)
+        self.assertEqual(config.model.max_attempts, 3)
+        self.assertEqual(config.model.max_total_seconds, 370)
+        self.assertEqual(config.experiment.repetitions, 3)
+
+    def test_human_pr_expansion_configs_freeze_transport_and_repetitions(self) -> None:
+        full = sorted(Path("configs/human_pr_expansion_full").glob("*.yaml"))
+        stability = sorted(Path("configs/human_pr_expansion_stability").glob("*.yaml"))
+
+        self.assertEqual(len(full), 6)
+        self.assertEqual(len(stability), 6)
+        for path in full + stability:
+            config = load_config(path)
+            self.assertEqual(config.model.request_timeout_seconds, 120)
+            self.assertEqual(config.experiment.repetitions, 3 if path in stability else 1)
+            if config.model.backend == "openrouter":
+                self.assertEqual(config.model.max_attempts, 2)
+                self.assertEqual(config.model.max_total_seconds, 250)
+
     def test_pilot_cases_load_without_prompt_leakage_fields(self) -> None:
         cases = load_jsonl_cases(Path("benchmark/pilot_cases.jsonl"))
 
@@ -161,6 +202,49 @@ class LLMIntegrationTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(record["claim_family"], "missing_guard")
         self.assertGreaterEqual(record["duration"], 0.0)
+
+    def test_configured_run_executes_and_separates_repetitions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cases = root / "cases.jsonl"
+            config_path = root / "repeated.yaml"
+            output_dir = root / "results"
+            cases.write_text(json.dumps(_raw_case(root)) + "\n", encoding="utf-8")
+            config_path.write_text(
+                "model:\n"
+                "  backend: dry_run\n"
+                "  model: repeated-dry-run\n"
+                "  temperature: 0\n"
+                "protocol:\n"
+                "  critic_rounds: 1\n"
+                "  verifier_timeout_seconds: 5\n"
+                "experiment:\n"
+                "  seed: 7\n"
+                "  repetitions: 2\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+
+            with contextlib.redirect_stdout(stdout):
+                exit_code = main(
+                    [
+                        "--cases",
+                        str(cases),
+                        "--protocol",
+                        "ar",
+                        "--config",
+                        str(config_path),
+                        "--output-dir",
+                        str(output_dir),
+                    ]
+                )
+
+            output_path = Path(stdout.getvalue().strip())
+            records = [json.loads(line) for line in output_path.read_text().splitlines()]
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual([record["repetition"] for record in records], [1, 2])
+        self.assertNotEqual(records[0]["transcript_path"], records[1]["transcript_path"])
 
 
 def _raw_case(repo: Path) -> dict[str, object]:

@@ -1,0 +1,17 @@
+model:
+  backend: openrouter
+  model: qwen/qwen3.8-max
+  temperature: null
+  max_output_tokens: 2400
+  reasoning_effort: low
+  request_timeout_seconds: 120
+  max_attempts: 2
+  max_total_seconds: 250
+protocol:
+  critic_rounds: 1
+  verifier_timeout_seconds: 10
+  reviewer_prompt: reviewer_evar_v2.txt
+  reviewer_parse_retries: 1
+experiment:
+  seed: 83
+  repetitions: 3

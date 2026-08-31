@@ -22,7 +22,9 @@ Current writeup:
 - [Untouched Human PR 20 results](benchmarks/human_pr_20/RESULTS.md)
 - [GPT-5.6 model extension results](benchmarks/human_pr_20/MODEL_EXTENSION_RESULTS.md)
 - [Claude, Gemini, DeepSeek, Kimi, and Qwen extension](benchmarks/human_pr_20/CROSS_PROVIDER_RESULTS.md)
-- [Human PR 200 expert-annotation protocol](benchmarks/human_pr_200/README.md)
+- [Powered Human PR expansion protocol](benchmarks/human_pr_200/README.md)
+- [Prospective paired-power analysis](benchmarks/human_pr_200/POWER_PLAN.md)
+- [Frozen expansion preregistration](benchmarks/human_pr_200/PREREGISTRATION.md)
 - [Independent review packet](review/INDEPENDENT_REVIEW.md)
 
 ## Protocols
@@ -90,6 +92,11 @@ python -m evar.run --protocol evar_hard \
 
 Each command writes JSONL results to stdout for later statistical analysis.
 Configured model runs write timestamped JSONL files to `results/` and per-case transcripts to `results/transcripts/<run_id>/`.
+The optional model keys `request_timeout_seconds`, `max_attempts`, and
+`max_total_seconds` freeze transport behavior rather than relying on backend defaults.
+`experiment.repetitions` executes the complete case list that many times and writes a
+separate transcript directory for each repetition; repetitions are never counted as
+independent benchmark cases.
 
 Summarize result JSONL with FCR/SCR:
 

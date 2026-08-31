@@ -29,6 +29,7 @@ The adjudicator accepts a candidate only when both annotators agree that it is e
 the normalized claim is stable, and the temporal labels are `true`/`true`. The accepted
 candidate becomes two benchmark cases with the same claim: `SUPPORTED` at the reviewed
 commit and `UNSUPPORTED` at the merged commit. Disagreements, exclusions, and changes
-to the claim are retained in an adjudication log. Sampling should be stratified by
-language and repository, with no more than six source comments from one repository and
-at least 20 repositories in the final 100-comment set.
+to the claim are retained in an adjudication log. Sampling is stratified by language
+and repository, with no more than six source comments from one repository and at least
+40 repositories in the powered 300-comment set. If the resolved pool cannot meet those
+constraints, selection fails closed.

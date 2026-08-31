@@ -144,12 +144,13 @@ def _run_configured(
     )
 
     if dry_run:
-        for case in cases:
-            task = _claim_evaluation_task(case)
-            try:
-                protocol.run(task, case.repo_path)
-            except ModelOutputError:
-                pass
+        for _repetition in range(1, config.experiment.repetitions + 1):
+            for case in cases:
+                task = _claim_evaluation_task(case)
+                try:
+                    protocol.run(task, case.repo_path)
+                except ModelOutputError:
+                    pass
         _print_dry_run_prompts(backend)
         return 0
 
@@ -161,53 +162,64 @@ def _run_configured(
         raise RuntimeError(f"Refusing to overwrite existing results file: {output_path}")
 
     with output_path.open("w", encoding="utf-8") as handle:
-        for case in cases:
-            task = _claim_evaluation_task(case)
-            started = time.perf_counter()
-            try:
-                result = protocol.run(task, case.repo_path)
-                duration = time.perf_counter() - started
-                transcript_path = _write_configured_transcript(
-                    transcript_dir,
-                    case,
-                    normalized_protocol,
-                    run_id,
-                    result,
-                )
-                record = _configured_result_record(
-                    case,
-                    result,
-                    normalized_protocol,
-                    run_id,
-                    duration,
-                    reviewer,
-                    critic,
-                    config,
-                    transcript_path,
-                )
-            except Exception as exc:
-                duration = time.perf_counter() - started
-                transcript_path = _write_failure_transcript(
-                    transcript_dir,
-                    case,
-                    normalized_protocol,
-                    run_id,
-                    exc,
-                    reviewer,
-                    critic,
-                )
-                record = _configured_failure_record(
-                    case,
-                    normalized_protocol,
-                    run_id,
-                    duration,
-                    exc,
-                    reviewer,
-                    critic,
-                    config,
-                    transcript_path,
-                )
-            handle.write(json.dumps(record, sort_keys=True) + "\n")
+        for repetition in range(1, config.experiment.repetitions + 1):
+            repetition_dir = (
+                transcript_dir
+                if config.experiment.repetitions == 1
+                else transcript_dir / f"repetition_{repetition:02d}"
+            )
+            repetition_dir.mkdir(parents=True, exist_ok=True)
+            for case in cases:
+                task = _claim_evaluation_task(case)
+                started = time.perf_counter()
+                try:
+                    result = protocol.run(task, case.repo_path)
+                    duration = time.perf_counter() - started
+                    transcript_path = _write_configured_transcript(
+                        repetition_dir,
+                        case,
+                        normalized_protocol,
+                        run_id,
+                        result,
+                        repetition,
+                    )
+                    record = _configured_result_record(
+                        case,
+                        result,
+                        normalized_protocol,
+                        run_id,
+                        duration,
+                        reviewer,
+                        critic,
+                        config,
+                        transcript_path,
+                        repetition,
+                    )
+                except Exception as exc:
+                    duration = time.perf_counter() - started
+                    transcript_path = _write_failure_transcript(
+                        repetition_dir,
+                        case,
+                        normalized_protocol,
+                        run_id,
+                        exc,
+                        reviewer,
+                        critic,
+                        repetition,
+                    )
+                    record = _configured_failure_record(
+                        case,
+                        normalized_protocol,
+                        run_id,
+                        duration,
+                        exc,
+                        reviewer,
+                        critic,
+                        config,
+                        transcript_path,
+                        repetition,
+                    )
+                handle.write(json.dumps(record, sort_keys=True) + "\n")
     print(str(output_path))
     return 0
 
@@ -221,6 +233,7 @@ def _build_backend(config: PilotConfig, *, dry_run: bool) -> ModelBackend:
             temperature=config.model.temperature,
             max_output_tokens=config.model.max_output_tokens,
             reasoning_effort=config.model.reasoning_effort,
+            request_timeout_seconds=config.model.request_timeout_seconds,
         )
     if config.model.backend == "openrouter":
         return OpenRouterChatBackend(
@@ -228,6 +241,9 @@ def _build_backend(config: PilotConfig, *, dry_run: bool) -> ModelBackend:
             temperature=config.model.temperature,
             max_output_tokens=config.model.max_output_tokens,
             reasoning_effort=config.model.reasoning_effort,
+            request_timeout_seconds=config.model.request_timeout_seconds,
+            max_attempts=config.model.max_attempts,
+            max_total_seconds=config.model.max_total_seconds,
         )
     raise ValueError(f"Unsupported model backend: {config.model.backend}")
 
@@ -250,11 +266,13 @@ def _configured_result_record(
     critic: ModelCritic,
     config: PilotConfig,
     transcript_path: Path,
+    repetition: int,
 ) -> dict[str, object]:
     first = result.findings[0] if result.findings else None
     return {
         "case_id": case.case_id,
         "run_id": run_id,
+        "repetition": repetition,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "protocol": protocol,
         "claim_family": case.claim_family.value,
@@ -296,10 +314,12 @@ def _configured_failure_record(
     critic: ModelCritic,
     config: PilotConfig,
     transcript_path: Path,
+    repetition: int,
 ) -> dict[str, object]:
     return {
         "case_id": case.case_id,
         "run_id": run_id,
+        "repetition": repetition,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "protocol": protocol,
         "claim_family": case.claim_family.value,
@@ -333,11 +353,13 @@ def _write_configured_transcript(
     protocol: str,
     run_id: str,
     result: object,
+    repetition: int,
 ) -> Path:
     transcript_path = transcript_dir / f"{case.case_id}.json"
     payload = {
         "case_id": case.case_id,
         "run_id": run_id,
+        "repetition": repetition,
         "protocol": protocol,
         "repo_path": str(case.repo_path),
         "task_description": case.task_description,
@@ -363,11 +385,13 @@ def _write_failure_transcript(
     exc: Exception,
     reviewer: ModelReviewer,
     critic: ModelCritic,
+    repetition: int,
 ) -> Path:
     transcript_path = transcript_dir / f"{case.case_id}.json"
     payload = {
         "case_id": case.case_id,
         "run_id": run_id,
+        "repetition": repetition,
         "protocol": protocol,
         "repo_path": str(case.repo_path),
         "task_description": case.task_description,

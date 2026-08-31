@@ -105,9 +105,27 @@ def _check_config(config: PilotConfig, issues: list[PreflightIssue]) -> None:
         issues.append(
             PreflightIssue("error", "BAD_REVIEWER_RETRIES", "reviewer_parse_retries must be non-negative.")
         )
-    if config.experiment.repetitions != 1:
+    if config.experiment.repetitions < 1:
         issues.append(
-            PreflightIssue("error", "REPETITIONS_UNSUPPORTED", "Initial pilot requires experiment.repetitions == 1.")
+            PreflightIssue("error", "BAD_REPETITIONS", "experiment.repetitions must be at least one.")
+        )
+    if config.model.request_timeout_seconds is not None and config.model.request_timeout_seconds <= 0:
+        issues.append(
+            PreflightIssue("error", "BAD_REQUEST_TIMEOUT", "model.request_timeout_seconds must be positive.")
+        )
+    if config.model.max_attempts is not None and config.model.max_attempts < 1:
+        issues.append(PreflightIssue("error", "BAD_MAX_ATTEMPTS", "model.max_attempts must be at least one."))
+    if (
+        config.model.request_timeout_seconds is not None
+        and config.model.max_total_seconds is not None
+        and config.model.max_total_seconds < config.model.request_timeout_seconds
+    ):
+        issues.append(
+            PreflightIssue(
+                "error",
+                "BAD_TOTAL_TIMEOUT",
+                "model.max_total_seconds must be at least model.request_timeout_seconds.",
+            )
         )
     if config.model.temperature not in (None, 0.0):
         issues.append(

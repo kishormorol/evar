@@ -11,6 +11,9 @@ class ModelConfig:
     temperature: float | None
     max_output_tokens: int | None
     reasoning_effort: str | None = None
+    request_timeout_seconds: float | None = None
+    max_attempts: int | None = None
+    max_total_seconds: float | None = None
 
 
 @dataclass(frozen=True)
@@ -45,6 +48,9 @@ def load_config(path: Path) -> PilotConfig:
             temperature=_optional_float(data["model"].get("temperature")),
             max_output_tokens=_optional_int(data["model"].get("max_output_tokens")),
             reasoning_effort=_optional_string(data["model"].get("reasoning_effort")),
+            request_timeout_seconds=_optional_float(data["model"].get("request_timeout_seconds")),
+            max_attempts=_optional_int(data["model"].get("max_attempts")),
+            max_total_seconds=_optional_float(data["model"].get("max_total_seconds")),
         ),
         protocol=ProtocolConfig(
             critic_rounds=int(data["protocol"]["critic_rounds"]),

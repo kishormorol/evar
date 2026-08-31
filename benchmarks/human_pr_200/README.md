@@ -1,8 +1,10 @@
 # Human PR 200
 
-Human PR 200 is the planned larger, multilingual successor to Human PR 20. The target
-is 100 independent human review comments, each rendered as a supported reviewed-commit
-case and an unsupported merged-commit case.
+Human PR 200 is the historical working name for the planned larger, multilingual
+successor to Human PR 20. The prospective paired-power analysis raises the confirmatory
+target to 300 independent human review comments, each rendered as a supported
+reviewed-commit case and an unsupported merged-commit case. The directory name remains
+stable for artifact compatibility; a successful freeze will contain 600 temporal cases.
 
 The benchmark has two deliberately separate stages:
 
@@ -44,9 +46,9 @@ PYTHONPATH=. python3 scripts/prepare_human_pr_annotation_queue.py \
   --output benchmarks/human_pr_200/annotation_queue_682.jsonl
 ```
 
-For the first annotation pass, use the balanced 276-comment tranche
-`annotation_queue_280.jsonl`: 50 comments per language where available, a six-comment
-repository cap, and all records still blinded and unlabeled.
+The earlier 276-comment tranche remains available for workflow testing. The powered
+study requires both experts to annotate the full blinded `annotation_queue_682.jsonl`;
+the target cannot be reached from the smaller tranche.
 
 Open the local annotation tool by serving the repository root and visiting
 `http://localhost:4173/review/human_pr_200.html`:
@@ -75,23 +77,31 @@ independent reviewer IDs and, for disagreements, a distinct adjudicator ID:
 ```bash
 PYTHONPATH=. python3 scripts/select_human_pr_200.py \
   --input benchmarks/human_pr_200/resolved_annotations.jsonl \
-  --output benchmarks/human_pr_200/final_100.jsonl \
-  --manifest benchmarks/human_pr_200/selection_manifest.json
+  --output benchmarks/human_pr_200/final_300.jsonl \
+  --manifest benchmarks/human_pr_200/selection_manifest.json \
+  --target 300 \
+  --min-repositories 40
 
 PYTHONPATH=. python3 scripts/render_human_pr_200.py \
-  --input benchmarks/human_pr_200/final_100.jsonl \
+  --input benchmarks/human_pr_200/final_300.jsonl \
   --output-dir benchmarks/human_pr_200/frozen \
   --audit benchmarks/human_pr_200/render_audit.json
 ```
 
 Selection uses a fixed seed, first enforces repository breadth, and then balances
 language and claim-family counts subject to the six-comments-per-repository cap. It
-fails closed unless 100 eligible, provenance-complete comments from at least 20
+fails closed unless 300 eligible, provenance-complete comments from at least 40
 repositories are available.
 
-The 100-comment threshold is a coverage target, not a guarantee of statistical power.
-It reduces the contribution of one independent comment to a label-specific rate from
-0.100 in Human PR 20 to 0.010 and supports the repository and claim-family strata.
-Before any model call, preregister a paired power calculation using the adjudicated
-pilot's protocol-discordance rate. If that calculation requires more than 100 eligible
-comments, acquire more data instead of changing the target after observing outcomes.
+The generated paired-power report uses the frozen Human PR 20 discordances, a 0.15
+smallest effect of practical interest, and alpha 0.025 for each of the two label-specific
+tests. Its conservative planning estimate reaches power 0.856 for supported cases and
+0.967 for unsupported cases at 300 source comments. See `POWER_PLAN.md` and
+`PREREGISTRATION.md`; neither repeated calls nor additional models are counted as new
+independent examples.
+
+The paid-run configurations are frozen under `configs/human_pr_expansion_full/` for
+the one-pass complete matrix and `configs/human_pr_expansion_stability/` for the
+three-pass 60-comment stability subset. They are inputs, not authorization to run:
+annotation, selection, rendering, contamination checks, input hashing, and a fresh
+price/credit preflight must all finish first.

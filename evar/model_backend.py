@@ -90,6 +90,8 @@ class DryRunBackend:
 
 
 class OpenAIResponsesBackend:
+    request_timeout_seconds = 60.0
+
     def __init__(
         self,
         *,
@@ -97,12 +99,20 @@ class OpenAIResponsesBackend:
         temperature: float | None = 0.0,
         max_output_tokens: int | None = None,
         reasoning_effort: str | None = None,
+        request_timeout_seconds: float | None = None,
         api_key: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.temperature = temperature
         self.max_output_tokens = max_output_tokens
         self.reasoning_effort = reasoning_effort
+        self.request_timeout_seconds = (
+            float(request_timeout_seconds)
+            if request_timeout_seconds is not None
+            else type(self).request_timeout_seconds
+        )
+        if self.request_timeout_seconds <= 0:
+            raise ValueError("request_timeout_seconds must be positive")
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or _load_env_api_key(Path(".env"))
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is required for the OpenAI backend.")
@@ -147,7 +157,7 @@ class OpenAIResponsesBackend:
             method="POST",
         )
         started = time.perf_counter()
-        with urllib.request.urlopen(request, timeout=60) as response:
+        with urllib.request.urlopen(request, timeout=self.request_timeout_seconds) as response:
             raw = json.loads(response.read().decode("utf-8"))
         latency = time.perf_counter() - started
         text = _extract_output_text(raw)
@@ -179,12 +189,32 @@ class OpenRouterChatBackend:
         temperature: float | None = None,
         max_output_tokens: int | None = None,
         reasoning_effort: str | None = None,
+        request_timeout_seconds: float | None = None,
+        max_attempts: int | None = None,
+        max_total_seconds: float | None = None,
         api_key: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.temperature = temperature
         self.max_output_tokens = max_output_tokens
         self.reasoning_effort = reasoning_effort
+        self.request_timeout_seconds = (
+            float(request_timeout_seconds)
+            if request_timeout_seconds is not None
+            else type(self).request_timeout_seconds
+        )
+        self.max_attempts = int(max_attempts) if max_attempts is not None else type(self).max_attempts
+        self.max_total_seconds = (
+            float(max_total_seconds)
+            if max_total_seconds is not None
+            else type(self).max_total_seconds
+        )
+        if self.request_timeout_seconds <= 0:
+            raise ValueError("request_timeout_seconds must be positive")
+        if self.max_attempts < 1:
+            raise ValueError("max_attempts must be at least one")
+        if self.max_total_seconds < self.request_timeout_seconds:
+            raise ValueError("max_total_seconds must be at least request_timeout_seconds")
         self.api_key = (
             api_key
             or os.environ.get("OPENROUTER_API_KEY")

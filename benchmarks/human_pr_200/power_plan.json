@@ -1,0 +1,89 @@
+{
+  "absolute_paired_difference": 0.15,
+  "alpha": 0.025,
+  "comparison": "AR-Text versus EVAR-Hard",
+  "discordance_planning_rule": "maximum model-specific 95% Wilson upper bound by label",
+  "pilot": [
+    {
+      "discordance_rate": 0.3,
+      "discordant": 3,
+      "label": "SUPPORTED",
+      "model": "gpt-4.1",
+      "pairs": 10,
+      "wilson_upper_95": 0.6032218525388545
+    },
+    {
+      "discordance_rate": 0.1,
+      "discordant": 1,
+      "label": "UNSUPPORTED",
+      "model": "gpt-4.1",
+      "pairs": 10,
+      "wilson_upper_95": 0.4041500267952383
+    },
+    {
+      "discordance_rate": 0.2,
+      "discordant": 2,
+      "label": "SUPPORTED",
+      "model": "gpt-4.1-mini",
+      "pairs": 10,
+      "wilson_upper_95": 0.5098375284633582
+    },
+    {
+      "discordance_rate": 0.0,
+      "discordant": 0,
+      "label": "UNSUPPORTED",
+      "model": "gpt-4.1-mini",
+      "pairs": 10,
+      "wilson_upper_95": 0.27753279986288903
+    }
+  ],
+  "pilot_index": "benchmarks/human_pr_20/run_index.json",
+  "planning_discordance_rate": {
+    "SUPPORTED": 0.6032218525388545,
+    "UNSUPPORTED": 0.4041500267952383
+  },
+  "power": [
+    {
+      "pairs_per_label": 100,
+      "supported": 0.33889938100428624,
+      "unsupported": 0.5002303171430514
+    },
+    {
+      "pairs_per_label": 150,
+      "supported": 0.5167049342966155,
+      "unsupported": 0.7206365184578676
+    },
+    {
+      "pairs_per_label": 200,
+      "supported": 0.6640344999821497,
+      "unsupported": 0.8536965512926283
+    },
+    {
+      "pairs_per_label": 250,
+      "supported": 0.7744952906671583,
+      "unsupported": 0.9292958723526026
+    },
+    {
+      "pairs_per_label": 300,
+      "supported": 0.8557204527184638,
+      "unsupported": 0.9674589467402394
+    },
+    {
+      "pairs_per_label": 350,
+      "supported": 0.9091255700139702,
+      "unsupported": 0.9856214570338616
+    },
+    {
+      "pairs_per_label": 400,
+      "supported": 0.9446593533720884,
+      "unsupported": 0.9938539565114116
+    },
+    {
+      "pairs_per_label": 500,
+      "supported": 0.9804935080382596,
+      "unsupported": 0.9989755692604164
+    }
+  ],
+  "schema_version": 1,
+  "test": "exact two-sided McNemar"
+}

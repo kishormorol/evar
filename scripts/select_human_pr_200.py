@@ -16,9 +16,9 @@ def _stable_key(candidate_id: str, seed: int) -> str:
 def select(
     rows: list[dict[str, object]],
     *,
-    target: int = 100,
+    target: int = 300,
     max_per_repo: int = 6,
-    min_repositories: int = 20,
+    min_repositories: int = 40,
     seed: int = 53,
 ) -> list[dict[str, object]]:
     eligible = [row for row in rows if accepted(row)]
@@ -70,13 +70,13 @@ def select(
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(description="Freeze the balanced 100-comment Human PR benchmark sample.")
+    parser = argparse.ArgumentParser(description="Freeze the powered Human PR benchmark sample.")
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
-    parser.add_argument("--target", type=int, default=100)
+    parser.add_argument("--target", type=int, default=300)
     parser.add_argument("--max-per-repo", type=int, default=6)
-    parser.add_argument("--min-repositories", type=int, default=20)
+    parser.add_argument("--min-repositories", type=int, default=40)
     parser.add_argument("--seed", type=int, default=53)
     args = parser.parse_args(argv)
     rows = [json.loads(line) for line in args.input.read_text(encoding="utf-8").splitlines() if line.strip()]

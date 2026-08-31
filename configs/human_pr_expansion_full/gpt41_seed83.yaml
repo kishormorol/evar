@@ -1,0 +1,14 @@
+model:
+  backend: openai
+  model: gpt-4.1
+  temperature: 0.0
+  max_output_tokens: 2400
+  request_timeout_seconds: 120
+protocol:
+  critic_rounds: 1
+  verifier_timeout_seconds: 10
+  reviewer_prompt: reviewer_evar_v2.txt
+  reviewer_parse_retries: 1
+experiment:
+  seed: 83
+  repetitions: 1

@@ -38,6 +38,16 @@ class PreflightTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 2)
 
+    def test_repeated_experiment_is_supported(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config = Path(tmp) / "repeated.yaml"
+            text = Path("configs/pilot.yaml").read_text(encoding="utf-8")
+            config.write_text(text.replace("repetitions: 1", "repetitions: 3"), encoding="utf-8")
+
+            report = run_preflight(config, Path("benchmark/pilot_cases.jsonl"))
+
+        self.assertTrue(report.ok, report.issues)
+
 
 def _case(repo_path: Path) -> dict[str, object]:
     return {

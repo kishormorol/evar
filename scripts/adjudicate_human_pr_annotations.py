@@ -84,6 +84,14 @@ def _decision(annotation: dict[str, object]) -> tuple[object, ...]:
     )
 
 
+def _blinded_annotation(annotation: dict[str, object]) -> dict[str, object]:
+    """Return an adjudication view without an independent reviewer's identity."""
+    return {
+        field: annotation.get(field)
+        for field in DECISION_FIELDS
+    }
+
+
 def _write_jsonl(path: Path, rows: Iterable[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -163,7 +171,11 @@ def adjudicate(
             "exclusion_reason": None,
             "annotator_id": None,
         }
-        queue_row["independent_annotations"] = [annotation_a, annotation_b]
+        blinded = [_blinded_annotation(annotation_a), _blinded_annotation(annotation_b)]
+        # Avoid making one export consistently appear first while keeping the queue deterministic.
+        if int(hashlib.sha256(candidate_id.encode()).hexdigest(), 16) % 2:
+            blinded.reverse()
+        queue_row["independent_annotations"] = blinded
         disagreement_queue.append(queue_row)
         adjudicated = adjudications.get(candidate_id)
         if adjudicated is None:

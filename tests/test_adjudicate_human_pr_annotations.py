@@ -68,6 +68,9 @@ class HumanPRAdjudicationTests(unittest.TestCase):
             self.assertEqual(summary["unresolved"], 1)
             self.assertEqual(resolved, [])
             self.assertEqual(len(disagreements[0]["independent_annotations"]), 2)
+            self.assertTrue(
+                all("annotator_id" not in item for item in disagreements[0]["independent_annotations"])
+            )
             decision = self._row("one", "judge", "adjudicated claim")
             summary, resolved, _ = self._run(root, [a], [b], [decision])
         self.assertEqual(summary["adjudicated"], 1)

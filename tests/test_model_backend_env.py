@@ -180,6 +180,34 @@ class ModelBackendEnvTests(unittest.TestCase):
         self.assertEqual(response.input_tokens, 3)
         self.assertEqual(response.output_tokens, 4)
 
+    def test_openrouter_backend_uses_configured_deadlines(self) -> None:
+        captured: dict[str, object] = {}
+
+        def fake_run(command: list[str], **kwargs: object) -> object:
+            captured["command"] = command
+            captured["timeout"] = kwargs["timeout"]
+            return subprocess.CompletedProcess(
+                command,
+                0,
+                stdout=b'{"choices":[{"message":{"content":"{}"}}],"usage":{}}\n__EVAR_STATUS:200',
+                stderr=b"",
+            )
+
+        backend = OpenRouterChatBackend(
+            model_name="vendor/model",
+            api_key="test-key",
+            request_timeout_seconds=120,
+            max_attempts=3,
+            max_total_seconds=370,
+        )
+        with mock.patch("subprocess.run", fake_run):
+            backend.generate("system", "user")
+
+        self.assertIn("120", captured["command"])
+        self.assertEqual(captured["timeout"], 125)
+        self.assertEqual(backend.max_attempts, 3)
+        self.assertEqual(backend.max_total_seconds, 370)
+
     def test_openrouter_retries_rate_limit_and_honors_retry_after(self) -> None:
         calls = 0
         sleeps: list[float] = []
