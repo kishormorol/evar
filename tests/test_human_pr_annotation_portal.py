@@ -41,6 +41,17 @@ class HumanPRAnnotationPortalTests(unittest.TestCase):
         self.assertIn('type="radio" name="unsupported" value="true"', self.html)
         self.assertIn("node.classList.contains('choice-field')", self.html)
 
+    def test_code_snapshots_have_ide_style_highlighting(self) -> None:
+        self.assertIn('id="review-lines" class="line-numbers"', self.html)
+        self.assertIn('id="merge-lines" class="line-numbers"', self.html)
+        self.assertIn('id="review-language" class="language-badge"', self.html)
+        self.assertIn("function highlight(code,language)", self.html)
+        self.assertIn("function escapeHtml(text)", self.html)
+        self.assertIn("renderCode('review',r.review_excerpt,r.language)", self.html)
+        self.assertIn(".tok-keyword", self.html)
+        self.assertIn(".tok-string", self.html)
+        self.assertIn(".tok-comment", self.html)
+
     def test_portal_reveals_only_relevant_follow_up_fields(self) -> None:
         self.assertIn('id="eligible-fields" class="followup" hidden', self.html)
         self.assertIn(
