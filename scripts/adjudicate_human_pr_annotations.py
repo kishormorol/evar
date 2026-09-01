@@ -15,6 +15,13 @@ DECISION_FIELDS = (
     "unsupported_at_merge",
     "exclusion_reason",
 )
+CLAIM_FAMILIES = {
+    "behavior_inversion",
+    "missing_guard",
+    "incorrect_call_relationship",
+    "causal_mislocalization",
+    "stale_evidence",
+}
 
 
 def load_rows(path: Path) -> list[dict[str, object]]:
@@ -60,6 +67,10 @@ def _validate_export(rows: list[dict[str, object]], label: str) -> tuple[dict[st
                 annotation["claim_family"]
             ).strip():
                 raise ValueError(f"{label}/{candidate_id}: claim_family is required")
+            if annotation["claim_family"] not in CLAIM_FAMILIES:
+                raise ValueError(
+                    f"{label}/{candidate_id}: claim_family must be one of {sorted(CLAIM_FAMILIES)}"
+                )
             if not isinstance(annotation.get("supported_at_review"), bool):
                 raise ValueError(f"{label}/{candidate_id}: supported_at_review must be boolean")
             if not isinstance(annotation.get("unsupported_at_merge"), bool):
@@ -72,6 +83,49 @@ def _validate_export(rows: list[dict[str, object]], label: str) -> tuple[dict[st
     if len(annotator_ids) != 1:
         raise ValueError(f"{label}: expected one stable annotator_id, found {sorted(annotator_ids)}")
     return by_id, next(iter(annotator_ids))
+
+
+def validate_export(
+    export_path: Path,
+    queue_path: Path,
+    *,
+    label: str = "annotation-export",
+) -> dict[str, object]:
+    export_rows = load_rows(export_path)
+    export_by_id, annotator_id = _validate_export(export_rows, label)
+    queue_rows = load_rows(queue_path)
+    if not queue_rows:
+        raise ValueError("expected queue is empty")
+    queue_by_id: dict[str, dict[str, object]] = {}
+    for row in queue_rows:
+        candidate_id = row.get("candidate_id")
+        if not isinstance(candidate_id, str) or not candidate_id:
+            raise ValueError("expected queue contains an invalid candidate_id")
+        if candidate_id in queue_by_id:
+            raise ValueError(f"expected queue contains duplicate candidate_id {candidate_id}")
+        queue_by_id[candidate_id] = row
+    if set(export_by_id) != set(queue_by_id):
+        missing = sorted(set(queue_by_id) - set(export_by_id))
+        unexpected = sorted(set(export_by_id) - set(queue_by_id))
+        raise ValueError(f"candidate sets differ; missing={missing}, unexpected={unexpected}")
+    for candidate_id, export_row in export_by_id.items():
+        exported_source = {key: value for key, value in export_row.items() if key != "annotation"}
+        queued_source = {key: value for key, value in queue_by_id[candidate_id].items() if key != "annotation"}
+        if exported_source != queued_source:
+            raise ValueError(f"{label}/{candidate_id}: candidate payload differs from expected queue")
+    annotations = [_annotation(row) for row in export_rows]
+    return {
+        "schema_version": 1,
+        "valid": True,
+        "annotator_id": annotator_id,
+        "candidate_count": len(export_rows),
+        "eligible": sum(annotation["eligible"] is True for annotation in annotations),
+        "excluded": sum(annotation["eligible"] is False for annotation in annotations),
+        "export": export_path.as_posix(),
+        "export_sha256": _sha256(export_path),
+        "queue": queue_path.as_posix(),
+        "queue_sha256": _sha256(queue_path),
+    }
 
 
 def _decision(annotation: dict[str, object]) -> tuple[object, ...]:

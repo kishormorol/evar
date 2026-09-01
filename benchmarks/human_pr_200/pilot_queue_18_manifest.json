@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "purpose": "Interface and instruction pilot only; not benchmark ground truth.",
+  "source": "benchmarks/human_pr_200/candidates_682.jsonl",
+  "source_sha256": "5d05e4297dbbd4b04cac6b9f1e728964f0e6cf7ac027b23e255d0ac7afed7b76",
+  "output": "benchmarks/human_pr_200/pilot_queue_18.jsonl",
+  "output_sha256": "7c8fe8ac309178dfc6ab1a4c077cbcfdc57def38e68fbcc6ab74b21622b1c221",
+  "selection": {
+    "per_language": 3,
+    "max_per_repository_within_language": 1,
+    "priority_order": "descending priority_score, then candidate_id"
+  },
+  "candidate_count": 18,
+  "repository_count": 18,
+  "language_counts": {
+    "Go": 3,
+    "Java": 3,
+    "JavaScript": 3,
+    "Python": 3,
+    "Rust": 3,
+    "TypeScript": 3
+  },
+  "candidate_ids": [
+    "hpr-0036770d90ba5a46",
+    "hpr-38c9b295f2df0332",
+    "hpr-e09b2845f26928ce",
+    "hpr-6c5c1ee9c85ba031",
+    "hpr-4c20f3522aa11726",
+    "hpr-37abf20f413eac43",
+    "hpr-c9828d85313668d7",
+    "hpr-1d745885e24579c4",
+    "hpr-7a88d8c77444e4e4",
+    "hpr-24fc2a44248f038f",
+    "hpr-1edc005b6d7d62e1",
+    "hpr-90120e115b1a9838",
+    "hpr-a0bc6881841e6e8a",
+    "hpr-ead5431544d97537",
+    "hpr-12f42f3040efa2ea",
+    "hpr-0157bc3ef10e52a5",
+    "hpr-5cdabbd1afb778bb",
+    "hpr-226d758a45d7d7a5"
+  ]
+}

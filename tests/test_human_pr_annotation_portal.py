@@ -47,10 +47,22 @@ class HumanPRAnnotationPortalTests(unittest.TestCase):
         self.assertIn('id="review-language" class="language-badge"', self.html)
         self.assertIn("function highlight(code,language)", self.html)
         self.assertIn("function escapeHtml(text)", self.html)
-        self.assertIn("renderCode('review',r.review_excerpt,r.language)", self.html)
+        self.assertIn(
+            "renderCode('review',r.review_excerpt,r.language,r.source_comment_line)",
+            self.html,
+        )
         self.assertIn(".tok-keyword", self.html)
         self.assertIn(".tok-string", self.html)
         self.assertIn(".tok-comment", self.html)
+
+    def test_code_snapshots_focus_on_the_reviewed_lines(self) -> None:
+        self.assertIn("function parseExcerpt(excerpt)", self.html)
+        self.assertIn("const windowSize=15", self.html)
+        self.assertIn("Show full context (${lines.length} lines)", self.html)
+        self.assertIn("Show focused 15-line view", self.html)
+        self.assertIn("r.source_comment_line", self.html)
+        self.assertIn("r.merge_line", self.html)
+        self.assertIn(".code-line.anchor-line", self.html)
 
     def test_portal_reveals_only_relevant_follow_up_fields(self) -> None:
         self.assertIn('id="eligible-fields" class="followup" hidden', self.html)

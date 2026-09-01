@@ -57,9 +57,29 @@ Open the local annotation tool by serving the repository root and visiting
 PYTHONPATH=. python3 -m http.server 4173
 ```
 
+Before the final passes, use the frozen 18-item interface pilot. It contains three
+candidates per language from 18 repositories. Pilot labels are workflow-training data,
+not benchmark ground truth; see `REVIEWER_HANDOFF.md` for role separation and the exact
+handoff procedure.
+
+The portal initially shows a highlighted 15-line window around the reviewed location.
+Reviewers can reveal the complete stored excerpt with **Show full context**. This
+changes presentation only: exports retain the exact original evidence.
+
 Each annotator exports their own JSONL file. Keep those files private from the other
 annotator until both passes are complete. Merge exact agreements and create a blinded
 queue for a third adjudicator with:
+
+```bash
+PYTHONPATH=. python3 scripts/validate_human_pr_annotation_export.py \
+  --input private/annotator_a.jsonl \
+  --queue benchmarks/human_pr_200/annotation_queue_682.jsonl \
+  --report private/annotator_a_validation.json
+```
+
+The validator checks completeness, the stable reviewer ID, frozen claim families,
+the exact candidate set and evidence payload, and queue/export hashes. Validate each
+expert export before adjudication.
 
 ```bash
 PYTHONPATH=. python3 scripts/adjudicate_human_pr_annotations.py \
