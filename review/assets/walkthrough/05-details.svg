@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#f3f6f8"/>
+  <text x="45" y="52" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#14532d">STEP 4 · COMPLETE THE SHORT FOLLOW-UP</text>
+  <rect x="45" y="76" width="870" height="100" rx="13" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <circle cx="77" cy="109" r="17" fill="#14532d"/><text x="77" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#fff">2</text>
+  <text x="106" y="115" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#17202a">Write the problem in one sentence</text>
+  <rect x="105" y="130" width="770" height="30" rx="5" fill="#f8fafc"/>
+  <text x="120" y="151" font-family="Arial, sans-serif" font-size="17" fill="#334155">The function accepts an empty name.</text>
+  <rect x="45" y="194" width="422" height="120" rx="13" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <circle cx="77" cy="228" r="17" fill="#14532d"/><text x="77" y="234" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#fff">3</text>
+  <text x="106" y="234" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#17202a">Visible in BEFORE?</text>
+  <rect x="105" y="256" width="130" height="39" rx="8" fill="#e8f5ec" stroke="#14532d" stroke-width="3"/><text x="170" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#14532d">Yes</text>
+  <rect x="493" y="194" width="422" height="120" rx="13" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <circle cx="525" cy="228" r="17" fill="#14532d"/><text x="525" y="234" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#fff">4</text>
+  <text x="554" y="234" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#17202a">Gone in AFTER?</text>
+  <rect x="553" y="256" width="130" height="39" rx="8" fill="#e8f5ec" stroke="#14532d" stroke-width="3"/><text x="618" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#14532d">Yes</text>
+  <rect x="45" y="332" width="870" height="110" rx="13" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <circle cx="77" cy="366" r="17" fill="#14532d"/><text x="77" y="372" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#fff">5</text>
+  <text x="106" y="372" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#17202a">Closest description</text>
+  <rect x="105" y="390" width="770" height="35" rx="6" fill="#f8fafc" stroke="#8492a0"/>
+  <text x="120" y="414" font-family="Arial, sans-serif" font-size="17" fill="#334155">A check or validation is missing</text>
+  <circle cx="420" cy="490" r="5" fill="#cbd5e1"/><circle cx="444" cy="490" r="5" fill="#cbd5e1"/><circle cx="468" cy="490" r="5" fill="#cbd5e1"/><circle cx="492" cy="490" r="5" fill="#cbd5e1"/><circle cx="516" cy="490" r="5" fill="#14532d"/><circle cx="540" cy="490" r="5" fill="#cbd5e1"/>
+</svg>

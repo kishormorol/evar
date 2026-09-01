@@ -8,6 +8,7 @@ class HumanPRAnnotationPortalTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.html = Path("review/human_pr_200.html").read_text(encoding="utf-8")
+        cls.walkthrough = Path("review/assets/evar-review-walkthrough.gif")
 
     def test_portal_explains_the_task_before_the_form(self) -> None:
         guide = self.html.index("What are you doing?")
@@ -17,8 +18,15 @@ class HumanPRAnnotationPortalTests(unittest.TestCase):
         self.assertIn("BEFORE</strong><br>The original code", self.html)
         self.assertIn("COMMENT</strong><br>A human points out a problem", self.html)
         self.assertIn("AFTER</strong><br>The final merged code", self.html)
-        self.assertIn("Show me a simple example", self.html)
+        self.assertIn("Prefer text? Read the same example", self.html)
         self.assertNotIn('<details class="guide" open>', self.html)
+
+    def test_portal_embeds_a_complete_animated_walkthrough(self) -> None:
+        self.assertIn("Watch one complete example", self.html)
+        self.assertIn('src="assets/evar-review-walkthrough.gif"', self.html)
+        self.assertIn("This 21-second walkthrough", self.html)
+        self.assertTrue(self.walkthrough.is_file())
+        self.assertTrue(self.walkthrough.read_bytes().startswith((b"GIF87a", b"GIF89a")))
 
     def test_portal_uses_plain_language_field_help(self) -> None:
         self.assertIn("Can you identify one specific code problem", self.html)

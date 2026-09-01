@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#f3f6f8"/>
+  <rect x="35" y="28" width="890" height="484" rx="20" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <rect x="35" y="28" width="8" height="484" rx="4" fill="#6366f1"/>
+  <text x="70" y="78" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#4338ca">STEP 1 · READ THE COMMENT</text>
+  <text x="70" y="126" font-family="Arial, sans-serif" font-size="31" font-weight="700" fill="#17202a">What problem is the reviewer pointing out?</text>
+  <rect x="70" y="165" width="820" height="170" rx="16" fill="#eef2ff" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="100" y="220" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#4338ca">REVIEWER’S COMMENT</text>
+  <text x="100" y="280" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#17202a">“Empty names are accepted here.”</text>
+  <rect x="70" y="370" width="820" height="82" rx="12" fill="#f8fafc"/>
+  <text x="95" y="404" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#17202a">Plain meaning:</text>
+  <text x="95" y="433" font-family="Arial, sans-serif" font-size="19" fill="#475569">The code should reject an empty name, but it does not.</text>
+  <circle cx="420" cy="490" r="5" fill="#cbd5e1"/><circle cx="444" cy="490" r="5" fill="#14532d"/><circle cx="468" cy="490" r="5" fill="#cbd5e1"/><circle cx="492" cy="490" r="5" fill="#cbd5e1"/><circle cx="516" cy="490" r="5" fill="#cbd5e1"/><circle cx="540" cy="490" r="5" fill="#cbd5e1"/>
+</svg>

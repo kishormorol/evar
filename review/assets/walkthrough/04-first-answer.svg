@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#f3f6f8"/>
+  <rect x="40" y="30" width="880" height="475" rx="18" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <text x="70" y="76" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#14532d">STEP 3 · START THE ANSWER</text>
+  <rect x="70" y="105" width="820" height="250" rx="14" fill="#eef6f0" stroke="#acd0b6" stroke-width="2"/>
+  <circle cx="101" cy="145" r="18" fill="#14532d"/><text x="101" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#fff">1</text>
+  <text x="132" y="152" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#17202a">Can you identify one specific code problem?</text>
+  <rect x="95" y="194" width="365" height="115" rx="12" fill="#e8f5ec" stroke="#14532d" stroke-width="4"/>
+  <circle cx="125" cy="231" r="10" fill="#14532d"/><circle cx="125" cy="231" r="4" fill="#fff"/>
+  <text x="150" y="232" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#14532d">Yes</text>
+  <text x="150" y="266" font-family="Arial, sans-serif" font-size="16" fill="#475569">I understand it and can check it.</text>
+  <rect x="500" y="194" width="365" height="115" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="530" cy="231" r="10" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="555" y="232" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#475569">No</text>
+  <text x="555" y="266" font-family="Arial, sans-serif" font-size="16" fill="#64748b">It is unclear or cannot be checked.</text>
+  <text x="70" y="402" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#17202a">In this example, choose Yes.</text>
+  <text x="70" y="435" font-family="Arial, sans-serif" font-size="18" fill="#52606d">We understood the problem and found evidence in both code versions.</text>
+  <circle cx="420" cy="490" r="5" fill="#cbd5e1"/><circle cx="444" cy="490" r="5" fill="#cbd5e1"/><circle cx="468" cy="490" r="5" fill="#cbd5e1"/><circle cx="492" cy="490" r="5" fill="#14532d"/><circle cx="516" cy="490" r="5" fill="#cbd5e1"/><circle cx="540" cy="490" r="5" fill="#cbd5e1"/>
+</svg>

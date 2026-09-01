@@ -1,0 +1,14 @@
+file '01-start.svg.png'
+duration 2.5
+file '02-comment.svg.png'
+duration 2.5
+file '03-compare.svg.png'
+duration 3.5
+file '04-first-answer.svg.png'
+duration 3
+file '05-details.svg.png'
+duration 3.5
+file '06-save.svg.png'
+duration 3
+file '06-save.svg.png'
+duration 0.04

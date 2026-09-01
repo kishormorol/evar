@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="432" viewBox="0 0 960 540">
+  <rect width="960" height="540" fill="#f3f6f8"/>
+  <rect x="35" y="28" width="890" height="484" rx="20" fill="#fff" stroke="#d7dee5" stroke-width="2"/>
+  <text x="70" y="78" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#14532d">EVAR REVIEW WALKTHROUGH</text>
+  <text x="70" y="128" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#17202a">What am I checking?</text>
+  <text x="70" y="166" font-family="Arial, sans-serif" font-size="21" fill="#52606d">Did a reviewer find a real code problem that the final code fixed?</text>
+  <rect x="70" y="215" width="220" height="135" rx="14" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+  <text x="92" y="258" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#1e3a8a">1. BEFORE</text>
+  <text x="92" y="292" font-family="Arial, sans-serif" font-size="18" fill="#334155">Original code</text>
+  <text x="92" y="320" font-family="Arial, sans-serif" font-size="15" fill="#64748b">Look for the problem</text>
+  <text x="312" y="290" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#94a3b8">→</text>
+  <rect x="370" y="215" width="220" height="135" rx="14" fill="#eef2ff" stroke="#c7d2fe" stroke-width="2"/>
+  <text x="392" y="258" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#4338ca">2. COMMENT</text>
+  <text x="392" y="292" font-family="Arial, sans-serif" font-size="18" fill="#334155">What the reviewer says</text>
+  <text x="612" y="290" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#94a3b8">→</text>
+  <rect x="670" y="215" width="220" height="135" rx="14" fill="#ecfdf5" stroke="#bbf7d0" stroke-width="2"/>
+  <text x="692" y="258" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#14532d">3. AFTER</text>
+  <text x="692" y="292" font-family="Arial, sans-serif" font-size="18" fill="#334155">Final code</text>
+  <text x="692" y="320" font-family="Arial, sans-serif" font-size="15" fill="#64748b">Check if it was fixed</text>
+  <rect x="70" y="404" width="820" height="62" rx="12" fill="#14532d"/>
+  <text x="480" y="444" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#fff">Follow one example in the next five screens</text>
+  <circle cx="420" cy="490" r="5" fill="#14532d"/><circle cx="444" cy="490" r="5" fill="#cbd5e1"/><circle cx="468" cy="490" r="5" fill="#cbd5e1"/><circle cx="492" cy="490" r="5" fill="#cbd5e1"/><circle cx="516" cy="490" r="5" fill="#cbd5e1"/><circle cx="540" cy="490" r="5" fill="#cbd5e1"/>
+</svg>
