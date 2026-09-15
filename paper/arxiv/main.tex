@@ -63,11 +63,13 @@ The contribution is therefore not the general idea of using tools or determinist
 
 \subsection{Reflection, critique, and debate}
 
-Self-Refine uses model-generated feedback to iteratively improve a model's output \cite{selfrefine}. Reflexion incorporates linguistic feedback into an episodic memory rather than updating model weights \cite{reflexion}. Multi-agent debate has similarly improved reasoning and factuality through textual deliberation \cite{debate}. These methods motivate the AR baselines but do not, by themselves, make agreement independent evidence. The same model family can reproduce a shared misconception across reviewer and critic roles.
+Self-Refine uses model-generated feedback to iteratively improve a model's output \cite{selfrefine}. Reflexion incorporates linguistic feedback into an episodic memory rather than updating model weights \cite{reflexion}. Multi-agent debate has similarly improved reasoning and factuality through textual deliberation \cite{debate}. These methods motivate the AR baselines but do not, by themselves, make agreement independent evidence. The same model family can reproduce a shared misconception across reviewer and critic roles. Ji makes this limit concrete for groundedness judgments: a homogeneous three-agent panel changes accuracy by between $+8.5$ and $-4.4$ points relative to a single judge across six fact-verification benchmarks, and the author notes that such differences characterize complete systems rather than isolating debate itself \cite{more-debate}. The same attribution problem reappears in our gate analysis.
+
+Refute-or-Promote is the closest adversarial-review design in software security \cite{refute-promote}. Its pipeline promotes LLM-found defect candidates only through adversarial kill-gates, cold-start reviewers, and a cross-model critic, and it reports a case in which reviewers unanimously endorsed a non-existent padding oracle until an empirical validation gate rejected it. That practitioner study targets open-ended discovery and reports pipeline outcomes rather than a matched protocol comparison. \evar studies the same false-consensus risk under controlled conditions: one supplied claim, a matched call budget, and a deterministic receipt check whose information and enforcement roles can be separated.
 
 Prior work also questions whether intrinsic self-correction is reliable without external feedback. CRITIC couples model critique to tool interactions and reports gains across question answering, program synthesis, and toxicity reduction \cite{critic}. \evar adopts the external-feedback premise but narrows both the task and the acceptance rule: the system judges a pre-specified code-review claim, and a deterministic receipt check is a necessary gate rather than optional context for another revision. More recently, \emph{Reason Less, Verify More} places deterministic, read-only gates immediately before policy-sensitive tool writes and demonstrates gains when tools do not enforce their own domain policy \cite{reason-less}. That work establishes the value of action-boundary enforcement in a general agent setting. \evar instead studies whether code evidence supports one review claim and exposes a different causal pitfall: when verifier status is already shown to an upstream critic, applying it again at the boundary need not change any decision.
 
-Negative evidence is equally relevant. Huang et al. find that intrinsic self-correction can leave reasoning unchanged or make it worse when no reliable external signal is available \cite{huang-self-correct}. In software tasks, Crupi et al. report that even strong LLM judges frequently misclassify code correctness and summary quality \cite{crupi-judge}, while Moon et al. show that superficial changes to otherwise equivalent code systematically perturb judge verdicts \cite{moon-code-judge}. These results motivate our separation of textual criticism, deterministic verification, and semantic ground truth.
+Negative evidence is equally relevant. Huang et al. find that intrinsic self-correction can leave reasoning unchanged or make it worse when no reliable external signal is available \cite{huang-self-correct}. In software tasks, Crupi et al. report that even strong LLM judges frequently misclassify code correctness and summary quality \cite{crupi-judge}, while Moon et al. show that superficial changes to otherwise equivalent code systematically perturb judge verdicts \cite{moon-code-judge}. GroundEval responds to similar judge failures in stateful agent evaluation by scoring what an agent actually searched, fetched, and cited; it reports a response that frontier judges rated highly although the agent never retrieved the artifact its answer depended on \cite{groundeval}. These results motivate our separation of textual criticism, deterministic verification, and semantic ground truth.
 
 \subsection{Tool-using software-engineering agents}
 
@@ -85,9 +87,13 @@ A recent survey of 99 code-review studies organizes the area into 18 tasks \cite
 
 Hybrid review systems combine learned generation with rule-based analyzers to recover some precision without surrendering broad issue coverage \cite{hybrid-static}. \evar shares the motivation but assigns the deterministic component a different role: it validates the submitted observation and controls actionability; it neither generates a parallel comment nor establishes semantic relevance by itself.
 
+Alert triage offers a close analogue outside code review. Xiong and Zhang compare Aider, OpenHands, and SWE-agent as filters for static-analysis false positives and find that the strongest configurations remove most false alarms, but that gains depend on the backbone model and vulnerability class and that aggressive filtering can suppress real vulnerabilities \cite{sifting-noise}. That is the same safety--retention tension that FCR and SCR keep separate here.
+
 Software-engineering benchmarks increasingly ground tasks in public development history. SWE-bench uses real GitHub issues and pull requests and demonstrates the need for repository context and executable environments \cite{swebench}. SWE-PRBench evaluates code-review models against pull-request feedback and reports limited detection of human-flagged issues \cite{sweprbench}. Our task is narrower: a candidate claim is given, and the system must decide whether it remains actionable under the supplied repository snapshot.
 
 SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues \cite{swrbench}. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable. A future larger benchmark should combine EVAR's receipt-level audit with the PR-scale context and manual verification used by SWR-Bench.
+
+c-CRAB derives tests from human pull-request reviews and uses them to judge whether a review agent identified the same issue; existing agents collectively solve about 40\% of its tasks \cite{ccrab}. Executable validation of review content is close to \evar's behavioral witnesses. The difference is again the unit: c-CRAB tests an agent's discovered issues against held-out tests, whereas an \evar receipt is the reviewer's own falsifiable observation for a claim that is already fixed.
 
 ContextCRBench reaches a different scale, with context-enriched entries for quality assessment, localization, and comment generation \cite{contextcrbench}. Its emphasis on issue context and fine-grained localization reinforces an important external-validity limit here: EVAR's focused excerpts isolate the verification question, but they cannot substitute for evaluating complete pull requests with developer intent.
 
@@ -95,7 +101,7 @@ AACR-Bench provides multilingual, repository-level context and uses AI-assisted,
 
 Sphinx constructs context-rich PR-review examples, evaluates generated reviews with actionable checklists, and uses those checklists as interpretable training rewards \cite{sphinx}. Its structured verification points are close in spirit to evidence receipts, but the unit and objective differ: Sphinx scores coverage and trains a review generator, whereas EVAR holds one claim fixed and audits the causal path from submitted evidence to actionability.
 
-These comparisons delimit the contribution. SWR-Bench, SWE-PRBench, AACR-Bench, ContextCRBench, and Sphinx primarily measure discovery, localization, generation, or checklist coverage. CRITIC and \emph{Reason Less, Verify More} supply the closest mechanism precedents for external feedback and deterministic gates. EVAR occupies their intersection: temporal code-review claim validation with a machine-checked receipt, followed by an explicit test of whether enforcement itself changes the decision. We make no priority claim for deterministic gating in general.
+These comparisons delimit the contribution. SWR-Bench, SWE-PRBench, AACR-Bench, ContextCRBench, c-CRAB, and Sphinx primarily measure discovery, localization, generation, test-validated issue coverage, or checklist coverage. CRITIC and \emph{Reason Less, Verify More} supply the closest mechanism precedents for external feedback and deterministic gates, and Refute-or-Promote the closest adversarial-review pipeline. EVAR occupies their intersection: temporal code-review claim validation with a machine-checked receipt, followed by an explicit test of whether enforcement itself changes the decision. We make no priority claim for deterministic gating in general.
 
 \section{Protocols}
 
@@ -611,7 +617,7 @@ The final holdout is ten source comments from five Python repositories, paired i
 Most holdout cells contain one stochastic call per case, and the configured seeds are provenance labels rather than guaranteed inference controls. With ten eligible cases, a single decision moves a metric by .100. The cluster bootstrap shows sensitivity to the observed pairs; it does not create a sampled population. Exact paired tests are likewise uninformative with zero to three discordances. In the provider extension, 32 rows are censored by a fixed 20-second client deadline and one fails output parsing. These are not random missing observations and cannot support a model-reliability ranking, so incomplete cells are excluded from performance comparisons.
 
 \paragraph{Data ethics.}
-The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers.
+The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers. The powered expansion adds human expert annotators, so it is governed separately: expert annotation does not begin until the lead institution records its determination, reviewers receive an information sheet and use unrelated pseudonymous identifiers, and names, contact details, acknowledgments, and compensation records are kept outside the artifact.
 
 \paragraph{Extension validity.}
 Both model extensions reuse Human PR 20 after the original outcomes were known. They are repeated measurements, not additional benchmark examples. Reasoning settings are not necessarily comparable across vendors, and exact model aliases, routing, behavior, and prices can change after the freeze. The gateway may also choose among eligible serving providers. These facts are why the provider analysis separates complete-cell quality estimates from 300-attempt reliability accounting.
@@ -633,7 +639,10 @@ python -m evar.run --protocol PROTOCOL --cases CASES \
   --config CONFIG --output-dir RESULTS
 python scripts/report_human_pr_20_cross_provider.py
 python scripts/audit_human_pr_20_cross_provider.py
+python scripts/report_gate_ablation.py --input RESULTS --output REPLAY
+python scripts/report_auditability.py --index INDEX --output AUDIT
 \end{verbatim}
+The last two commands regenerate the same-row gate replay and the 1,200-attempt auditability summary from indexed results without model calls.
 Model-backed reproduction requires the corresponding API credential and will not be byte-identical because provider inference is not guaranteed deterministic. The preserved transcripts and metadata support outcome-level rather than bit-level replication.
 
 \section{Conclusion}
@@ -660,9 +669,11 @@ The acquired but unlabeled pool contains 682 public review-comment candidates fr
 
 Two experts independently receive the blinded comment, snapshots, and provenance; decide eligibility; normalize the claim; assign one of five frozen families; and judge support at review and absence at merge. Every disagreement enters identity-blinded third-party adjudication. The merger fails closed on incomplete decisions or non-distinct reviewer identities and records reviewer IDs, resolution mode, adjudicator ID, and input hashes. Deterministic selection then requires 300 eligible comments from at least 40 repositories, balances language and family under a six-comment repository cap, and emits 600 paired temporal cases plus a hashed manifest. Advisory LLM labels are never shown to experts or accepted as ground truth.
 
-The target follows a prospective calculation using only frozen Human PR 20 outcomes. Because no verification-blind pilot exists, both label endpoints use the largest earlier 95\% Wilson upper bound on discordance (.603) as a conservative proxy. Under an exact two-sided McNemar test, a .15 absolute paired difference, and per-endpoint $\alpha=.025$, 300 source comments give calculated power .856 for each endpoint. The confirmatory GPT-4.1 comparison is role-aware soft versus hard actionability from the same BlindGate row; five providers form unpooled extensions. Requests use a 120-second deadline, at most two attempts, and a 250-second total budget. A stratified 60-comment subset receives three total repetitions. Based on frozen per-attempt costs, the complete 20,160-attempt plan projects to about \$211 before a 25\% contingency; execution therefore requires a separately approved budget and fresh price freeze.
+The target follows a prospective calculation using only frozen Human PR 20 outcomes. Because no verification-blind pilot exists, both label endpoints use the largest earlier 95\% Wilson upper bound on discordance (.603) as a conservative proxy. Under an exact two-sided McNemar test, a .15 absolute paired difference, and per-endpoint $\alpha=.025$, 300 source comments give calculated power .856 for each endpoint. The confirmatory GPT-4.1 comparison is role-aware soft versus hard actionability from the same BlindGate row; five providers form unpooled extensions. Every request uses a 120-second deadline; gateway-routed provider requests additionally allow at most two attempts within a 250-second total budget, while direct GPT-4.1 requests make one attempt. A stratified 60-comment subset receives three total repetitions. Based on frozen per-attempt costs, the complete 20,160-attempt plan projects to about \$211 before a 25\% contingency (\$264 upper bound); execution therefore requires a separately approved budget and fresh price freeze.
 
-\begin{thebibliography}{26}
+Paid execution is also blocked by a fail-closed preflight. It requires a recorded institutional determination, validated expert and adjudicator exports, the 300-comment selection, the 600 rendered cases, a passing contamination audit of that exact selection, a hash freeze of the model-visible inputs, and current prices for every configured model. The preflight never treats advisory LLM annotations as human labels. At the time of writing, none of these conditions is yet satisfied, and no powered result is reported.
+
+\begin{thebibliography}{31}
 \bibitem{selfrefine}
 A. Madaan et al. Self-Refine: Iterative Refinement with Self-Feedback. \emph{arXiv:2303.17651}, 2023.
 
@@ -740,6 +751,21 @@ J. Moon, Y. Hwang, D. Lee, T. Kang, Y. Kim, and K. Jung. Don't Judge Code by Its
 
 \bibitem{sphinx}
 D. Zhang, S. Zhang, Z. Jin, J. Luo, S. Fu, and E. Nallipogu. Sphinx: Benchmarking and Modeling for LLM-Driven Pull Request Review. \emph{arXiv:2601.04252}, 2026.
+
+\bibitem{refute-promote}
+A. Agarwal. Refute-or-Promote: An Adversarial Stage-Gated Multi-Agent Review Methodology for High-Precision LLM-Assisted Defect Discovery. \emph{arXiv:2604.19049}, 2026.
+
+\bibitem{more-debate}
+Y. Ji. More Debate, Same Evidence: Structural Limits of Homogeneous Multi-Agent Groundedness. \emph{arXiv:2608.00243}, 2026.
+
+\bibitem{groundeval}
+J. Flynt. GroundEval: A Deterministic Replacement for LLM-as-Judge in Stateful Agent Evaluation. \emph{arXiv:2606.22737}, 2026.
+
+\bibitem{sifting-noise}
+Y. Xiong and T. Zhang. Sifting the Noise: A Comparative Study of LLM Agents in Vulnerability False Positive Filtering. In \emph{Proceedings of ISSTA}, 2026. arXiv:2601.22952.
+
+\bibitem{ccrab}
+Y. Zhang, Z. Pan, I. N. B. Yusuf, H. Ruan, R. Shariffdeen, and A. Roychoudhury. Code Review Agent Benchmark. \emph{arXiv:2603.23448}, 2026.
 \end{thebibliography}
 
 \end{document}
