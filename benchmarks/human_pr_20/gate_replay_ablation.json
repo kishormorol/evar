@@ -1,0 +1,457 @@
+{
+  "design": "Counterfactual replay of completed EVAR-Hard rows. Receipt, verifier output, and critic decision are held fixed; only the actionability rule changes.",
+  "failed_rows_excluded": 12,
+  "models": {
+    "anthropic/claude-sonnet-5": {
+      "completed": 20,
+      "critic_only": {
+        "fcr": 0.0,
+        "scr": 0.5,
+        "supported_actionable": 5,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.0,
+        "scr": 0.5,
+        "supported_actionable": 5,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.0,
+        "scr": 0.5,
+        "supported_actionable": 5,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      }
+    },
+    "deepseek/deepseek-v4-pro-0813": {
+      "completed": 14,
+      "critic_only": {
+        "fcr": 0.0,
+        "scr": 0.8333333333333334,
+        "supported_actionable": 5,
+        "supported_total": 6,
+        "unsupported_actionable": 0,
+        "unsupported_total": 8
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.0,
+        "scr": 0.8333333333333334,
+        "supported_actionable": 5,
+        "supported_total": 6,
+        "unsupported_actionable": 0,
+        "unsupported_total": 8
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 6,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 8,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.0,
+        "scr": 0.8333333333333334,
+        "supported_actionable": 5,
+        "supported_total": 6,
+        "unsupported_actionable": 0,
+        "unsupported_total": 8
+      }
+    },
+    "google/gemini-3.1-pro-preview": {
+      "completed": 20,
+      "critic_only": {
+        "fcr": 0.0,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.0,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.0,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      }
+    },
+    "gpt-4.1": {
+      "completed": 120,
+      "critic_only": {
+        "fcr": 0.1,
+        "scr": 0.8166666666666667,
+        "supported_actionable": 49,
+        "supported_total": 60,
+        "unsupported_actionable": 6,
+        "unsupported_total": 60
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.1,
+        "scr": 0.8166666666666667,
+        "supported_actionable": 49,
+        "supported_total": 60,
+        "unsupported_actionable": 6,
+        "unsupported_total": 60
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 60,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 60,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.1,
+        "scr": 0.8166666666666667,
+        "supported_actionable": 49,
+        "supported_total": 60,
+        "unsupported_actionable": 6,
+        "unsupported_total": 60
+      }
+    },
+    "gpt-4.1-mini": {
+      "completed": 119,
+      "critic_only": {
+        "fcr": 0.06779661016949153,
+        "scr": 0.4666666666666667,
+        "supported_actionable": 28,
+        "supported_total": 60,
+        "unsupported_actionable": 4,
+        "unsupported_total": 59
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.06779661016949153,
+        "scr": 0.4666666666666667,
+        "supported_actionable": 28,
+        "supported_total": 60,
+        "unsupported_actionable": 4,
+        "unsupported_total": 59
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 60,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 59,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.06779661016949153,
+        "scr": 0.4666666666666667,
+        "supported_actionable": 28,
+        "supported_total": 60,
+        "unsupported_actionable": 4,
+        "unsupported_total": 59
+      }
+    },
+    "gpt-5.6-luna": {
+      "completed": 20,
+      "critic_only": {
+        "fcr": 0.0,
+        "scr": 0.6,
+        "supported_actionable": 6,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.0,
+        "scr": 0.6,
+        "supported_actionable": 6,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.0,
+        "scr": 0.6,
+        "supported_actionable": 6,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      }
+    },
+    "gpt-5.6-sol": {
+      "completed": 20,
+      "critic_only": {
+        "fcr": 0.1,
+        "scr": 0.7,
+        "supported_actionable": 7,
+        "supported_total": 10,
+        "unsupported_actionable": 1,
+        "unsupported_total": 10
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.1,
+        "scr": 0.7,
+        "supported_actionable": 7,
+        "supported_total": 10,
+        "unsupported_actionable": 1,
+        "unsupported_total": 10
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.1,
+        "scr": 0.7,
+        "supported_actionable": 7,
+        "supported_total": 10,
+        "unsupported_actionable": 1,
+        "unsupported_total": 10
+      }
+    },
+    "gpt-5.6-terra": {
+      "completed": 20,
+      "critic_only": {
+        "fcr": 0.1,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 1,
+        "unsupported_total": 10
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.1,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 1,
+        "unsupported_total": 10
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.1,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 1,
+        "unsupported_total": 10
+      }
+    },
+    "moonshotai/kimi-k3": {
+      "completed": 20,
+      "critic_only": {
+        "fcr": 0.0,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.0,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 10,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.0,
+        "scr": 0.8,
+        "supported_actionable": 8,
+        "supported_total": 10,
+        "unsupported_actionable": 0,
+        "unsupported_total": 10
+      }
+    },
+    "qwen/qwen3.8-max": {
+      "completed": 15,
+      "critic_only": {
+        "fcr": 0.0,
+        "scr": 1.0,
+        "supported_actionable": 8,
+        "supported_total": 8,
+        "unsupported_actionable": 0,
+        "unsupported_total": 7
+      },
+      "gate_effect": {
+        "hard_accept_without_soft_accept": 0,
+        "soft_accept_to_hard_reject": 0
+      },
+      "hard": {
+        "fcr": 0.0,
+        "scr": 1.0,
+        "supported_actionable": 8,
+        "supported_total": 8,
+        "unsupported_actionable": 0,
+        "unsupported_total": 7
+      },
+      "paired_tests": {
+        "supported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 8,
+          "soft_only": 0
+        },
+        "unsupported": {
+          "exact_two_sided_mcnemar_p": 1.0,
+          "hard_only": 0,
+          "pairs": 7,
+          "soft_only": 0
+        }
+      },
+      "role_aware_soft": {
+        "fcr": 0.0,
+        "scr": 1.0,
+        "supported_actionable": 8,
+        "supported_total": 8,
+        "unsupported_actionable": 0,
+        "unsupported_total": 7
+      }
+    }
+  },
+  "schema_version": 1
+}

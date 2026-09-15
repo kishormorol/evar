@@ -120,6 +120,12 @@ def _critic_user_prompt(
     )
     if protocol == "ar_text" and text_evidence is not None:
         return common + f"Textual evidence: {text_evidence}\nExternal verification: not used by AR-Text."
+    if protocol == "evar_blind_gate" and text_evidence is not None:
+        return (
+            common
+            + f"Textual receipt projection: {text_evidence}\n"
+            + "External verification: deliberately withheld from the critic for the gate ablation."
+        )
     if protocol == "ar":
         return common + "External verification: not used by AR."
     return (

@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import time
+import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -63,13 +64,32 @@ def annotate(
     *,
     backend: ModelBackend,
     output: Path,
+    max_attempts_per_candidate: int = 4,
+    retry_delay_seconds: float = 5.0,
+    inter_request_delay_seconds: float = 0.0,
 ) -> None:
-    completed: set[str] = set()
+    if max_attempts_per_candidate < 1:
+        raise ValueError("max_attempts_per_candidate must be positive")
+    if retry_delay_seconds < 0 or inter_request_delay_seconds < 0:
+        raise ValueError("annotation delays must be nonnegative")
+
+    successful_records: dict[str, dict[str, object]] = {}
+    existing_record_count = 0
     if output.exists():
         for line in output.read_text(encoding="utf-8").splitlines():
             if line.strip():
-                completed.add(str(json.loads(line)["candidate_id"]))
+                existing_record_count += 1
+                record = json.loads(line)
+                if record.get("status") == "ok":
+                    successful_records.setdefault(str(record["candidate_id"]), record)
     output.parent.mkdir(parents=True, exist_ok=True)
+    if existing_record_count != len(successful_records):
+        clean_output = "".join(
+            json.dumps(record, sort_keys=True, ensure_ascii=False) + "\n"
+            for record in successful_records.values()
+        )
+        output.write_text(clean_output, encoding="utf-8")
+    completed = set(successful_records)
     prompt_hash = hashlib.sha256(SYSTEM_PROMPT.encode()).hexdigest()
     with output.open("a", encoding="utf-8") as handle:
         for index, row in enumerate(rows, start=1):
@@ -80,19 +100,33 @@ def annotate(
             status = "ok"
             error: str | None = None
             response = None
-            try:
-                response = backend.generate(
-                    SYSTEM_PROMPT,
-                    user_prompt(row),
-                    response_schema=ANNOTATION_SCHEMA,
-                )
-                parsed = response.parsed_output
-                if not isinstance(parsed, dict):
-                    raise ValueError("LLM returned no parsed annotation object")
-            except Exception as exc:  # preserve failures as explicit annotation rows
-                status = "failed"
-                error = f"{type(exc).__name__}: {exc}"
-                parsed = None
+            parsed = None
+            for attempt in range(max_attempts_per_candidate):
+                try:
+                    response = backend.generate(
+                        SYSTEM_PROMPT,
+                        user_prompt(row),
+                        response_schema=ANNOTATION_SCHEMA,
+                    )
+                    parsed = response.parsed_output
+                    if not isinstance(parsed, dict):
+                        raise ValueError("LLM returned no parsed annotation object")
+                    break
+                except urllib.error.HTTPError as exc:
+                    if exc.code != 429 or attempt + 1 >= max_attempts_per_candidate:
+                        status = "failed"
+                        error = f"{type(exc).__name__}: {exc}"
+                        break
+                    delay = min(30.0, retry_delay_seconds * (2**attempt))
+                    print(
+                        f"{index}/{len(rows)} {candidate_id} rate_limited; retrying in {delay:g}s",
+                        flush=True,
+                    )
+                    time.sleep(delay)
+                except Exception as exc:  # preserve non-rate-limit failures explicitly
+                    status = "failed"
+                    error = f"{type(exc).__name__}: {exc}"
+                    break
             record = {
                 "candidate_id": candidate_id,
                 "status": status,
@@ -110,6 +144,8 @@ def annotate(
             handle.write(json.dumps(record, sort_keys=True, ensure_ascii=False) + "\n")
             handle.flush()
             print(f"{index}/{len(rows)} {candidate_id} {status}", flush=True)
+            if inter_request_delay_seconds:
+                time.sleep(inter_request_delay_seconds)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -118,6 +154,9 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model", default="gpt-5.6-sol")
     parser.add_argument("--max-output-tokens", type=int, default=500)
+    parser.add_argument("--max-attempts-per-candidate", type=int, default=4)
+    parser.add_argument("--retry-delay-seconds", type=float, default=5.0)
+    parser.add_argument("--inter-request-delay-seconds", type=float, default=0.0)
     args = parser.parse_args(argv)
     backend = OpenAIResponsesBackend(
         model_name=args.model,
@@ -126,7 +165,14 @@ def main(argv: list[str] | None = None) -> None:
         reasoning_effort="none",
     )
     rows = [json.loads(line) for line in args.input.read_text(encoding="utf-8").splitlines() if line.strip()]
-    annotate(rows, backend=backend, output=args.output)
+    annotate(
+        rows,
+        backend=backend,
+        output=args.output,
+        max_attempts_per_candidate=args.max_attempts_per_candidate,
+        retry_delay_seconds=args.retry_delay_seconds,
+        inter_request_delay_seconds=args.inter_request_delay_seconds,
+    )
 
 
 if __name__ == "__main__":

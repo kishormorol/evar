@@ -128,12 +128,14 @@ def build_plan(
     sample_sizes: list[int],
 ) -> dict[str, object]:
     pilot = pilot_discordance(index_path)
-    planning_rates: dict[str, float] = {}
-    for label in ("SUPPORTED", "UNSUPPORTED"):
-        candidates = [float(row["wilson_upper_95"]) for row in pilot if row["label"] == label]
-        if not candidates:
-            raise ValueError(f"pilot contains no paired {label} observations")
-        planning_rates[label] = max(candidates)
+    pilot_upper_bounds = [float(row["wilson_upper_95"]) for row in pilot]
+    if not pilot_upper_bounds:
+        raise ValueError("pilot contains no paired observations")
+    conservative_rate = max(pilot_upper_bounds)
+    planning_rates = {
+        "SUPPORTED": conservative_rate,
+        "UNSUPPORTED": conservative_rate,
+    }
     power = [
         {
             "pairs_per_label": pairs,
@@ -147,11 +149,18 @@ def build_plan(
     return {
         "schema_version": 1,
         "pilot_index": index_path.as_posix(),
-        "comparison": "AR-Text versus EVAR-Hard",
+        "comparison": "EVAR-BlindGate role-aware soft versus hard actionability",
         "test": "exact two-sided McNemar",
         "alpha": alpha,
         "absolute_paired_difference": absolute_difference,
-        "discordance_planning_rule": "maximum model-specific 95% Wilson upper bound by label",
+        "discordance_planning_rule": (
+            "maximum 95% Wilson upper bound across every label/model in the earlier "
+            "AR-Text versus EVAR-Hard pilot, used as a conservative proxy"
+        ),
+        "pilot_basis": (
+            "No verification-blind outcome was observed before the powered freeze. Earlier "
+            "AR-Text versus EVAR-Hard discordance supplies a conservative planning proxy only."
+        ),
         "pilot": pilot,
         "planning_discordance_rate": planning_rates,
         "power": power,
@@ -162,9 +171,9 @@ def render_markdown(plan: dict[str, object]) -> str:
     lines = [
         "# Human PR 200 paired-power plan",
         "",
-        "This prospective calculation uses only the frozen Human PR 20 outcomes. It does not inspect Human PR 200 labels or model results. The primary comparison is AR-Text versus EVAR-Hard, tested separately within supported and unsupported temporal cases with an exact two-sided McNemar test.",
+        "This prospective calculation uses only frozen Human PR 20 outcomes and does not inspect Human PR expansion labels or model results. The primary powered comparison is the within-row EVAR-BlindGate role-aware soft decision versus the hard-gated decision, tested separately within supported and unsupported temporal cases with an exact two-sided McNemar test.",
         "",
-        f"The smallest effect of practical interest is an absolute paired rate difference of {plan['absolute_paired_difference']:.2f}, with alpha = {plan['alpha']:.3f}. To avoid treating ten-case pilot discordance as precise, the planning rate for each label is the largest model-specific 95% Wilson upper bound.",
+        f"The smallest effect of practical interest is an absolute paired rate difference of {plan['absolute_paired_difference']:.2f}, with alpha = {plan['alpha']:.3f}. No verification-blind pilot outcome exists. To avoid choosing a favorable discordance assumption, both endpoints use the largest model-specific 95% Wilson upper bound observed in the earlier AR-Text versus EVAR-Hard pilot as a conservative planning proxy.",
         "",
         "## Frozen pilot inputs",
         "",

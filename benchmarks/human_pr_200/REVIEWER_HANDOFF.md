@@ -4,6 +4,12 @@ The annotation portal is ready for a short workflow pilot and then two independe
 expert passes. Human decisions are required: model annotations cannot be substituted
 for either expert.
 
+Before recruitment, complete `REVIEWER_INFORMATION_SHEET.md`, obtain the institutional
+determination described in `INSTITUTIONAL_DETERMINATION_REQUEST.md`, and retain each
+completed `REVIEWER_ACKNOWLEDGMENT_TEMPLATE.md` in the private study log.
+Use `RECRUITMENT_AND_QUALIFICATION.md` to screen roles and follow the fail-closed
+sequence in `POST_CLEARANCE_EXECUTION.md` after clearance.
+
 ## Roles
 
 - Pilot reviewers test whether the interface and instructions are understandable.

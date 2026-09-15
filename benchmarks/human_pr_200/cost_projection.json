@@ -1,0 +1,77 @@
+{
+  "additional_stability_attempts_per_model": 960,
+  "additional_stability_repetitions": 2,
+  "authorization": "projection_only_not_authorization_to_run",
+  "basis": "Projection scales observed per-attempt token cost from frozen Human PR 20 runs. EVAR-BlindGate is assumed to cost approximately one ordinary two-call protocol arm.",
+  "cases": 600,
+  "contingency_fraction": 0.25,
+  "full_matrix_attempts_per_model": 2400,
+  "per_model": [
+    {
+      "additional_stability_attempts": 960,
+      "estimated_cost_per_attempt_usd": 0.013684633333333333,
+      "full_matrix_attempts": 2400,
+      "historical_attempts": 60.0,
+      "historical_cost_usd": 0.821078,
+      "model": "anthropic/claude-sonnet-5",
+      "projected_cost_usd": 45.980368,
+      "projected_cost_with_contingency_usd": 57.47546
+    },
+    {
+      "additional_stability_attempts": 960,
+      "estimated_cost_per_attempt_usd": 0.0036771020000000002,
+      "full_matrix_attempts": 2400,
+      "historical_attempts": 60.0,
+      "historical_cost_usd": 0.22062612,
+      "model": "deepseek/deepseek-v4-pro-0813",
+      "projected_cost_usd": 12.355062720000001,
+      "projected_cost_with_contingency_usd": 15.443828400000001
+    },
+    {
+      "additional_stability_attempts": 960,
+      "estimated_cost_per_attempt_usd": 0.015118933333333334,
+      "full_matrix_attempts": 2400,
+      "historical_attempts": 60.0,
+      "historical_cost_usd": 0.907136,
+      "model": "google/gemini-3.1-pro-preview",
+      "projected_cost_usd": 50.799616,
+      "projected_cost_with_contingency_usd": 63.499520000000004
+    },
+    {
+      "additional_stability_attempts": 960,
+      "estimated_cost_per_attempt_usd": 0.007056433333333332,
+      "full_matrix_attempts": 2400,
+      "historical_attempts": 60.0,
+      "historical_cost_usd": 0.42338599999999993,
+      "model": "gpt-4.1",
+      "projected_cost_usd": 23.709615999999997,
+      "projected_cost_with_contingency_usd": 29.637019999999996
+    },
+    {
+      "additional_stability_attempts": 960,
+      "estimated_cost_per_attempt_usd": 0.012673799999999997,
+      "full_matrix_attempts": 2400,
+      "historical_attempts": 60.0,
+      "historical_cost_usd": 0.7604279999999999,
+      "model": "moonshotai/kimi-k3",
+      "projected_cost_usd": 42.58396799999999,
+      "projected_cost_with_contingency_usd": 53.22995999999999
+    },
+    {
+      "additional_stability_attempts": 960,
+      "estimated_cost_per_attempt_usd": 0.010670900000000002,
+      "full_matrix_attempts": 2400,
+      "historical_attempts": 60.0,
+      "historical_cost_usd": 0.6402540000000001,
+      "model": "qwen/qwen3.8-max",
+      "projected_cost_usd": 35.85422400000001,
+      "projected_cost_with_contingency_usd": 44.81778000000001
+    }
+  ],
+  "projected_subtotal_usd": 211.28285472,
+  "projected_upper_bound_usd": 264.1035684,
+  "protocols": 4,
+  "schema_version": 1,
+  "stability_cases": 120,
+  "total_attempts": 20160
+}

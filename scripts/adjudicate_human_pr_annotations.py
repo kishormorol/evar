@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Iterable
 
@@ -154,6 +155,62 @@ def _write_jsonl(path: Path, rows: Iterable[dict[str, object]]) -> None:
     )
 
 
+def _nominal_agreement(values_a: list[object], values_b: list[object]) -> dict[str, object]:
+    if len(values_a) != len(values_b):
+        raise ValueError("agreement vectors must have the same length")
+    total = len(values_a)
+    if total == 0:
+        return {"n": 0, "percent_agreement": None, "cohen_kappa": None}
+    observed = sum(a == b for a, b in zip(values_a, values_b, strict=True)) / total
+    counts_a, counts_b = Counter(values_a), Counter(values_b)
+    categories = set(counts_a) | set(counts_b)
+    expected = sum((counts_a[value] / total) * (counts_b[value] / total) for value in categories)
+    if expected == 1.0:
+        kappa = 1.0 if observed == 1.0 else None
+    else:
+        kappa = (observed - expected) / (1 - expected)
+    return {"n": total, "percent_agreement": observed, "cohen_kappa": kappa}
+
+
+def annotation_agreement(
+    a_by_id: dict[str, dict[str, object]],
+    b_by_id: dict[str, dict[str, object]],
+) -> dict[str, object]:
+    ids = sorted(set(a_by_id) & set(b_by_id))
+    annotations = [(_annotation(a_by_id[item]), _annotation(b_by_id[item])) for item in ids]
+    both_eligible = [(a, b) for a, b in annotations if a["eligible"] is True and b["eligible"] is True]
+    return {
+        "eligibility": _nominal_agreement(
+            [a["eligible"] for a, _ in annotations],
+            [b["eligible"] for _, b in annotations],
+        ),
+        "claim_family_among_both_eligible": _nominal_agreement(
+            [a["claim_family"] for a, _ in both_eligible],
+            [b["claim_family"] for _, b in both_eligible],
+        ),
+        "supported_at_review_among_both_eligible": _nominal_agreement(
+            [a["supported_at_review"] for a, _ in both_eligible],
+            [b["supported_at_review"] for _, b in both_eligible],
+        ),
+        "unsupported_at_merge_among_both_eligible": _nominal_agreement(
+            [a["unsupported_at_merge"] for a, _ in both_eligible],
+            [b["unsupported_at_merge"] for _, b in both_eligible],
+        ),
+        "normalized_claim_exact_among_both_eligible": {
+            "n": len(both_eligible),
+            "percent_agreement": (
+                sum(
+                    str(a["normalized_claim"]).strip() == str(b["normalized_claim"]).strip()
+                    for a, b in both_eligible
+                )
+                / len(both_eligible)
+                if both_eligible
+                else None
+            ),
+        },
+    }
+
+
 def adjudicate(
     annotator_a_path: Path,
     annotator_b_path: Path,
@@ -267,6 +324,7 @@ def adjudicate(
         "resolved_candidates": len(agreements),
         "eligible_resolved": sum(_annotation(row)["eligible"] is True for row in agreements),
         "excluded_resolved": sum(_annotation(row)["eligible"] is False for row in agreements),
+        "independent_annotation_agreement": annotation_agreement(a_by_id, b_by_id),
         "input_hashes": input_hashes,
         "resolved_output": resolved_path.as_posix(),
         "disagreement_output": disagreements_path.as_posix(),

@@ -26,5 +26,8 @@ def load_prompt(filename: str) -> PromptTemplate:
 
 
 def prompt_filename(role: str, protocol: str) -> str:
-    normalized = "evar" if protocol == "evar_hard" else protocol
+    if protocol == "evar_blind_gate":
+        normalized = "evar" if role == "reviewer" else "evar_blind"
+    else:
+        normalized = "evar" if protocol == "evar_hard" else protocol
     return f"{role}_{normalized}_v1.txt"

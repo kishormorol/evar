@@ -236,7 +236,7 @@ def _audit_transcript(root: Path, row: dict[str, Any], location: str, issues: li
         if finding.get("critic_decision") != "ACCEPT":
             issues.append(AuditIssue("ACTIONABLE_WITHOUT_ACCEPT", location, repr(finding.get("critic_decision"))))
         protocol = str(row.get("protocol"))
-        if protocol == "evar_hard":
+        if protocol in {"evar_hard", "evar_blind_gate"}:
             if _nested(finding, "verification_result", "status") != "VERIFIED":
                 issues.append(AuditIssue("ACTIONABLE_WITHOUT_VERIFICATION", location, "status is not VERIFIED"))
             if _nested(finding, "evidence_receipt", "evidence_role") != "supports_claim":

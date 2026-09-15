@@ -3,12 +3,15 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{tikz}
 \usepackage{xspace}
+\usetikzlibrary{arrows.meta,positioning}
 
 \setcopyright{none}
 \settopmatter{printfolios=true}
+\acmYear{2027}
 \raggedbottom
-\acmConference[FSE 2027]{ACM International Conference on the Foundations of Software Engineering}{July 2027}{Trondheim, Norway}
+\acmConference[FSE 2027]{ACM International Conference on the Foundations of Software Engineering}{July 12--16, 2027}{Shenzhen, China}
 \acmBooktitle{ACM International Conference on the Foundations of Software Engineering (FSE 2027)}
 \acmDOI{}
 \acmISBN{}
@@ -16,12 +19,12 @@
 \newcommand{\fcr}{\textsc{Fcr}\xspace}
 \newcommand{\scr}{\textsc{Scr}\xspace}
 
-\title{Evidence-Verified Adversarial Review for Code-Review Claims}
+\title{Auditing Evidence-Verified Adversarial Review for Code-Review Claims}
 \author{Anonymous Author(s)}
 
 \begin{document}
 \begin{abstract}
-When a code-review agent cites the wrong lines, asking a second language model whether the finding sounds reasonable can reproduce the same mistake. We test a stricter alternative. Evidence-Verified Adversarial Review (\evar) requires the reviewer to submit a structured receipt---a file, line range, expected observation, falsification condition, and optionally a bounded command---and makes deterministic verification a precondition for actionability. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched prompts, cases, and call budgets. Our final holdout contains 120 decisions over temporal pairs derived from ten public pull-request comments. On this holdout, GPT-4.1-mini gives the same \fcr/\scr operating point for AR-Text and \evar-Hard (.200/.700), while GPT-4.1 favors AR-Text (.200/.700 versus .300/.600). Results from three newer OpenAI models are similarly mixed. A five-provider extension records 300 further attempts under a shared 2,400-token cap: 267 produce decisions, 32 hit the runner's 20-second HTTP deadline, and one fails schema parsing. Across the full artifact, 1,167 of 1,200 attempts produce scored decisions. The hard gate changes which findings survive but does not consistently improve decision quality. What it does provide is a reproducible acceptance boundary: an actionable \evar finding has a machine-checked receipt, and failed evidence remains visible in the record.
+When a code-review agent cites the wrong lines, a second language model can endorse the same plausible mistake. Evidence-Verified Adversarial Review (\evar) instead requires a structured receipt---a file, range, expected observation, falsifier, and optional bounded witness---and makes deterministic verification a precondition for actionability. Unlike benchmarks of open-ended issue discovery, we hold one review claim fixed and ask whether checked evidence justifies acting on it. We compare ordinary adversarial review (AR), textual evidence (AR-Text), and \evar-Hard with matched cases and call budgets. On an untouched temporal holdout derived from ten public review comments, \evar-Hard ties or trails AR-Text; later models and providers do not produce a stable performance ordering. A post-hoc same-row audit then isolates enforcement from information. Among 388 completed \evar-Hard decisions, the final gate changes none because the critic had already seen the verifier outcome and rejected every receipt the gate would reject. Apparent differences from AR-Text therefore mix receipt representation, critic context, and enforcement. Across 1,200 attempts, 1,166 complete, all 34 failures are typed, and all 144 hard-protocol actionable findings have verified supporting receipts. The main contribution is methodological: a deterministic rule at an action boundary is not evidence of a causal gate effect when its signal is already visible upstream. We provide a temporally paired claim-validation task, a judge-free mechanism audit, and a preregistered verification-blind design that identifies enforcement separately from verifier-aware judgment.
 \end{abstract}
 
 \keywords{code review, language-model agents, evidence verification, benchmark, reliability}
@@ -35,23 +38,26 @@ Reviewer-critic systems use a second model call to challenge or refine a first m
 
 Consider a documentation finding from Black pull request 5272 in our holdout. A human reviewer asked that an internal explanation involving \texttt{hug\_power\_op} and cloned leaves be replaced with a concise user-facing changelog entry. The same claim is true at the reviewed commit and false after the merge edit. A textual critic can accept the finding in either snapshot because the wording remains plausible. An evidence receipt must instead identify the exact changelog lines present in that snapshot. The example captures our unit of analysis: not whether a model can discover every issue in a pull request, but whether one candidate finding deserves to cross an actionability boundary.
 
-\evar changes the acceptance rule. A reviewer submits a structured evidence receipt; a deterministic verifier checks a source location or executes a bounded witness; and only a verified receipt can become actionable. We ask whether that external gate reduces false consensus without suppressing supported findings.
+\evar changes the acceptance path. A reviewer submits a structured evidence receipt; a deterministic verifier checks a source location or executes a bounded witness; and only a verified receipt can become actionable. We first compare end-to-end decision quality, then audit whether the final gate itself changes decisions rather than inheriting behavior already induced by verifier-aware criticism.
 
-We organize the study around three research questions:
+We organize the study around four research questions:
 \begin{description}
   \item[RQ1 (decision quality).] Does deterministic evidence verification reduce unsupported actionable findings without an unacceptable loss of supported findings?
-  \item[RQ2 (model sensitivity).] Does the safety--retention operating point persist across model capability and cost tiers?
-  \item[RQ3 (auditability).] Which protocol failures become mechanically observable when actionability requires a verified receipt?
+  \item[RQ2 (gate mechanism).] When receipt, verifier output, and critic decision are fixed, does the final hard gate change actionability?
+  \item[RQ3 (model sensitivity).] Does the safety--retention operating point persist across model capability and provider families?
+  \item[RQ4 (auditability).] Which protocol failures and acceptance invariants become mechanically observable?
 \end{description}
 The distinction between decision quality and auditability matters throughout the paper. A receipt can be mechanically valid yet irrelevant to the claim, and a protocol can be easier to audit without producing a better \fcr/\scr pair.
 
-Our contributions are:
+Our contributions are deliberately about claim validation and mechanism identification, not a new open-ended review generator:
 \begin{enumerate}
-  \item \textbf{Protocol:} a structured evidence receipt and deterministic gate that make acceptance conditions externally inspectable;
-  \item \textbf{Benchmark:} a temporally paired holdout built from public human review comments at reviewed and merged commits;
-  \item \textbf{Evidence:} matched AR, AR-Text, and \evar-Hard experiments that expose a model-sensitive safety--retention tradeoff; and
-  \item \textbf{Artifact:} frozen inputs, transcripts, result manifests, and judge-free audits for 1,200 attempted decisions, including 33 failed calls retained explicitly.
+  \item \textbf{Claim-validation task and benchmark:} we fix a human review claim and pair the exact reviewed and merged snapshots, controlling claim wording while changing whether the repository supports it;
+  \item \textbf{Auditable acceptance protocol:} a structured receipt and deterministic verifier expose what observation was checked, why it failed, and which rule allowed a claim to become actionable;
+  \item \textbf{Causal mechanism result:} matched experiments and a same-row replay show that the reported hard gate is observationally redundant after verifier-aware criticism, separating an auditable invariant from an accuracy or enforcement effect;
+  \item \textbf{Identifiable follow-up and artifact:} a preregistered verification-blind arm isolates enforcement without another stochastic call, while frozen inputs, transcripts, manifests, and judge-free audits preserve every one of 1,200 attempts, including failures.
 \end{enumerate}
+
+The contribution is therefore not the general idea of using tools or deterministic checks around an LLM. Prior systems already use external feedback and action-boundary rules. The new research question is whether a checked evidence receipt changes the actionability of a \emph{supplied code-review claim}, and whether that effect remains after separating the information shown to the critic from the rule enforced afterward.
 
 \section{Related Work}
 
@@ -59,7 +65,9 @@ Our contributions are:
 
 Self-Refine uses model-generated feedback to iteratively improve a model's output \cite{selfrefine}. Reflexion incorporates linguistic feedback into an episodic memory rather than updating model weights \cite{reflexion}. Multi-agent debate has similarly improved reasoning and factuality through textual deliberation \cite{debate}. These methods motivate the AR baselines but do not, by themselves, make agreement independent evidence. The same model family can reproduce a shared misconception across reviewer and critic roles.
 
-Prior work also questions whether intrinsic self-correction is reliable without external feedback. CRITIC couples model critique to tool interactions and reports gains across question answering, program synthesis, and toxicity reduction \cite{critic}. \evar adopts the external-feedback premise but narrows both the task and the acceptance rule: the system judges a pre-specified code-review claim, and a deterministic receipt check is a necessary gate rather than optional context for another revision.
+Prior work also questions whether intrinsic self-correction is reliable without external feedback. CRITIC couples model critique to tool interactions and reports gains across question answering, program synthesis, and toxicity reduction \cite{critic}. \evar adopts the external-feedback premise but narrows both the task and the acceptance rule: the system judges a pre-specified code-review claim, and a deterministic receipt check is a necessary gate rather than optional context for another revision. More recently, \emph{Reason Less, Verify More} places deterministic, read-only gates immediately before policy-sensitive tool writes and demonstrates gains when tools do not enforce their own domain policy \cite{reason-less}. That work establishes the value of action-boundary enforcement in a general agent setting. \evar instead studies whether code evidence supports one review claim and exposes a different causal pitfall: when verifier status is already shown to an upstream critic, applying it again at the boundary need not change any decision.
+
+Negative evidence is equally relevant. Huang et al. find that intrinsic self-correction can leave reasoning unchanged or make it worse when no reliable external signal is available \cite{huang-self-correct}. In software tasks, Crupi et al. report that even strong LLM judges frequently misclassify code correctness and summary quality \cite{crupi-judge}, while Moon et al. show that superficial changes to otherwise equivalent code systematically perturb judge verdicts \cite{moon-code-judge}. These results motivate our separation of textual criticism, deterministic verification, and semantic ground truth.
 
 \subsection{Tool-using software-engineering agents}
 
@@ -71,9 +79,9 @@ Modern code review is not reducible to defect detection. Interviews at Microsoft
 
 \subsection{Automated code review and benchmarks}
 
-CodeReviewer pre-trains on code changes and review activities, evaluating quality estimation, comment generation, and refinement \cite{codereviewer}. That line of work asks whether a system can generate or improve reviews. Our task begins later in the pipeline: a candidate claim already exists, and the system must decide whether the repository snapshot supports actionability.
+Early neural approaches learned review-time code transformations and comment-conditioned refinements \cite{tufano-automating}. Later work showed that task-specific T5 pre-training improves those automation tasks \cite{tufano-pretrained}, while CodeReviewer jointly targets change-quality estimation, comment generation, and refinement \cite{codereviewer}. These systems ask whether a model can generate or implement review feedback. Our task begins later: a candidate claim already exists, and the system must decide whether the repository snapshot supports actionability.
 
-A recent survey of 99 code-review studies organizes the area into 18 tasks \cite{review-survey}. That heterogeneity is important here: EVAR is a claim-validation benchmark, not a substitute for issue discovery, localization, comment generation, or developer-utility evaluation.
+A recent survey of 99 code-review studies organizes the area into 18 tasks \cite{review-survey}. Empirical audits also expose limitations hidden by aggregate generation scores: Tufano et al. characterize where review-automation systems succeed and fail through manual inspection \cite{tufano-strengths}, and Liu et al. find that vague or non-actionable training comments remain after conventional cleaning \cite{too-noisy}. That heterogeneity and data noise are important here: EVAR is a claim-validation benchmark, not a substitute for issue discovery, localization, comment generation, or developer-utility evaluation.
 
 Hybrid review systems combine learned generation with rule-based analyzers to recover some precision without surrendering broad issue coverage \cite{hybrid-static}. \evar shares the motivation but assigns the deterministic component a different role: it validates the submitted observation and controls actionability; it neither generates a parallel comment nor establishes semantic relevance by itself.
 
@@ -82,6 +90,12 @@ Software-engineering benchmarks increasingly ground tasks in public development 
 SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues \cite{swrbench}. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable. A future larger benchmark should combine EVAR's receipt-level audit with the PR-scale context and manual verification used by SWR-Bench.
 
 ContextCRBench reaches a different scale, with context-enriched entries for quality assessment, localization, and comment generation \cite{contextcrbench}. Its emphasis on issue context and fine-grained localization reinforces an important external-validity limit here: EVAR's focused excerpts isolate the verification question, but they cannot substitute for evaluating complete pull requests with developer intent.
+
+AACR-Bench provides multilingual, repository-level context and uses AI-assisted, expert-verified annotation to uncover defects beyond the original review record \cite{aacrbench}. This improves the breadth of open-ended review evaluation and makes language and retrieval effects measurable. EVAR controls a different experimental unit: it does not ask a model to find an unknown defect, but tests the support and actionability of a fixed claim under two historical repository states.
+
+Sphinx constructs context-rich PR-review examples, evaluates generated reviews with actionable checklists, and uses those checklists as interpretable training rewards \cite{sphinx}. Its structured verification points are close in spirit to evidence receipts, but the unit and objective differ: Sphinx scores coverage and trains a review generator, whereas EVAR holds one claim fixed and audits the causal path from submitted evidence to actionability.
+
+These comparisons delimit the contribution. SWR-Bench, SWE-PRBench, AACR-Bench, ContextCRBench, and Sphinx primarily measure discovery, localization, generation, or checklist coverage. CRITIC and \emph{Reason Less, Verify More} supply the closest mechanism precedents for external feedback and deterministic gates. EVAR occupies their intersection: temporal code-review claim validation with a machine-checked receipt, followed by an explicit test of whether enforcement itself changes the decision. We make no priority claim for deterministic gating in general.
 
 \section{Protocols}
 
@@ -98,37 +112,104 @@ Protocol & Evidence handling & Actionability gate \\
 AR & Reviewer proposes a finding; critic evaluates textually. & Critic returns \texttt{ACCEPT}. \\
 AR-Text & Reviewer adds textual evidence when challenged. & Critic returns \texttt{ACCEPT}. \\
 \evar-Hard & Reviewer submits a receipt; verifier checks structural or behavioral evidence. & Verifier returns \texttt{VERIFIED} and critic returns \texttt{ACCEPT}. \\
+\evar-BlindGate & Same receipt and verifier; result is withheld from the critic. & Emits paired soft and hard decisions (powered follow-up). \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\begin{figure}[h]
+Figure~\ref{fig:evar-architecture} situates the protocol choice within the complete data, decision, and audit pipeline.
+
+\begin{figure}[t]
 \centering
-\scriptsize
-\setlength{\tabcolsep}{2pt}
-\begin{tabular}{@{}rclclcl@{}}
-& \fbox{Claim + snapshot} & $\rightarrow$ & \fbox{Reviewer receipt} & & & \\
-AR & & & $\rightarrow$ & \fbox{Critic} & $\rightarrow$ & Accept/Reject \\
-AR-Text & & & $\rightarrow$ & \fbox{Text projection} $\rightarrow$ \fbox{Critic} & $\rightarrow$ & Accept/Reject \\
-\evar-Hard & & & $\rightarrow$ & \fbox{Verifier} $\rightarrow$ \fbox{Critic} & $\rightarrow$ & Verified $\land$ Accept
-\end{tabular}
-\caption{Matched protocol flow. All variants use the same reviewer and critic call count; only \evar-Hard makes deterministic verification a necessary gate.}
-\Description{The same claim and repository snapshot enter a reviewer for all protocols. AR sends the receipt directly to a critic, AR-Text sends a textual projection to a critic, and EVAR-Hard sends a deterministic verifier result to the critic and requires both verification and acceptance.}
-\label{fig:protocol-flow}
+\begin{tikzpicture}[
+  x=\linewidth,
+  y=1cm,
+  box/.style={draw, rounded corners=1.5pt, align=center, inner sep=3.5pt,
+              font=\scriptsize, minimum height=8mm},
+  provenance/.style={box, fill=black!5},
+  model/.style={box, fill=blue!7},
+  protocol/.style={box, fill=orange!10},
+  artifact/.style={box, fill=green!8},
+  hidden/.style={box, densely dashed, fill=black!2},
+  flow/.style={-{Latex[length=1.8mm]}, semithick},
+  sideflow/.style={-{Latex[length=1.6mm]}, densely dashed, thin}
+]
+  % Provenance and case construction.
+  \node[provenance, text width=.25\linewidth] (source) at (-.34,0)
+    {Public PR review\\comment + exact\\reviewed/merged commits};
+  \node[provenance, text width=.27\linewidth] (builder) at (0,0)
+    {Temporal-pair builder\\same claim, two frozen\\repository snapshots};
+  \node[hidden, text width=.22\linewidth] (labels) at (.34,0)
+    {Evaluator-only\\label, pair ID, and\\source provenance};
+  \draw[flow] (source) -- (builder);
+  \draw[sideflow] (builder) -- (labels);
+
+  % Model-visible input and first call.
+  \node[model, text width=.24\linewidth] (case) at (-.32,-1.35)
+    {Model-visible case\\claim + frozen context\\(label removed)};
+  \node[model, text width=.22\linewidth] (reviewer) at (0,-1.35)
+    {Reviewer LLM\\strict receipt schema\\(matched call 1)};
+  \node[model, text width=.25\linewidth] (receipt) at (.32,-1.35)
+    {Evidence receipt\\claim, file/range, expected\\observation, falsifier};
+  \draw[flow] (builder) -- (case);
+  \draw[flow] (case) -- (reviewer);
+  \draw[flow] (reviewer) -- (receipt);
+
+  % Matched protocol branches.
+  \node[protocol, text width=.23\linewidth, minimum height=15mm] (ar) at (-.34,-3.15)
+    {\textbf{AR}\\verification unused;\\sentinel to critic};
+  \node[protocol, text width=.25\linewidth, minimum height=15mm] (artext) at (0,-3.15)
+    {\textbf{AR-Text}\\textual receipt projection;\\not executed};
+  \node[protocol, text width=.27\linewidth, minimum height=15mm] (evarhard) at (.34,-3.15)
+    {\textbf{\evar-Hard / BlindGate}\\deterministic verifier; result\\shown to or hidden from critic};
+  \draw[flow] (receipt.south) -- ++(0,-.22) -| (ar.north);
+  \draw[flow] (receipt.south) -- ++(0,-.22) -| (artext.north);
+  \draw[flow] (receipt.south) -- (evarhard.north);
+
+  % Second call and actionability.
+  \node[model, text width=.35\linewidth] (critic) at (-.23,-5.05)
+    {Critic LLM with protocol-specific evidence view\\(matched call 2)};
+  \node[protocol, text width=.38\linewidth] (gate) at (.25,-5.05)
+    {Actionability gate\\AR / AR-Text: \texttt{ACCEPT}\\\evar: soft \texttt{ACCEPT}; hard \texttt{VERIFIED} $\land$ \texttt{ACCEPT}};
+  \draw[flow] (ar.south) -- (critic.north west);
+  \draw[flow] (artext.south) -- (critic.north);
+  \draw[flow] (evarhard.south) -- (critic.north east);
+  \draw[flow] (critic) -- (gate);
+
+  % Durable artifact and analysis.
+  \node[artifact, text width=.37\linewidth] (record) at (-.25,-6.55)
+    {Immutable result row + transcript\\prompt/model hashes, receipt, outcomes,\\tokens, latency, and typed failures};
+  \node[artifact, text width=.38\linewidth] (audit) at (.25,-6.55)
+    {Judge-free audit + paired analysis\\completeness and gate invariants; FCR, SCR,\\paired deltas, reliability, and cost};
+  \draw[flow] (gate.south) -- ++(0,-.28) -| (record.north);
+  \draw[flow] (record) -- (audit);
+  \draw[sideflow] (labels.east) -- ++(.06,0) |- (audit.east);
+\end{tikzpicture}
+\caption{Whole \evar architecture. Public review history becomes a temporally paired benchmark case while labels remain evaluator-only. The reported design shows verification to the \evar-Hard critic; the powered BlindGate control withholds it and derives paired soft/hard decisions from the same row. Every attempt produces an immutable record for judge-free audit, decision metrics, reliability, and cost accounting.}
+\Description{A public pull-request review comment and exact reviewed and merged commits enter a temporal-pair builder. Labels and provenance follow a dashed evaluator-only path, while a label-free claim and repository context go to a reviewer language model that emits an evidence receipt. The receipt enters AR without verification, AR-Text with an unexecuted textual projection, or EVAR with deterministic structural or behavioral verification. EVAR-Hard shows the result to the critic, while the prospective BlindGate control hides it. A protocol-specific gate determines actionability, and an immutable result and transcript feed audit and analysis.}
+\label{fig:evar-architecture}
 \end{figure}
 
 An \evar receipt contains the claim, evidence type and role, file and line range, optional verification command, expected observation, and falsification condition. Structural evidence is accepted only by exact source matching after conservative cleanup of display-only line numbers and Markdown fences. Behavioral witnesses must exit successfully and print a designated pass marker only when the claim is supported. The verifier does not use semantic fuzzy matching or model judgment.
 
-In every run, the reviewer sees the candidate claim and repository snapshot but not the benchmark label. AR passes the submitted claim and receipt fields to a critic but labels verification as unused. AR-Text converts the receipt into a textual-evidence object (file, range, quoted or paraphrased support, and falsification condition) without executing it. \evar-Hard verifies the receipt before the critic call. The critic still receives failed verification, but its acceptance cannot override the hard gate. This makes three failure modes visible separately: misunderstanding the claim, citing evidence that does not verify, and presenting a verified observation that is irrelevant to the claim.
+In every run, the reviewer sees the candidate claim and repository snapshot but not the benchmark label. AR passes the submitted claim and receipt fields to a critic but labels verification as unused. AR-Text converts the receipt into a textual-evidence object without executing it. \evar-Hard verifies the receipt and shows the outcome to the critic before applying the hard gate. The prospective \evar-BlindGate arm performs the same verification but withholds its outcome from the critic; one critic call then supports both a role-aware soft decision and a hard decision. This exposes misunderstanding, evidence failure, semantic irrelevance, and gate effects separately.
 
 \subsection{Actionability semantics}
 
 Let $c$ be a candidate claim, $d\in\{\texttt{ACCEPT},\texttt{REJECT}\}$ the critic decision, and $v\in\{\texttt{VERIFIED},\texttt{FAILED}\}$ the verifier outcome. The final gates are
 \[
 A_{\mathrm{AR}}(c)=\mathbf{1}[d=\texttt{ACCEPT}],\qquad
-A_{\mathrm{EVAR}}(c)=\mathbf{1}[d=\texttt{ACCEPT}\land v=\texttt{VERIFIED}].
+A_{\mathrm{EVAR}}(c)=\mathbf{1}[d=\texttt{ACCEPT}\land v=\texttt{VERIFIED}
+\land r=\texttt{SUPPORT}].
 \]
-AR-Text shares the AR gate but supplies textual evidence to the critic. The distinction is therefore not whether evidence appears in the dialogue; it is whether an external deterministic observation is mandatory for actionability.
+AR-Text shares the AR gate but supplies textual evidence to the critic. For the
+verification-blind arm, the exact paired replay is
+\[
+A_{\mathrm{soft}}(c)=\mathbf{1}[d=\texttt{ACCEPT}\land r=\texttt{SUPPORT}],\quad
+A_{\mathrm{hard}}(c)=A_{\mathrm{soft}}(c)\mathbf{1}[v=\texttt{VERIFIED}],
+\]
+where $r$ is the declared evidence role. Receipt, critic output, and verifier output are
+identical across these two decisions; only the final rule changes.
 
 \subsection{Receipt verification}
 
@@ -151,7 +232,7 @@ The project contains synthetic diagnostics, source snapshots, commit-grounded ca
 \caption{Evaluation artifacts and their role in the study.}
 \label{tab:benchmarks}
 \small
-\begin{tabularx}{\linewidth}{@{}lrrX@{}}
+\begin{tabularx}{\linewidth}{@{}lrr>{\raggedright\arraybackslash}X@{}}
 \toprule
 Artifact & Cases & Labels & Role \\
 \midrule
@@ -196,15 +277,26 @@ Development PR 20 & 20 & diagnostic & Prompt and verifier development only; no g
 Human PR 20 & 20 & 120 & Untouched final holdout and primary evidence for RQ1. \\
 GPT-5.6 extension & 20 reused & 180 & Pre-specified exploratory model-sensitivity analysis. \\
 Cross-provider extension & 20 reused & 300 attempted & Five models and three matched protocols; 267 decisions valid. \\
+Human PR expansion advisory & 682 candidates & 682 annotations & Workflow and yield audit only; excluded from labels and inference. \\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+Before expert annotation of the larger pool, we ran one deliberately non-authoritative LLM pass over all 682 candidates. Its purpose was to exercise the annotation schema, identify obviously malformed inputs, estimate whether the acquired pool could plausibly support the preregistered 300-comment target, and provide a later point of comparison with expert judgments. GPT-5.6 Sol produced a schema-valid record for every candidate. It marked 486 candidates as eligible and 379 as exhibiting the complete temporal pattern---supported at review and unsupported at merge. These are model outputs, not benchmark statistics: the advisory file is withheld from both experts, cannot affect selection, and is not used in any FCR/SCR result. The artifact preserves the prompt, schema, row-level outputs, language breakdown, token accounting, and cost.
 
 After the original Human PR 20 study was released, we specified an exploratory model extension before making its benchmark calls. The unchanged cases, prompts, verifier semantics, scoring, and budgets were evaluated once per protocol with GPT-5.6 Luna, Terra, and Sol. All configurations used explicit reasoning effort \texttt{none}; seed 41 is a provenance label rather than a deterministic inference control. A transport-only backend change omitted the unsupported \texttt{temperature} field for these models. The evaluator and three configurations were frozen before evaluation.
 
 \subsection{Exploratory cross-provider design}
 
 We evaluated five exact OpenRouter model slugs: Claude Sonnet 5, Gemini 3.1 Pro Preview, DeepSeek V4 Pro, Kimi K3, and Qwen3.8 Max. The canonical extension reused Human PR 20, seed label 67, low reasoning effort, a shared 2,400-token output cap, a fixed 20-second HTTP transport deadline, and the frozen prompts, verifier, and scoring code. Gateway routing was restricted to endpoints accepting the requested JSON Schema. Every model attempted all 60 decisions. We do not selectively retry failed cases or treat a transport failure as a negative prediction. Instead, only 20/20-valid cells receive FCR/SCR estimates, and incomplete cells contribute evidence about this particular client--gateway configuration.
+
+\subsection{Gate replay and prospective causal control}
+
+After all reported runs were frozen, we replayed each \evar-Hard result under a role-aware soft rule while holding the submitted receipt, deterministic verifier outcome, evidence role, and critic decision fixed. This replay makes no model call and cannot improve a receipt. It asks only whether removing the \texttt{VERIFIED} conjunct changes the stored actionability decision. Discovering that it never did motivated a prospective amendment for the larger study: a verification-blind critic sees the same textual receipt but not $v$, after which the same row emits $A_{\mathrm{soft}}$ and $A_{\mathrm{hard}}$. The amendment, prompt, power plan, and hashes were frozen before expert labels or powered model calls.
+
+\subsection{Use of AI tools}
+
+Language-model tools were used to implement and test evaluator code, prepare analysis scripts, run the explicitly reported model experiments, and assist manuscript revision. Model-generated advisory annotations are stored separately and never become benchmark labels. All quantitative statements in the paper are regenerated from frozen result indices by deterministic scripts; references, protocol choices, outputs, and claims remain the authors' responsibility.
 
 \section{Metrics and Analysis}
 
@@ -222,6 +314,9 @@ Reporting only unsupported acceptance would reward a protocol that rejects every
 \subsection{Paired uncertainty}
 
 For two protocols $p$ and $q$, we compute case-matched differences $\Delta\fcr=\fcr_p-\fcr_q$ and $\Delta\scr=\scr_p-\scr_q$. Resampling preserves label balance through the eligible metric denominator and preserves temporal dependence through case clusters. Intervals describe sensitivity to the observed cases; they do not justify frequentist population claims because the benchmark is purposively constructed.
+
+\paragraph{Inferential status.}
+Human PR 20 is a frozen untouched holdout, but its ten source comments support only bounded descriptive claims. The model and provider extensions reuse those cases and are explicitly exploratory. The deterministic gate replay was designed after inspecting the frozen runs and is a mechanism audit, not a preregistered treatment comparison. Only the verification-blind powered follow-up is prospective and preregistered; it has not yet produced benchmark outcomes.
 
 \subsection{Operational measurements and audit}
 
@@ -278,6 +373,28 @@ GPT-4.1-mini & 8 & 1 & 1 & 10 & 0 & 0 \\
 The case-level view rules out a simple interpretation of the gate as a conservative filter. On the untouched holdout it neither outperforms textual evidence nor merely removes claims that AR-Text would have accepted. The outcome depends on whether the receipt verifies and on what the critic makes of the verified observation.
 
 Exact two-sided McNemar tests for AR-Text versus \evar-Hard are $p=1.0$ for both labels and both models. This is not evidence of equivalence: each test contains at most three discordant pairs. We report the result to make the inferential limit explicit rather than treating a tied point estimate as a stable effect.
+
+\subsection{Same-row gate replay}
+
+Table~\ref{tab:gate-replay} isolates the final gate from the changed critic context. Across 400 \evar-Hard attempts, 388 completed and 12 failed. For every completion, the role-aware soft decision already equals the stored hard decision. The matched change is therefore exactly zero in every model-label cell (all exact two-sided McNemar $p=1.0$); with no discordant pair, this documents observed identity rather than statistical equivalence. Thus the \texttt{VERIFIED} conjunct removes no additional finding after the verification-aware critic has spoken. This does not show that verification is useless: verifier status can change the critic's judgment. It shows that the reported experiments cannot attribute differences from AR-Text to the final gate itself.
+
+\begin{table}[h]
+\centering
+\caption{Counterfactual gate replay with receipt, verifier output, and critic decision fixed.}
+\label{tab:gate-replay}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Run family & Attempts & Completed & Soft $\rightarrow$ hard changes \\
+\midrule
+External PR 50 & 200 & 199 & 0 \\
+Human PR 20 + OpenAI extension & 100 & 100 & 0 \\
+Cross-provider extension & 100 & 89 & 0 \\
+\midrule
+Total & 400 & 388 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Exploratory GPT-5.6 model extension}
 
@@ -412,6 +529,8 @@ GPT-4.1-mini & \evar-Hard & 100 & 1 & .041 & .420 \\
 
 The studies show that receipt validity and final quality are not interchangeable. In the first frozen external experiment, GPT-4.1 produced 76 verified receipts per 100 attempts while GPT-4.1-mini produced 47 among 99 completed attempts; their supported retention differed accordingly. After v2 development, both original Human PR models verified 18 of 20 receipts, yet \evar-Hard did not improve on AR-Text. In the GPT-5.6 extension, receipt validity rose from 17/20 for Luna to 19/20 for Sol without monotonic improvement in either primary metric.
 
+The judge-free artifact audit covers all 1,200 indexed attempts. It finds 1,166 completions and 34 typed failures (32 transport errors and two model-output errors), with a transcript and typed verifier outcome for every completion. All 144 actionable \evar-Hard findings have a verified receipt with the support role and critic acceptance; no hard-gate invariant is violated. These are traceability guarantees, not evidence that the cited observation semantically entails the claim. A blinded human relevance audit remains necessary for that question.
+
 \begin{table}[h]
 \centering
 \caption{Failure surfaces exposed by the receipt pipeline.}
@@ -437,25 +556,35 @@ Synthetic and small commit-grounded pilots were useful for finding implementatio
 
 \section{Discussion}
 
-The empirical story is less tidy than the protocol. External PR 50 initially suggested a familiar bargain: the hard gate admitted fewer unsupported claims, but it also discarded supported ones. We then improved receipt generation on a separate development split. On Human PR 20, 90\% of receipts verified for both models, so the obvious mechanical bottleneck had largely receded. The expected gain over textual evidence did not appear. GPT-4.1-mini tied AR-Text, and GPT-4.1 was slightly worse on both measures.
+The empirical story is less tidy than the protocol. External PR 50 initially suggested that the hard gate admitted fewer unsupported claims while discarding supported ones. On Human PR 20, 90\% of receipts verified for both models, yet GPT-4.1-mini tied AR-Text and GPT-4.1 was worse on both measures. The same-row replay provides the missing causal diagnosis: the final gate itself changed no completed decision. The verification-aware critic had already implemented the effective gate.
 
 Looking at individual transitions explains why. \evar-Hard is not AR-Text followed by a filter. The critic receives a different representation of the evidence, and that can alter its judgment in either direction. In one GPT-4.1 case, an unsupported claim rejected by AR-Text became actionable under \evar-Hard. The receipt was valid enough to pass the verifier, but validity did not make the observation relevant. Conversely, a failed receipt can suppress a sound claim before the critic has any opportunity to recover it. Mechanical validity, relevance, critic judgment, and final actionability are separate stages, and errors can enter at each one.
 
 The newer models do not simplify the picture. Luna exchanges a lower FCR for lower retention, Terra matches AR while outperforming AR-Text on retention, and Sol matches AR-Text. Receipt verification improves from 85\% to 95\% across those models without a corresponding ordering of final decisions. The natural conclusion is not that verification wins or loses, but that its effect depends on who writes the receipt, what the verifier can check, and how the critic interprets the result.
 
-The sample is too small to rank protocols in a broader population: one changed decision moves a holdout rate by 0.100. It is large enough to reject the claim that a hard evidence gate is automatically better than textual evidence. The benefit that survives every run is narrower and procedural. \evar makes the acceptance path inspectable, retains failed evidence instead of burying it in dialogue, and prevents critic agreement from overriding a failed check.
+The sample is too small to rank protocols in a broader population: one changed decision moves a holdout rate by 0.100. It is sufficient to reject two simple stories. First, verified evidence is not automatically semantically relevant. Second, a rule written as a hard gate need not have a distinct causal effect when the upstream critic already conditions on its signal. The benefit that survives every run is procedural: \evar makes the acceptance path inspectable and retains failed evidence instead of burying it in dialogue.
+
+\subsection{Research contribution relative to the closest work}
+
+The central contribution is a causal distinction that is easy to miss in evidence-grounded agent designs. External feedback is \emph{information} when a model sees it and may change its judgment; it is \emph{enforcement} when a later deterministic rule independently prevents an action. CRITIC studies the former, while \emph{Reason Less, Verify More} demonstrates the latter for policy-sensitive tool calls. The original \evar-Hard protocol contains both, so an end-to-end comparison cannot say which mechanism caused a change. The same-row replay reveals that enforcement contributes zero additional changes after verifier-aware criticism in these runs, and BlindGate supplies the prospective design needed to identify that effect directly.
+
+The code-review contribution is the experimental unit that makes this distinction testable. Instead of scoring whatever issues a model happens to generate, EVAR fixes one human claim and changes the repository state beneath it using exact reviewed and merged commits. This temporal pair holds wording and topic constant while reversing evidential support. A structured receipt then exposes the path from observation to actionability without an LLM judge. The result complements larger discovery benchmarks: they ask what a reviewer finds, whereas EVAR asks whether one proposed finding has earned the right to be acted upon.
 
 \subsection{Answers to the research questions}
 
-\textbf{RQ1: decision quality.} Deterministic verification changes which claims become actionable, but it does not improve the two primary metrics consistently. The first frozen study trades lower unsupported acceptance for lost supported claims. On the untouched human holdout, \evar-Hard ties or trails AR-Text.
+\textbf{RQ1: decision quality.} The compared \evar-Hard protocol does not improve both primary metrics consistently. The first frozen study trades lower unsupported acceptance for lost supported claims; on the untouched human holdout, it ties or trails AR-Text.
 
-\textbf{RQ2: model sensitivity.} Receipt construction varies sharply with the model, especially in the earlier external study. Even so, the later extension shows that a higher verification rate does not order the final outcomes. The protocol behaves as an interaction among the reviewer, critic, receipt language, and verifier, not as a fixed post-processing step.
+\textbf{RQ2: gate mechanism.} The same-row replay finds zero soft-to-hard changes among 388 completions. In the reported implementation, verifier-aware criticism makes the final conjunct redundant. The powered verification-blind arm is required to estimate a distinct gate effect.
 
-\textbf{RQ3: auditability.} Here the result is clearer. Invalid JSON, missing paths, source mismatches, failing witnesses, transport timeouts, and gate inconsistencies become named records rather than unobserved reasoning errors. The distinction matters: the cross-provider trace shows that 32 apparent ``model failures'' were actually client-deadline events. Typed records make it possible to reconstruct why a finding crossed---or failed to cross---the actionability boundary without conflating infrastructure with reasoning.
+\textbf{RQ3: model sensitivity.} Receipt construction and the safety--retention point vary across models. Higher verification rates do not order final outcomes, and incomplete provider cells prevent a complete ranking.
+
+\textbf{RQ4: auditability.} All completions have transcripts and typed verifier outcomes, all failures are attributed, and all 144 hard-actionable findings satisfy the machine-checkable gate invariant. Semantic relevance remains a separate human judgment.
 
 \subsection{Design implications}
 
 An evidence schema is part of the model interface, not neutral plumbing. Path vocabulary, source formatting, nullable fields, and repair policy all affect whether the model can express an observation that the verifier understands. The low verification rate of GPT-4.1-mini on External PR 50 and the much higher rate after development make this dependence visible.
+
+A gate evaluation must also separate information from enforcement. Showing verifier status to the critic tests a verifier-aware decision system; applying the same status again at the end does not by itself estimate the gate's effect. A verification-blind critic followed by paired soft/hard replay makes that effect identifiable without doubling model calls.
 
 Verifier coverage also needs the same train/test discipline as a learned component. It is tempting to add a structural check whenever a final case fails. Doing so may improve the tool, but the resulting score is diagnostic, not held-out evidence. Our post-hoc perfect result on External PR 20 is reported in exactly that role.
 
@@ -473,7 +602,7 @@ This experiment evaluates supplied claims, not open-ended review. It says nothin
 FCR is the rate at which supplied unsupported claims become actionable. It should not be read as the false-positive rate of an agent searching freely for defects. Likewise, SCR captures retention of comments grounded in a public review-and-fix sequence, not whether each comment is well written or useful to a developer. A verified receipt proves only that the submitted observation passed a check; it does not prove semantic entailment. Keeping these measurements separate avoids treating source matching as review correctness.
 
 \paragraph{Internal validity.}
-Human PR 20 treats the reviewed commit and the later merge edit as temporal evidence for the label. This is auditable, but a merge may address only part of a comment, and we necessarily inspected every pair while constructing the benchmark. We froze the evaluator before the holdout calls, removed labels from model-visible prompts, clustered temporal pairs in the bootstrap, and retained failed calls. Independent expert adjudication would still be stronger than this construction procedure.
+Human PR 20 treats the reviewed commit and later merge edit as temporal evidence for the label. A merge may address only part of a comment, and we inspected every pair while constructing the benchmark. We froze the evaluator, removed labels from model-visible prompts, clustered temporal pairs, and retained failures, but independent expert adjudication would be stronger. The original AR-Text/\evar-Hard comparison also changes the critic's input and cannot identify a gate effect; the same-row replay and preregistered blind arm address that limitation prospectively. Advisory LLM output is withheld from experts, although this relies on procedural rather than cryptographic blinding.
 
 \paragraph{External validity.}
 The final holdout is ten source comments from five Python repositories, paired into ten cases per label. Requiring a clean temporal contrast favors localized, explicit claims. Diffuse architectural concerns, other programming languages, and review comments that depend on an unavailable runtime are largely absent. Focused excerpts also offer much less context than a full pull request---less to search, but also less to misunderstand.
@@ -492,7 +621,7 @@ The verifier is Python-specific and recognizes a limited set of structural and b
 
 \section{Reproducibility and Availability}
 
-The existing artifact contains evaluator code, prompts, configs, benchmark snapshots, all 720 original canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The 180-decision GPT-5.6 extension and 300-attempt cross-provider extension are prepared for the revised artifact; their configs, run indices, reports, transcripts, and failed rows preserve the extension evidence. The larger-replication package adds an identity-blinded adjudication queue, configurable request deadlines, executable repetitions, and a prospective power calculation. Its 682 candidates remain unlabeled, and the paper makes no result claim from them. Identifying repository and project-site URLs are omitted during double-blind review. An anonymized snapshot will be supplied through the venue's artifact mechanism; archival DOI and public links will be restored in the non-anonymous version.
+The existing artifact contains evaluator code, prompts, configs, benchmark snapshots, all 720 original canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The 180-decision GPT-5.6 extension and 300-attempt cross-provider extension are prepared for the revised artifact; their configs, run indices, reports, transcripts, and failed rows preserve the extension evidence. The larger-replication package adds an identity-blinded adjudication queue, configurable request deadlines, executable repetitions, a prospective power calculation, and a complete 682-record advisory LLM file. The candidates remain unlabeled by experts, and the paper makes no benchmark-performance claim from the advisory outputs. Identifying repository and project-site URLs are omitted during double-blind review. An anonymized snapshot will be supplied through the venue's artifact mechanism; archival DOI and public links will be restored in the non-anonymous version.
 
 The artifact has four layers. Input manifests hash cases, repository snapshots, prompts, model configs, evaluator code, verifier code, and scoring code. Run indices identify canonical JSONL outputs. Judge-free audit reports check completeness and invariants. Output manifests hash every canonical result and transcript. The cross-provider manifest additionally records the gateway endpoint, exact model slugs, reasoning setting, token cap, and schema-routing requirement.
 
@@ -509,111 +638,31 @@ Model-backed reproduction requires the corresponding API credential and will not
 
 \section{Conclusion}
 
-\evar began with a simple premise: agreement between two language models should not be enough to make a code-review claim actionable. Requiring a checked receipt does enforce a clearer boundary, and it turns several hidden failures into inspectable records. The experiments also show the limit of that idea. A receipt can verify and still be irrelevant, while a sound claim can be lost because its receipt fails. On the final human-comment holdout, the hard gate offers no decision-quality advantage over textual evidence; across later models, its effect varies.
+\evar began with a simple premise: agreement between two language models should not be enough to make a code-review claim actionable. Its research contribution is not deterministic gating in general, but a claim-level method for testing that premise: temporal pairs provide changing support for fixed human review claims, receipts make evidence mechanically inspectable, and same-row replay separates verifier information from enforcement. A checked receipt creates a clearer boundary, but it can still be irrelevant. On the final human-comment holdout, \evar-Hard offers no decision-quality advantage over textual evidence; later models do not establish a stable ordering.
 
-That leaves a narrower but useful result. Deterministic evidence improves the provenance of an accepted finding, not necessarily the finding itself. The five-provider extension sharpens rather than overturns that conclusion: Gemini gives a favorable point, Claude gives a retention counterexample, and the failed-call trace reveals that evaluation infrastructure is itself part of the measured system. Establishing a performance benefit still requires more independent review comments, expert adjudication, repeated calls, full pull-request context, and a transport budget chosen independently of model latency. The artifact now includes the acquisition and adjudication machinery for that larger test without presenting unreviewed candidates as ground truth.
+The sharper result comes from auditing the mechanism. Once receipt, verifier output, and critic decision are fixed, the original hard gate changes zero of 388 completed decisions because the critic has already conditioned on verification. The reported cross-protocol differences therefore cannot be credited to the final gate alone. What \evar demonstrably provides is provenance: 144 hard-actionable findings all have checked supporting receipts, while transport, parsing, receipt, critic, and gate failures remain distinguishable. The preregistered verification-blind follow-up turns this negative result into a cleaner experiment rather than overstating the current benchmark.
+
+\section*{Data Availability}
+
+An anonymized replication package containing frozen cases, prompts, configs, evaluator code, indexed results, transcripts, manifests, and deterministic audit scripts will be supplied to reviewers. The 682 acquired expansion candidates remain unlabeled until independent expert review; advisory model outputs are segregated and are not benchmark ground truth. Archival identifiers and public project links will be restored after anonymous review.
 
 \appendix
 
-\section{Frozen Protocol Pseudocode}
-
-\begin{verbatim}
-input: candidate claim c, repository snapshot R
-receipt = reviewer(c, R)          # one schema-constrained call
-
-if protocol == AR:
-    observation = NOT_USED
-    decision = critic(c, receipt, observation)
-elif protocol == AR_TEXT:
-    text_evidence = project_text_fields(receipt)
-    decision = critic(c, receipt, text_evidence)
-else:                             # EVAR-Hard
-    observation = deterministic_verify(receipt, R)
-    receipt, observation = deterministic_repair_if_applicable(
-        receipt, observation, R)
-    decision = critic(c, receipt, observation)
-
-actionable = (decision == ACCEPT)
-if protocol == EVAR_HARD:
-    actionable = actionable and observation == VERIFIED \
-                 and receipt.role == SUPPORTS_CLAIM
-
-emit result row and complete transcript
-\end{verbatim}
-
-The pseudocode elides bounded schema retry and error recording but preserves the configured acceptance semantics. Every protocol uses one reviewer and one critic call. AR-Text changes the evidence projection and critic prompt; \evar-Hard changes the verifier input, critic prompt, and final gate.
-
-\section{Case and Output Schemas}
-
-Each benchmark case is a JSON object with four field groups: identity and label; claim and family; repository snapshot and context paths; and source-comment provenance. The runner exposes only the task description, candidate claim, claim family, valid repository paths, and file contents to the model. Labels, snapshot kind, pairing, source-comment metadata, and construction evidence remain evaluator-only. Prompt-template SHA-256 hashes are recorded with every result; Appendix data files preserve the exact field names.
-
-All three reviewer prompts use the same strict top-level schema: an object containing exactly one receipt. The receipt requires a claim identifier and text, evidence type and role, file, nullable line bounds, nullable verification command, nullable expected exit code, nullable expected-output substring, and a falsification condition. The schema rejects additional properties. A response that cannot be parsed after the configured retry becomes \texttt{ModelOutputError}; the evaluator does not synthesize a replacement.
-
-\section{Interaction Schedule}
-
-The configured protocols are matched at two model calls per case. The reviewer emits one receipt. AR calls the critic with a sentinel stating that external verification is unused. AR-Text constructs a textual-evidence view from the receipt and calls its evidence-aware critic prompt. \evar-Hard performs deterministic verification (and, when triggered, one deterministic repair and re-verification) before calling the critic. There is no model revision turn in the reported configured runs.
-
-The runner records a call-level trace with request role, model slug, prompt hash, request start/end timestamps, token counts, response text, parser outcome, and retry number. A transcript is written even when the first call fails. This is useful in practice: invalid JSON, a valid JSON object with an empty receipt list, and a valid receipt that points at the wrong commit are different observations and should not collapse into one generic failure.
-
 \section{Receipt Validation Rules}
 
-Structural validation normalizes display artifacts such as Markdown fences, leading line numbers, and surrounding whitespace. It reads the requested file from the frozen snapshot and normally compares the normalized observation with the selected interval. Two conservative recovery paths are part of the frozen verifier: an unambiguous suffix, function-name, or sole-Python-file match can recover a stale structural path; and an interval extending beyond end-of-file can search the recovered file for the submitted observation. Behavioral receipts receive neither recovery. Behavioral validation parses the command into an argument vector, applies a timeout, and checks exit status plus a required \texttt{EVAR\_WITNESS\_PASS} marker. The local backend uses \texttt{shell=False}. The optional container backend invokes Docker without a shell and adds \texttt{--network none}, a read-only bind mount, capability dropping, \texttt{no-new-privileges}, a non-root UID, PID/CPU/memory limits, and a bounded temporary filesystem. The verifier returns typed failure reasons for missing paths, wrong observations, exit mismatches, and timeouts. Generic successful structural recovery is deterministic but is not separately tagged, an auditability limitation for a future version.
+Structural validation removes display-only fences, line numbers, and whitespace before matching the selected frozen-source interval. Two conservative recoveries handle an unambiguous stale path or an out-of-range display interval; behavioral receipts receive neither. Behavioral validation parses an argument vector, enforces a timeout, and requires the expected exit status and \texttt{EVAR\_WITNESS\_PASS} marker. The local backend uses \texttt{shell=False}; the optional Docker backend adds no network, a read-only repository mount, capability dropping, \texttt{no-new-privileges}, a non-root UID, resource limits, and bounded temporary storage. Missing paths, observation mismatches, exit mismatches, and timeouts remain typed failures.
 
-The evidence role is checked independently of textual similarity. The evaluator performs only two frozen deterministic repairs: it aligns the role with an explicit opposite-role AST observation, or falls back from a syntactically invalid inline-Python behavioral witness to structural checking. Each repair is logged and re-verified. It does not rewrite claims, choose new files or ranges, or ask a model for semantic repair.
-
-\section{Statistical and Cost Details}
-
-FCR and SCR are computed after filtering to completed rows of the relevant ground-truth class. We report the numerator and denominator alongside each rate. Bootstrap intervals resample source case identifiers, not individual protocol rows, so the two temporal members of a human comment remain together. Paired deltas first join protocols on model, replicate, and case identifier and then resample those joined case clusters. A zero-width interval can occur for a metric that is identical in every resampled cluster; it is not evidence of large population certainty.
-
-Token cost is computed from recorded input and output tokens and the price table frozen with each model configuration. Retries are included in cost and latency. Failed requests therefore consume budget and remain part of operational reporting even though they do not enter FCR/SCR denominators. The cross-provider table is restricted to validity accounting because gateway routing, model availability, and duplicate pilot attempts make a pooled quality estimate inappropriate.
-
-\section{Representative Failure Cases}
-
-The most common EVAR failure on the frozen external benchmark was not a verifier bug but a receipt that cited a nearby true line which did not establish the claim. Other examples included a command that passed but never printed the required marker, a line range copied from a display excerpt rather than the repository file, and a contradiction receipt submitted with the support role. In the cross-provider run, 32 calls reached the 20-second HTTP deadline after receiving a partial response and are stored as \texttt{URLError}; one DeepSeek receipt had an empty claim identifier and is stored as \texttt{ModelOutputError}. Neither category is a negative review decision. These examples explain why the paper reports transport, serialization, receipt validity, critic decisions, and actionability as separate fields.
-
-\section{What a Larger Replication Should Add}
-
-The current design deliberately controls context and claim wording. A stronger replication should sample review comments before seeing their outcome, include complete pull-request snapshots, obtain two independent expert labels with adjudication, and preregister the sampling frame. It should also repeat each model-protocol cell, report calibration and abstention, and evaluate multilingual repositories. The present artifact supplies the receipt and audit machinery needed for that study; it should not be mistaken for evidence that 20 temporal cases represent the wider code-review population.
+Evidence role is checked separately. The only frozen repairs align a role with an explicit opposite-role AST observation or replace a syntactically invalid inline-Python witness with structural checking. Both are logged and re-verified; neither rewrites a claim, chooses new evidence, or invokes a semantic model. Generic structural recovery is deterministic but not separately tagged, an auditability limitation.
 
 \section{Powered Human PR Expansion Protocol}
 
-We have acquired, but not labeled, the candidate pool for the larger replication. The combined pool contains 682 public review-comment candidates from 63 repositories. Acquisition requires a human-authored inline review comment, a merged pull request, an exact reviewed commit and merge commit, a changed anchored target, hashes of both complete files, and stable source URLs. It retains at most one candidate per pull request and excludes repositories used by Human PR 20. These filters establish provenance; they do not establish eligibility or a benchmark label.
+The acquired but unlabeled pool contains 682 public review-comment candidates from 63 repositories. Each record binds a human inline comment to exact reviewed and merged commits, changed target, full-file hashes, and source URLs; the collector caps one candidate per pull request and excludes Human PR 20 repositories. These checks establish provenance, not a label.
 
-The earlier 276-candidate tranche remains a workflow fixture, but the powered study sends the full 682-record blinded queue to two experts. Each receives the comment, review snapshot, merge snapshot, and provenance; marks eligibility; writes a short normalized claim; chooses one of the five frozen claim families; and separately judges support at review and absence at merge. An excluded item requires a reason. The exports must contain identical candidate sets, distinct stable reviewer identifiers, and complete decisions. Advisory LLM labels are not shown and cannot become benchmark ground truth.
+Two experts independently receive the blinded comment, snapshots, and provenance; decide eligibility; normalize the claim; assign one of five frozen families; and judge support at review and absence at merge. Every disagreement enters identity-blinded third-party adjudication. The merger fails closed on incomplete decisions or non-distinct reviewer identities and records reviewer IDs, resolution mode, adjudicator ID, and input hashes. Deterministic selection then requires 300 eligible comments from at least 40 repositories, balances language and family under a six-comment repository cap, and emits 600 paired temporal cases plus a hashed manifest. Advisory LLM labels are never shown to experts or accepted as ground truth.
 
-Exact agreements are resolved automatically. Any difference in eligibility, normalized claim, family, temporal judgment, or exclusion reason enters a third adjudication queue. Reviewer identifiers are removed and the two decisions are placed in a deterministic, case-varying order. The adjudicator must use an identifier distinct from both reviewers. The merger stores reviewer identifiers, resolution mode, adjudicator identifier when used, and SHA-256 hashes of every input export. The renderer rejects a row unless that provenance is complete.
+The target follows a prospective calculation using only frozen Human PR 20 outcomes. Because no verification-blind pilot exists, both label endpoints use the largest earlier 95\% Wilson upper bound on discordance (.603) as a conservative proxy. Under an exact two-sided McNemar test, a .15 absolute paired difference, and per-endpoint $\alpha=.025$, 300 source comments give calculated power .856 for each endpoint. The confirmatory GPT-4.1 comparison is role-aware soft versus hard actionability from the same BlindGate row; five providers form unpooled extensions. Requests use a 120-second deadline, at most two attempts, and a 250-second total budget. A stratified 60-comment subset receives three total repetitions. Based on frozen per-attempt costs, the complete 20,160-attempt plan projects to about \$211 before a 25\% contingency; execution therefore requires a separately approved budget and fresh price freeze.
 
-After adjudication, deterministic selection first establishes at least 40 represented repositories and then balances language and claim family under a six-comment repository cap. It fails closed unless 300 eligible source comments remain. Those comments yield 600 temporal cases, one supported review snapshot and one unsupported merge snapshot per claim. The frozen manifest records hashes, seed, identifiers, repository count, and stratum counts. Until experts complete this process, the pool remains an acquisition artifact.
-
-The target follows a prospective calculation using only frozen Human PR 20 outcomes. For AR-Text versus \evar-Hard, the largest model-specific 95\% Wilson upper bound on discordance is .603 for supported cases and .404 for unsupported cases. Under an exact two-sided McNemar test, a .15 absolute paired difference, and per-endpoint $\alpha=.025$, 300 source comments give calculated power .856 and .967, respectively; the former sets the target. The confirmatory model is GPT-4.1 for continuity. Five provider families form unpooled external-validity analyses. Requests use a configured 120-second deadline, at most two attempts, and a 250-second total budget. A stratified 60-comment subset receives three repetitions for stability; those repeats do not inflate the independent sample size.
-
-\section{Cross-Provider Frozen Configuration}
-
-\begin{table}[H]
-\centering
-\caption{Exact models frozen for the exploratory cross-provider extension.}
-\label{tab:crossprovider}
-\small
-\begin{tabularx}{\linewidth}{@{}lXXr@{}}
-\toprule
-Family & Exact model slug & Shared settings & Cells \\
-\midrule
-Claude & \texttt{anthropic/claude-sonnet-5} & low reasoning, 2,400-token cap & 3 \\
-Gemini & \texttt{google/gemini-3.1-pro-preview} & low reasoning, 2,400-token cap & 3 \\
-Kimi & \texttt{moonshotai/kimi-k3} & low reasoning, 2,400-token cap & 3 \\
-DeepSeek & \texttt{deepseek/deepseek-v4-pro-0813} & low reasoning, 2,400-token cap & 3 \\
-Qwen & \texttt{qwen/qwen3.8-max} & low reasoning, 2,400-token cap & 3 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-Temperature is omitted for all five models. Structured output uses strict JSON Schema, gateway provider routing requires endpoints that accept the requested parameters, and the HTTP client deadline is 20 seconds. Seed 67 is stored only as provenance unless the routed endpoint explicitly honors it.
-
-\section{Audit Invariants}
-
-For each canonical run, the audit requires: (1) exactly one row for each attempted case; (2) a corresponding transcript; (3) model and protocol agreement between row and transcript; (4) frozen prompt hashes; (5) nonnegative latency; (6) call-level token totals equal to row totals; (7) failed runs contain a failure type and reason; and (8) \evar actionability implies both a verified receipt and critic acceptance. These checks do not judge semantic correctness; benchmark labels determine the reported metrics.
-
-\begin{thebibliography}{20}
+\begin{thebibliography}{26}
 \bibitem{selfrefine}
 A. Madaan et al. Self-Refine: Iterative Refinement with Self-Feedback. \emph{arXiv:2303.17651}, 2023.
 
@@ -625,6 +674,9 @@ N. Shinn, F. Cassano, E. Berman, A. Gopinath, K. Narasimhan, and S. Yao. Reflexi
 
 \bibitem{critic}
 Z. Gou et al. CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing. \emph{arXiv:2305.11738}, 2023.
+
+\bibitem{reason-less}
+V. Reddy, S. R. Challaram, and A. Basu. Reason Less, Verify More: Deterministic Gates Recover a Silent Policy-Violation Failure Mode in Tool-Using LLM Agents. \emph{arXiv:2607.07405}, 2026.
 
 \bibitem{sweagent}
 J. Yang et al. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. \emph{arXiv:2405.15793}, 2024.
@@ -658,8 +710,36 @@ I. Jaoua, O. Ben Sghaier, and H. A. Sahraoui. Combining Large Language Models wi
 
 \bibitem{contextcrbench}
 R. Hu et al. Benchmarking LLMs for Fine-Grained Code Review with Enriched Context in Practice. In \emph{Proceedings of FSE Companion}, pp. 620--631, 2026. doi:10.1145/3803437.3805235.
+
+\bibitem{aacrbench}
+L. Zhang et al. AACR-Bench: Evaluating Automatic Code Review with Holistic Repository-Level Context. \emph{arXiv:2601.19494}, 2026.
+
 \bibitem{review-survey}
 T. I. Khan, S. Wang, H. Zhang, and T.-H. Chen. A Survey of Code Review Benchmarks and Evaluation Practices in Pre-LLM and LLM Era. \emph{arXiv:2602.13377}, 2026.
+
+\bibitem{tufano-automating}
+R. Tufano, L. Pascarella, M. Tufano, D. Poshyvanyk, and G. Bavota. Towards Automating Code Review Activities. In \emph{Proceedings of ICSE}, pp. 163--174, 2021. doi:10.1109/ICSE43902.2021.00027.
+
+\bibitem{tufano-pretrained}
+R. Tufano, S. Masiero, A. Mastropaolo, L. Pascarella, D. Poshyvanyk, and G. Bavota. Using Pre-Trained Models to Boost Code Review Automation. In \emph{Proceedings of ICSE}, pp. 2291--2302, 2022. doi:10.1145/3510003.3510621.
+
+\bibitem{tufano-strengths}
+R. Tufano, O. Dabi\'c, A. Mastropaolo, M. Ciniselli, and G. Bavota. Code Review Automation: Strengths and Weaknesses of the State of the Art. \emph{IEEE Transactions on Software Engineering}, 50(2):338--353, 2024. doi:10.1109/TSE.2023.3348172.
+
+\bibitem{too-noisy}
+C. Liu, H. Y. Lin, and P. Thongtanunam. Too Noisy To Learn: Enhancing Data Quality for Code Review Comment Generation. In \emph{Proceedings of MSR}, pp. 236--248, 2025. doi:10.1109/MSR66628.2025.00043.
+
+\bibitem{huang-self-correct}
+J. Huang, X. Chen, S. Mishra, H. S. Zheng, A. W. Yu, X. Song, and D. Zhou. Large Language Models Cannot Self-Correct Reasoning Yet. In \emph{Proceedings of ICLR}, 2024.
+
+\bibitem{crupi-judge}
+G. Crupi, R. Tufano, A. Velasco, A. Mastropaolo, D. Poshyvanyk, and G. Bavota. On the Effectiveness of LLM-as-a-Judge for Code Generation and Summarization. \emph{IEEE Transactions on Software Engineering}, 2025. doi:10.1109/TSE.2025.3586082.
+
+\bibitem{moon-code-judge}
+J. Moon, Y. Hwang, D. Lee, T. Kang, Y. Kim, and K. Jung. Don't Judge Code by Its Cover: Exploring Biases in LLM Judges for Code Evaluation. In \emph{Findings of EACL}, pp. 1364--1389, 2026. doi:10.18653/v1/2026.findings-eacl.70.
+
+\bibitem{sphinx}
+D. Zhang, S. Zhang, Z. Jin, J. Luo, S. Fu, and E. Nallipogu. Sphinx: Benchmarking and Modeling for LLM-Driven Pull Request Review. \emph{arXiv:2601.04252}, 2026.
 \end{thebibliography}
 
 \end{document}

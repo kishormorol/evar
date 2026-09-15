@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from evar.protocols.ar import AREvidenceProtocol
 from evar.protocols.ar_text import ARTextEvidenceProtocol
-from evar.protocols.evar import Critic, EVARHardEvidenceProtocol, Reviewer
+from evar.protocols.evar import (
+    Critic,
+    EVARBlindGateEvidenceProtocol,
+    EVARHardEvidenceProtocol,
+    Reviewer,
+)
 from evar.verifier.verify import DeterministicVerifier
 
 
@@ -20,6 +25,8 @@ def create_protocol(
         return ARTextEvidenceProtocol(reviewer, critic, metadata=metadata)
     if name == "evar_hard":
         return EVARHardEvidenceProtocol(reviewer, critic, verifier=verifier, metadata=metadata)
+    if name == "evar_blind_gate":
+        return EVARBlindGateEvidenceProtocol(reviewer, critic, verifier=verifier, metadata=metadata)
     raise ValueError(f"Unknown protocol: {name}")
 
 
@@ -27,4 +34,5 @@ PROTOCOL_REGISTRY = {
     "ar": AREvidenceProtocol,
     "ar_text": ARTextEvidenceProtocol,
     "evar_hard": EVARHardEvidenceProtocol,
+    "evar_blind_gate": EVARBlindGateEvidenceProtocol,
 }

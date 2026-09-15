@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+import urllib.error
 from pathlib import Path
 
 from evar.model_backend import ModelResponse
@@ -28,6 +29,17 @@ class FakeBackend:
             }
         )
         return ModelResponse(text, json.loads(text), self.model_name, 10, 20, 0.01)
+
+
+class RateLimitedOnceBackend(FakeBackend):
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def generate(self, system_prompt: str, user_prompt: str, *, response_schema: object | None = None) -> ModelResponse:
+        self.calls += 1
+        if self.calls == 1:
+            raise urllib.error.HTTPError("https://example.test", 429, "busy", {}, None)
+        return super().generate(system_prompt, user_prompt, response_schema=response_schema)
 
 
 class LLMAnnotationTests(unittest.TestCase):
@@ -62,6 +74,24 @@ class LLMAnnotationTests(unittest.TestCase):
             self.assertEqual(rows[0]["status"], "ok")
             self.assertEqual(rows[0]["annotation"]["claim_family"], "missing_guard")
             self.assertNotIn("ground_truth", rows[0])
+
+    def test_rate_limit_is_retried_and_old_failure_is_replaced(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "annotations.jsonl"
+            output.write_text(
+                json.dumps({"candidate_id": "hpr-test", "status": "failed", "error": "HTTP 429"}) + "\n"
+            )
+            backend = RateLimitedOnceBackend()
+            annotate(
+                [self._row()],
+                backend=backend,  # type: ignore[arg-type]
+                output=output,
+                retry_delay_seconds=0,
+            )
+            rows = [json.loads(line) for line in output.read_text().splitlines()]
+            self.assertEqual(backend.calls, 2)
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["status"], "ok")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,218 @@
+{
+  "benchmark": {
+    "candidate_count": 682,
+    "languages": [
+      "Go",
+      "Java",
+      "JavaScript",
+      "Python",
+      "Rust",
+      "TypeScript"
+    ],
+    "queue_count": 682,
+    "repository_count": 1,
+    "target_source_comments": 300,
+    "target_temporal_cases": 600
+  },
+  "created_at": "2026-09-02T22:13:51.091886+00:00",
+  "experiment": {
+    "confirmatory_comparison": "EVAR-BlindGate role-aware soft versus hard actionability",
+    "confirmatory_model": "gpt-4.1",
+    "external_validity_models": [
+      "anthropic/claude-sonnet-5",
+      "deepseek/deepseek-v4-pro-0813",
+      "google/gemini-3.1-pro-preview",
+      "moonshotai/kimi-k3",
+      "qwen/qwen3.8-max"
+    ],
+    "openrouter_max_attempts": 2,
+    "openrouter_max_total_seconds": 250,
+    "protocols": [
+      "ar",
+      "ar_text",
+      "evar_hard",
+      "evar_blind_gate"
+    ],
+    "request_timeout_seconds": 120
+  },
+  "files": {
+    "benchmarks/human_pr_200/ANNOTATION_PROTOCOL.md": {
+      "bytes": 2437,
+      "category": "method",
+      "sha256": "e3d2dc969bec74384b868c428c35f074239cc8d5159e5cb07619482bb8dd7543"
+    },
+    "benchmarks/human_pr_200/ETHICS_AND_REVIEWER_GOVERNANCE.md": {
+      "bytes": 3840,
+      "category": "method",
+      "sha256": "d1a23b0566d36bb6d2849012e8884513ff6db3c9bbc1b6466a5af62316e2530d"
+    },
+    "benchmarks/human_pr_200/INSTITUTIONAL_DETERMINATION_REQUEST.md": {
+      "bytes": 3026,
+      "category": "method",
+      "sha256": "4382ee14e0677ff6dabbee4c7fa491d12cfa2048a085febae083b066467c5ad1"
+    },
+    "benchmarks/human_pr_200/POST_CLEARANCE_EXECUTION.md": {
+      "bytes": 4519,
+      "category": "method",
+      "sha256": "66de89edbfd100ec6eae8ffd3b44a14a17aceb58b58313aacb9b3e5075670488"
+    },
+    "benchmarks/human_pr_200/POWER_PLAN.md": {
+      "bytes": 1849,
+      "category": "method",
+      "sha256": "b4e7a96e75e3e2c07b59ff02866f7491fbb0693b7f2f2f42570fd14bf9e11fc1"
+    },
+    "benchmarks/human_pr_200/PREREGISTRATION.md": {
+      "bytes": 6294,
+      "category": "method",
+      "sha256": "0641ee5394540781246e8251eec1228755dd45b2ce0d952edeba0c19c4ef2ad7"
+    },
+    "benchmarks/human_pr_200/RECRUITMENT_AND_QUALIFICATION.md": {
+      "bytes": 3385,
+      "category": "method",
+      "sha256": "2b40511ba3e8f63f0c6cd3f64576ebd2167d9d56f6f3df82c2ddc810442d0df5"
+    },
+    "benchmarks/human_pr_200/REVIEWER_ACKNOWLEDGMENT_TEMPLATE.md": {
+      "bytes": 836,
+      "category": "method",
+      "sha256": "a61bef458425d1434a7a5b97c9b9ddaa066fbc316b551969d7ad2811144a3695"
+    },
+    "benchmarks/human_pr_200/REVIEWER_HANDOFF.md": {
+      "bytes": 3582,
+      "category": "method",
+      "sha256": "825711192186c883fec2ffb8347ce8a5fc0a4e605a5425b8b3c87fece7c9665f"
+    },
+    "benchmarks/human_pr_200/REVIEWER_INFORMATION_SHEET.md": {
+      "bytes": 1967,
+      "category": "method",
+      "sha256": "4e4870caba5310b6a6f3c4660dcc699e7998836c9fe3840f069dd21960fdc963"
+    },
+    "benchmarks/human_pr_200/annotation_queue_682.jsonl": {
+      "bytes": 5546763,
+      "category": "annotation_queue",
+      "sha256": "36cdd42e28c7304f7d62ddc1f2333d87de5ef6214f82e3c62a332171f68dccc1"
+    },
+    "benchmarks/human_pr_200/candidates_682.jsonl": {
+      "bytes": 5556493,
+      "category": "candidate_provenance",
+      "sha256": "5d05e4297dbbd4b04cac6b9f1e728964f0e6cf7ac027b23e255d0ac7afed7b76"
+    },
+    "configs/human_pr_expansion_full/claude_sonnet5_seed83.yaml": {
+      "bytes": 376,
+      "category": "model_config",
+      "sha256": "b9012e67a2240a76345b04ab17c8bfc403a271e1451d3dd670473a662e4878b9"
+    },
+    "configs/human_pr_expansion_full/deepseek_v4_pro_seed83.yaml": {
+      "bytes": 380,
+      "category": "model_config",
+      "sha256": "708ea8ff22f4f0c2487cf3b114d16dae0bce5f8a48f2921d0c61a58957dfc2d9"
+    },
+    "configs/human_pr_expansion_full/gemini31_pro_seed83.yaml": {
+      "bytes": 380,
+      "category": "model_config",
+      "sha256": "9d085ddbc3b3fda3abc2421f189deedf42c2f75a1c8154e9ae47ed0ff963ddd7"
+    },
+    "configs/human_pr_expansion_full/gpt41_seed83.yaml": {
+      "bytes": 286,
+      "category": "model_config",
+      "sha256": "68aad6772da3f4a86c97005edbcb20db2fb61263e643a7f5bf8ec823345d15ea"
+    },
+    "configs/human_pr_expansion_full/kimi_k3_seed83.yaml": {
+      "bytes": 369,
+      "category": "model_config",
+      "sha256": "a756a03835643190f382e81d9c9b1e2d079850dd8a22aa7e225232a105a31c6d"
+    },
+    "configs/human_pr_expansion_full/qwen38_max_seed83.yaml": {
+      "bytes": 367,
+      "category": "model_config",
+      "sha256": "0b12c42cfa25870e9636de196e6de6aad76326e60598e4642b9014bc6f221a53"
+    },
+    "configs/human_pr_expansion_stability/claude_sonnet5_seed83.yaml": {
+      "bytes": 376,
+      "category": "model_config",
+      "sha256": "79f0ff8a021a5e3ff79cfe37c6e2f239a130b3e6749175065796aa5313c5d16e"
+    },
+    "configs/human_pr_expansion_stability/deepseek_v4_pro_seed83.yaml": {
+      "bytes": 380,
+      "category": "model_config",
+      "sha256": "5ba6eea39beafe3fb9851308bc4818ea49c27ac8588db589effa2b8df0cb5250"
+    },
+    "configs/human_pr_expansion_stability/gemini31_pro_seed83.yaml": {
+      "bytes": 380,
+      "category": "model_config",
+      "sha256": "d7c3688791a2453b8b3dfa03569049117a5ef245f16c8cf366de220d270c2c64"
+    },
+    "configs/human_pr_expansion_stability/gpt41_seed83.yaml": {
+      "bytes": 286,
+      "category": "model_config",
+      "sha256": "f7005f4889dbe5dc2d2d40dd11488744a4f8f8a895e1dd7d10890cec697d705d"
+    },
+    "configs/human_pr_expansion_stability/kimi_k3_seed83.yaml": {
+      "bytes": 369,
+      "category": "model_config",
+      "sha256": "c7bf80bb95d6b3bafa7bfb778bdb2146293741b36b14c8fc72ccae11d2d8a284"
+    },
+    "configs/human_pr_expansion_stability/qwen38_max_seed83.yaml": {
+      "bytes": 367,
+      "category": "model_config",
+      "sha256": "ef8b7b892ebca78e8584fc8072e3e625f711f3843500f3f0f081cefff040da40"
+    },
+    "review/assets/evar-review-walkthrough.gif": {
+      "bytes": 238940,
+      "category": "method",
+      "sha256": "b0471ba8985ac1226c365861bf2c080c7cd4f0966c84f67c0c3a456c39c7917a"
+    },
+    "review/human_pr_200.html": {
+      "bytes": 26775,
+      "category": "method",
+      "sha256": "af328488bc452a8882cb7a48f5ae7d98855cbde7161862820bf6d71ab4774eee"
+    },
+    "scripts/adjudicate_human_pr_annotations.py": {
+      "bytes": 15159,
+      "category": "method",
+      "sha256": "ff4865758decf54a69c1d260e0f888c68c57c0e007a158b4e10471b7c4196e68"
+    },
+    "scripts/audit_human_pr_200_contamination.py": {
+      "bytes": 4554,
+      "category": "method",
+      "sha256": "ef37d93d6f98ddb4485f5ae94c0465537561a9a93b95177ef7f97bbc8eaf3280"
+    },
+    "scripts/freeze_human_pr_200_model_inputs.py": {
+      "bytes": 5696,
+      "category": "method",
+      "sha256": "d80c546931d8882d43dc2ac33a8b5602f656082b625f5765c13cc95fe64312a7"
+    },
+    "scripts/freeze_human_pr_expansion_prices.py": {
+      "bytes": 3396,
+      "category": "method",
+      "sha256": "481927f762a0a2ae0b0593372861c9562d0bc4a99598c7b35eaa58cbe47ae9bc"
+    },
+    "scripts/plan_human_pr_200_power.py": {
+      "bytes": 9904,
+      "category": "method",
+      "sha256": "386eea970429d7ee8ca484a9f2d7ce5cf9cbb97c763d6345a1b74ddcb001d66e"
+    },
+    "scripts/preflight_human_pr_expansion.py": {
+      "bytes": 5597,
+      "category": "method",
+      "sha256": "740ba162a62517a07cee4968ea761b6930407145602ec991de596e39c7bcdb47"
+    },
+    "scripts/render_human_pr_200.py": {
+      "bytes": 5699,
+      "category": "method",
+      "sha256": "2dc80569befe63c70d9661c70f80b4f3d8e15d285f55a2778164405689b37dbc"
+    },
+    "scripts/select_human_pr_200.py": {
+      "bytes": 4728,
+      "category": "method",
+      "sha256": "dad94a3ba96a725887ee139f3e18a874a53ae92f803fe8f8d0463b631468e895"
+    },
+    "scripts/validate_human_pr_annotation_export.py": {
+      "bytes": 905,
+      "category": "method",
+      "sha256": "8ba6a07c6c84de7266ea1f905b2f0946acf5b4610861faddf1e72f0b93038d4c"
+    }
+  },
+  "schema_version": 1,
+  "source_commit": "7de88b22160599197702564e9de1c91f0d92447a",
+  "study_status": "blocked_pending_institutional_determination_and_human_exports"
+}

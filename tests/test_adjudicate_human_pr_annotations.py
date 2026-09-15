@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.adjudicate_human_pr_annotations import adjudicate
+from scripts.adjudicate_human_pr_annotations import _nominal_agreement, adjudicate
 from scripts.render_human_pr_200 import accepted
 
 
@@ -84,6 +84,31 @@ class HumanPRAdjudicationTests(unittest.TestCase):
                 self._run(root, [self._row("one", "same")], [self._row("one", "same")])
             with self.assertRaisesRegex(ValueError, "candidate sets differ"):
                 self._run(root, [self._row("one", "a")], [self._row("two", "b")])
+
+    def test_audit_reports_field_level_independent_agreement(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            first = self._row("one", "a")
+            second = self._row("two", "a")
+            first_b = self._row("one", "b")
+            second_b = self._row("two", "b")
+            second_b["annotation"]["claim_family"] = "stale_evidence"
+            summary, _, _ = self._run(
+                Path(directory), [first, second], [first_b, second_b]
+            )
+
+        agreement = summary["independent_annotation_agreement"]
+        self.assertEqual(agreement["eligibility"]["percent_agreement"], 1.0)
+        self.assertEqual(
+            agreement["claim_family_among_both_eligible"]["percent_agreement"],
+            0.5,
+        )
+        self.assertEqual(
+            agreement["normalized_claim_exact_among_both_eligible"]["percent_agreement"],
+            1.0,
+        )
+
+    def test_nominal_agreement_handles_degenerate_perfect_marginals(self) -> None:
+        self.assertEqual(_nominal_agreement([True, True], [True, True])["cohen_kappa"], 1.0)
 
 
 if __name__ == "__main__":

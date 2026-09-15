@@ -35,7 +35,11 @@ from evar.verifier.verify import DeterministicVerifier
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run EVAR protocols over benchmark JSONL cases.")
-    parser.add_argument("--protocol", required=True, choices=["ar", "ar_text", "evar", "evar_hard"])
+    parser.add_argument(
+        "--protocol",
+        required=True,
+        choices=["ar", "ar_text", "evar", "evar_hard", "evar_blind_gate"],
+    )
     parser.add_argument("--cases", required=True, type=Path)
     parser.add_argument("--config", type=Path)
     parser.add_argument(

@@ -1,0 +1,42 @@
+{
+  "blocker_count": 7,
+  "blockers": [
+    {
+      "code": "ETHICS_DETERMINATION_PENDING",
+      "required_action": "Record the lead institution's determination before final annotation."
+    },
+    {
+      "code": "HUMAN_EXPORTS_MISSING",
+      "required_action": "Create and validate benchmarks/human_pr_200/resolved_annotations.jsonl."
+    },
+    {
+      "code": "SELECTION_MISSING",
+      "required_action": "Create a validated 300-row benchmarks/human_pr_200/final_300.jsonl."
+    },
+    {
+      "code": "FROZEN_CASES_MISSING",
+      "required_action": "Create a validated 600-row benchmarks/human_pr_200/frozen/cases.jsonl."
+    },
+    {
+      "code": "CONTAMINATION_AUDIT_MISSING",
+      "required_action": "Create a passing audit for the exact benchmarks/human_pr_200/final_300.jsonl."
+    },
+    {
+      "code": "MODEL_INPUT_FREEZE_MISSING",
+      "required_action": "Freeze the exact final cases in benchmarks/human_pr_200/model_input_freeze_manifest.json."
+    },
+    {
+      "code": "PRICE_FREEZE_MISSING",
+      "required_action": "Freeze current prices for every model in benchmarks/human_pr_200/price_freeze.json."
+    }
+  ],
+  "note": "This preflight never treats advisory LLM annotations as human labels.",
+  "ready_for_paid_runs": false,
+  "required_protocols": [
+    "ar",
+    "ar_text",
+    "evar_hard",
+    "evar_blind_gate"
+  ],
+  "schema_version": 1
+}

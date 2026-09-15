@@ -17,5 +17,10 @@ results/*
 .env
 .env.*
 !.env.example
+/private/
 benchmarks/external_10/sources/
 benchmarks/external_pr_50/sources/
+paper/arxiv/*.aux
+paper/arxiv/*.log
+paper/arxiv/*.out
+paper/arxiv/tmp/

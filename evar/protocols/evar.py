@@ -165,7 +165,13 @@ class EVARHardEvidenceProtocol:
                     )
                 )
 
-            critic_decision = self.critic.critique(task, receipt, verification_result)
+            text_evidence = self._text_evidence(receipt)
+            critic_decision = self._critic_decision(
+                task,
+                receipt,
+                verification_result,
+                text_evidence,
+            )
             transcript.append(
                 _event(
                     "CRITIC_DECISION",
@@ -186,6 +192,7 @@ class EVARHardEvidenceProtocol:
                 verification_result=verification_result,
                 critic_decision=critic_decision,
                 actionable=actionable,
+                text_evidence=text_evidence,
             )
             findings.append(finding)
             transcript.append(
@@ -206,6 +213,59 @@ class EVARHardEvidenceProtocol:
                 **self.metadata,
             },
         )
+
+    def _text_evidence(self, receipt: EvidenceReceipt) -> TextEvidence | None:
+        del receipt
+        return None
+
+    def _critic_decision(
+        self,
+        task: str,
+        receipt: EvidenceReceipt,
+        verification_result: VerificationResult,
+        text_evidence: TextEvidence | None,
+    ) -> CriticDecision:
+        del text_evidence
+        return self.critic.critique(task, receipt, verification_result)
+
+
+class EVARBlindGateEvidenceProtocol(EVARHardEvidenceProtocol):
+    """Verify a receipt but withhold that result from the critic.
+
+    The stored finding uses the hard gate. A critic-only or role-aware soft decision
+    can be replayed from the same finding, holding the receipt and critic call fixed.
+    """
+
+    name = "EVAR-BlindGate"
+
+    def _text_evidence(self, receipt: EvidenceReceipt) -> TextEvidence:
+        return TextEvidence(
+            claim=receipt.claim,
+            file=receipt.file,
+            line_start=receipt.line_start,
+            line_end=receipt.line_end,
+            explanation="Receipt projected to text; deterministic verification withheld from critic.",
+            quoted_or_paraphrased_support=receipt.expected_stdout_contains or receipt.claim,
+            falsification_condition=receipt.falsification_condition,
+        )
+
+    def _critic_decision(
+        self,
+        task: str,
+        receipt: EvidenceReceipt,
+        verification_result: VerificationResult,
+        text_evidence: TextEvidence | None,
+    ) -> CriticDecision:
+        del verification_result
+        if text_evidence is None:
+            raise ValueError("EVAR-BlindGate requires a textual receipt projection")
+        hidden = no_verification_result(
+            "Deterministic verification was performed but withheld from the critic."
+        )
+        critique_text = getattr(self.critic, "critique_text", None)
+        if critique_text is not None:
+            return critique_text(task, receipt, text_evidence, hidden)
+        return self.critic.critique(task, receipt, hidden)
 
 
 class EVARHardProtocol(BaseProtocol):

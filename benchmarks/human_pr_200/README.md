@@ -51,16 +51,28 @@ study requires both experts to annotate the full blinded `annotation_queue_682.j
 the target cannot be reached from the smaller tranche.
 
 Open the local annotation tool by serving the repository root and visiting
-`http://localhost:4173/review/human_pr_200.html`:
+`http://localhost:4180/review/human_pr_200.html`:
 
 ```bash
-PYTHONPATH=. python3 -m http.server 4173
+PYTHONPATH=. python3 -m http.server 4180
 ```
 
 Before the final passes, use the frozen 18-item interface pilot. It contains three
 candidates per language from 18 repositories. Pilot labels are workflow-training data,
 not benchmark ground truth; see `REVIEWER_HANDOFF.md` for role separation and the exact
-handoff procedure.
+handoff procedure. The study lead must also complete the institutional determination
+record and private reviewer log described in `ETHICS_AND_REVIEWER_GOVERNANCE.md`.
+
+Freeze the annotation inputs, method documents, reviewer interface, and planned model
+configurations by hash before the final passes:
+
+```bash
+PYTHONPATH=. python3 scripts/freeze_human_pr_expansion_inputs.py
+```
+
+The generated manifest deliberately records the study as blocked while the
+institutional determination and human exports are pending. It must not be interpreted
+as approval to begin paid model runs.
 
 The portal initially shows a highlighted 15-line window around the reviewed location.
 Reviewers can reveal the complete stored excerpt with **Show full context**. This
@@ -122,6 +134,36 @@ independent examples.
 
 The paid-run configurations are frozen under `configs/human_pr_expansion_full/` for
 the one-pass complete matrix and `configs/human_pr_expansion_stability/` for the
-three-pass 60-comment stability subset. They are inputs, not authorization to run:
+two additional calls on the 60-comment stability subset; together with the full-matrix
+call, this yields three total repetitions. They are inputs, not authorization to run:
 annotation, selection, rendering, contamination checks, input hashing, and a fresh
 price/credit preflight must all finish first.
+
+The empirical cost projection is generated from frozen Human PR 20 token accounting:
+
+```bash
+PYTHONPATH=. python3 scripts/project_human_pr_expansion_cost.py
+```
+
+See `COST_AND_EXECUTION_PLAN.md`. Exact prices and available credit must be refreshed
+and frozen after human case selection and before any paid request.
+
+The fail-closed readiness audit lists every remaining prerequisite and returns a
+nonzero status until paid execution is permitted:
+
+```bash
+PYTHONPATH=. python3 scripts/preflight_human_pr_expansion.py
+```
+
+After clearance, follow `POST_CLEARANCE_EXECUTION.md` from recruitment through paper
+update. The automated post-annotation gates are:
+
+- `audit_human_pr_200_contamination.py`, which rejects duplicate selected PRs and any
+  candidate, comment, pull-request, or repository overlap with Human PR 20;
+- `freeze_human_pr_200_model_inputs.py`, which verifies 300 reciprocal temporal pairs
+  and hashes cases, snapshots, prompts, configurations, and evaluator code; and
+- `freeze_human_pr_expansion_prices.py`, which requires current nonnegative prices and
+  source URLs for exactly the six configured models.
+
+The `private/` directory is ignored by Git. Store reviewer identities, acknowledgments,
+exports, timing logs, screening records, and compensation information only there.

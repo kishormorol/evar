@@ -14,4 +14,4 @@ protocol:
   reviewer_parse_retries: 1
 experiment:
   seed: 83
-  repetitions: 3
+  repetitions: 2

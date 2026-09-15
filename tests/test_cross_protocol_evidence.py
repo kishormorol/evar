@@ -34,7 +34,10 @@ class CrossProtocolEvidenceTests(unittest.TestCase):
         self.assertTrue(results["evar_hard"].accepted_findings)
 
     def test_registry_exposes_all_treatments(self) -> None:
-        self.assertEqual(set(PROTOCOL_REGISTRY), {"ar", "ar_text", "evar_hard"})
+        self.assertEqual(
+            set(PROTOCOL_REGISTRY),
+            {"ar", "ar_text", "evar_hard", "evar_blind_gate"},
+        )
 
     def test_result_record_schema_and_metrics(self) -> None:
         ar_result = create_protocol(

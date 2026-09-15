@@ -33,3 +33,7 @@ to the claim are retained in an adjudication log. Sampling is stratified by lang
 and repository, with no more than six source comments from one repository and at least
 40 repositories in the powered 300-comment set. If the resolved pool cannot meet those
 constraints, selection fails closed.
+
+The annotation interface and decisions do not mention experimental protocols. In
+particular, reviewers never see AR, EVAR-Hard, EVAR-BlindGate, model outputs, verifier
+outcomes, or the advisory LLM file.

@@ -82,7 +82,8 @@ class LLMIntegrationTests(unittest.TestCase):
         for path in full + stability:
             config = load_config(path)
             self.assertEqual(config.model.request_timeout_seconds, 120)
-            self.assertEqual(config.experiment.repetitions, 3 if path in stability else 1)
+            # The full-matrix run is repetition one; the stability configs add two.
+            self.assertEqual(config.experiment.repetitions, 2 if path in stability else 1)
             if config.model.backend == "openrouter":
                 self.assertEqual(config.model.max_attempts, 2)
                 self.assertEqual(config.model.max_total_seconds, 250)
