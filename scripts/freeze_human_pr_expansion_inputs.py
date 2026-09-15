@@ -112,7 +112,7 @@ def build_manifest(root: Path = ROOT) -> dict[str, object]:
         }
 
     languages = sorted({str(row.get("language", "unknown")) for row in queue})
-    repositories = sorted({str(row.get("repository", "unknown")) for row in queue})
+    repositories = sorted({str(row.get("source_repository", "unknown")) for row in queue})
     try:
         source_commit = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=root, text=True

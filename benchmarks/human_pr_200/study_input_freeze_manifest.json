@@ -10,11 +10,11 @@
       "TypeScript"
     ],
     "queue_count": 682,
-    "repository_count": 1,
+    "repository_count": 63,
     "target_source_comments": 300,
     "target_temporal_cases": 600
   },
-  "created_at": "2026-09-02T22:13:51.091886+00:00",
+  "created_at": "2026-09-15T21:40:37.852286+00:00",
   "experiment": {
     "confirmatory_comparison": "EVAR-BlindGate role-aware soft versus hard actionability",
     "confirmatory_model": "gpt-4.1",
@@ -213,6 +213,6 @@
     }
   },
   "schema_version": 1,
-  "source_commit": "7de88b22160599197702564e9de1c91f0d92447a",
+  "source_commit": "71e55ecaecd27517da474dcb2f09c031713a3a7b",
   "study_status": "blocked_pending_institutional_determination_and_human_exports"
 }

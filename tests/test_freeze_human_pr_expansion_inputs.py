@@ -9,6 +9,7 @@ def test_powered_human_study_inputs_are_complete_and_label_free() -> None:
     assert manifest["study_status"].startswith("blocked_pending")
     assert manifest["benchmark"]["candidate_count"] == 682
     assert manifest["benchmark"]["queue_count"] == 682
+    assert manifest["benchmark"]["repository_count"] == 63
     assert manifest["benchmark"]["target_temporal_cases"] == 600
     assert manifest["experiment"]["request_timeout_seconds"] == 120
     assert manifest["experiment"]["protocols"] == [
