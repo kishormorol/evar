@@ -48,6 +48,9 @@ Everything behind the paper's numbers: evaluator, prompts, configs, frozen
 benchmark snapshots, canonical results and transcripts with their manifests,
 judge-free audit reports, analysis scripts, and the preregistered expansion.
 
+The paper's supplementary appendices (receipt-validation rules and the full
+expansion protocol) are in `paper/arxiv/supplement.pdf`.
+
 Requires Python 3.11 or later. No third-party packages are needed to run the
 tests or regenerate the reported summaries.
 
