@@ -1,0 +1,49 @@
+\documentclass[acmsmall,screen,review,anonymous]{acmart}
+
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{xspace}
+\usetikzlibrary{arrows.meta,positioning}
+
+\setcopyright{none}
+\settopmatter{printfolios=true}
+\acmYear{2027}
+\raggedbottom
+\acmConference[FSE 2027]{ACM International Conference on the Foundations of Software Engineering}{July 12--16, 2027}{Shenzhen, China}
+\acmBooktitle{ACM International Conference on the Foundations of Software Engineering (FSE 2027)}
+\acmDOI{}
+\acmISBN{}
+\newcommand{\evar}{\textsc{Evar}\xspace}
+\newcommand{\fcr}{\textsc{Fcr}\xspace}
+\newcommand{\scr}{\textsc{Scr}\xspace}
+
+\title{Supplementary Material: Auditing Evidence-Verified Adversarial Review for Code-Review Claims}
+\author{Anonymous Author(s)}
+
+\begin{document}
+\maketitle
+
+This supplement accompanies the submission. It gives the receipt-validation rules and the full protocol of the preregistered Human PR expansion referred to in the paper.
+
+\appendix
+
+\section{Receipt Validation Rules}
+
+Structural validation removes display-only fences, line numbers, and whitespace before matching the selected frozen-source interval. Two conservative recoveries handle an unambiguous stale path or an out-of-range display interval; behavioral receipts receive neither. Behavioral validation parses an argument vector, enforces a timeout, and requires the expected exit status and \texttt{EVAR\_WITNESS\_PASS} marker. The local backend uses \texttt{shell=False}; the optional Docker backend adds no network, a read-only repository mount, capability dropping, \texttt{no-new-privileges}, a non-root UID, resource limits, and bounded temporary storage. Missing paths, observation mismatches, exit mismatches, and timeouts remain typed failures.
+
+Evidence role is checked separately. The only frozen repairs align a role with an explicit opposite-role AST observation or replace a syntactically invalid inline-Python witness with structural checking. Both are logged and re-verified; neither rewrites a claim, chooses new evidence, or invokes a semantic model. Generic structural recovery is deterministic but not separately tagged, an auditability limitation.
+
+\section{Powered Human PR Expansion Protocol}
+
+The acquired but unlabeled pool contains 682 public review-comment candidates from 63 repositories. Each record binds a human inline comment to exact reviewed and merged commits, changed target, full-file hashes, and source URLs; the collector caps one candidate per pull request and excludes Human PR 20 repositories. These checks establish provenance, not a label.
+
+Two experts independently receive the blinded comment, snapshots, and provenance; decide eligibility; normalize the claim; assign one of five frozen families; and judge support at review and absence at merge. Every disagreement enters identity-blinded third-party adjudication. The merger fails closed on incomplete decisions or non-distinct reviewer identities and records reviewer IDs, resolution mode, adjudicator ID, and input hashes. Deterministic selection then requires 300 eligible comments from at least 40 repositories, balances language and family under a six-comment repository cap, and emits 600 paired temporal cases plus a hashed manifest. Advisory LLM labels are never shown to experts or accepted as ground truth.
+
+The target follows a prospective calculation using only frozen Human PR 20 outcomes. Because no verification-blind pilot exists, both label endpoints use the largest earlier 95\% Wilson upper bound on discordance (.603) as a conservative proxy. Under an exact two-sided McNemar test, a .15 absolute paired difference, and per-endpoint $\alpha=.025$, 300 source comments give calculated power .856 for each endpoint. The confirmatory GPT-4.1 comparison is role-aware soft versus hard actionability from the same BlindGate row; five providers form unpooled extensions. Every request uses a 120-second deadline; gateway-routed provider requests additionally allow at most two attempts within a 250-second total budget, while direct GPT-4.1 requests make one attempt. A stratified 60-comment subset receives three total repetitions. Based on frozen per-attempt costs, the complete 20,160-attempt plan projects to about \$211 before a 25\% contingency (\$264 upper bound); execution therefore requires a separately approved budget and fresh price freeze.
+
+Paid execution is also blocked by a fail-closed preflight. It requires a recorded institutional determination, validated expert and adjudicator exports, the 300-comment selection, the 600 rendered cases, a passing contamination audit of that exact selection, a hash freeze of the model-visible inputs, and current prices for every configured model. The preflight never treats advisory LLM annotations as human labels. At the time of writing, none of these conditions is yet satisfied, and no powered result is reported.
+
+
+\end{document}

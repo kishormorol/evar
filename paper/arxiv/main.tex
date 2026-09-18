@@ -91,13 +91,11 @@ Alert triage offers a close analogue outside code review. Xiong and Zhang compar
 
 Software-engineering benchmarks increasingly ground tasks in public development history. SWE-bench uses real GitHub issues and pull requests and demonstrates the need for repository context and executable environments \cite{swebench}. SWE-PRBench evaluates code-review models against pull-request feedback and reports limited detection of human-flagged issues \cite{sweprbench}. Our task is narrower: a candidate claim is given, and the system must decide whether it remains actionable under the supplied repository snapshot.
 
-SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues \cite{swrbench}. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable. A future larger benchmark should combine EVAR's receipt-level audit with the PR-scale context and manual verification used by SWR-Bench.
+SWR-Bench makes a complementary choice: it evaluates 1,000 complete pull requests with full-project context and structured ground truth, then asks whether generated reviews cover the reported issues \cite{swrbench}. EVAR is smaller and deliberately different. It does not score open-ended issue discovery; it fixes one candidate claim and asks whether that claim can cross an auditable evidence boundary. That trades breadth for a clean test of false consensus and lets us report why a finding was accepted, rejected, or mechanically unverifiable.
 
 c-CRAB derives tests from human pull-request reviews and uses them to judge whether a review agent identified the same issue; existing agents collectively solve about 40\% of its tasks \cite{ccrab}. Executable validation of review content is close to \evar's behavioral witnesses. The difference is again the unit: c-CRAB tests an agent's discovered issues against held-out tests, whereas an \evar receipt is the reviewer's own falsifiable observation for a claim that is already fixed.
 
-ContextCRBench reaches a different scale, with context-enriched entries for quality assessment, localization, and comment generation \cite{contextcrbench}. Its emphasis on issue context and fine-grained localization reinforces an important external-validity limit here: EVAR's focused excerpts isolate the verification question, but they cannot substitute for evaluating complete pull requests with developer intent.
-
-AACR-Bench provides multilingual, repository-level context and uses AI-assisted, expert-verified annotation to uncover defects beyond the original review record \cite{aacrbench}. This improves the breadth of open-ended review evaluation and makes language and retrieval effects measurable. EVAR controls a different experimental unit: it does not ask a model to find an unknown defect, but tests the support and actionability of a fixed claim under two historical repository states.
+ContextCRBench adds context-enriched entries for quality assessment, localization, and comment generation \cite{contextcrbench}, and AACR-Bench adds multilingual, repository-level context with expert-verified annotation that uncovers defects beyond the original review record \cite{aacrbench}. Both broaden open-ended review evaluation, and both mark an external-validity limit here: EVAR's focused excerpts isolate the verification question but cannot substitute for evaluating complete pull requests with developer intent. EVAR controls a different unit: not whether a model finds an unknown defect, but whether a fixed claim is supported and actionable under two historical repository states.
 
 Sphinx constructs context-rich PR-review examples, evaluates generated reviews with actionable checklists, and uses those checklists as interpretable training rewards \cite{sphinx}. Its structured verification points are close in spirit to evidence receipts, but the unit and objective differ: Sphinx scores coverage and trains a review generator, whereas EVAR holds one claim fixed and audits the causal path from submitted evidence to actionability.
 
@@ -298,7 +296,7 @@ We evaluated five exact OpenRouter model slugs: Claude Sonnet 5, Gemini 3.1 Pro 
 
 \subsection{Gate replay and prospective causal control}
 
-After all reported runs were frozen, we replayed each \evar-Hard result under a role-aware soft rule while holding the submitted receipt, deterministic verifier outcome, evidence role, and critic decision fixed. This replay makes no model call and cannot improve a receipt. It asks only whether removing the \texttt{VERIFIED} conjunct changes the stored actionability decision. Discovering that it never did motivated a prospective amendment for the larger study: a verification-blind critic sees the same textual receipt but not $v$, after which the same row emits $A_{\mathrm{soft}}$ and $A_{\mathrm{hard}}$. The amendment, prompt, power plan, and hashes were frozen before expert labels or powered model calls.
+After all reported runs were frozen, we replayed each \evar-Hard result under a role-aware soft rule while holding the submitted receipt, deterministic verifier outcome, evidence role, and critic decision fixed. This replay makes no model call and cannot improve a receipt. It asks only whether removing the \texttt{VERIFIED} conjunct changes the stored actionability decision. Discovering that it never did motivated a prospective amendment for the larger study: a verification-blind critic sees the same textual receipt but not $v$, after which the same row emits $A_{\mathrm{soft}}$ and $A_{\mathrm{hard}}$. The amendment, prompt, power plan, and hashes were frozen before expert labels or powered model calls; the supplementary material gives the full protocol and the receipt-validation rules.
 
 \subsection{Use of AI tools}
 
@@ -594,13 +592,13 @@ A gate evaluation must also separate information from enforcement. Showing verif
 
 Verifier coverage also needs the same train/test discipline as a learned component. It is tempting to add a structural check whenever a final case fails. Doing so may improve the tool, but the resulting score is diagnostic, not held-out evidence. Our post-hoc perfect result on External PR 20 is reported in exactly that role.
 
-Finally, a failed receipt is an abstention, even when the implementation records it as a rejected finding. A production system needs to decide where those abstentions go. Silently dropping them may be acceptable in a high-noise assistant, but not in a safety-sensitive review process. A more useful deployment might keep deterministic verification as a privileged signal while routing unverified claims to a clearly separated human-review queue.
+Finally, a failed receipt is an abstention, even when recorded as a rejected finding. Dropping abstentions silently may suit a high-noise assistant but not a safety-sensitive review process, which should route unverified claims to a separate human-review queue.
 
 Replacing the deterministic gate with another semantic judge would improve coverage, but it would also recreate the correlated-error problem that motivated \evar. Such a judge may still be useful, provided its output is reported as judgment rather than verification.
 
 \subsection{What the study does not establish}
 
-This experiment evaluates supplied claims, not open-ended review. It says nothing directly about how many defects an agent discovers, whether developers value its comments, or whether review becomes faster. We also leave the relative cost of a false alarm and a missed finding unspecified; that is why FCR and SCR remain separate. The cross-provider extension broadens model coverage, but it reuses the same cases and contributes repeated and operational evidence, not new independent examples. Incomplete provider cells cannot be used to rank protocols because the missing outputs are neither random nor negative decisions.
+This experiment evaluates supplied claims, not open-ended review. It says nothing directly about how many defects an agent discovers, whether developers value its comments, or whether review becomes faster. We also leave the relative cost of a false alarm and a missed finding unspecified; that is why FCR and SCR remain separate.
 
 \section{Threats to Validity}
 
@@ -617,33 +615,19 @@ The final holdout is ten source comments from five Python repositories, paired i
 Most holdout cells contain one stochastic call per case, and the configured seeds are provenance labels rather than guaranteed inference controls. With ten eligible cases, a single decision moves a metric by .100. The cluster bootstrap shows sensitivity to the observed pairs; it does not create a sampled population. Exact paired tests are likewise uninformative with zero to three discordances. In the provider extension, 32 rows are censored by a fixed 20-second client deadline and one fails output parsing. These are not random missing observations and cannot support a model-reliability ranking, so incomplete cells are excluded from performance comparisons.
 
 \paragraph{Data ethics.}
-The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers. The powered expansion adds human expert annotators, so it is governed separately: expert annotation does not begin until the lead institution records its determination, reviewers receive an information sheet and use unrelated pseudonymous identifiers, and names, contact details, acknowledgments, and compensation records are kept outside the artifact.
+The source repositories and review comments are public, and URLs and usernames are retained for provenance. No private communication or inferred developer attributes are included. Public availability is not the same as research consent, however: the comments were written to maintain software. We therefore restrict the analysis to technical claims and report model behavior in aggregate rather than profiling reviewers. The powered expansion adds human expert annotators and is governed separately: annotation waits for an institutional determination, and annotator identities are kept outside the artifact.
 
 \paragraph{Extension validity.}
 Both model extensions reuse Human PR 20 after the original outcomes were known. They are repeated measurements, not additional benchmark examples. Reasoning settings are not necessarily comparable across vendors, and exact model aliases, routing, behavior, and prices can change after the freeze. The gateway may also choose among eligible serving providers. These facts are why the provider analysis separates complete-cell quality estimates from 300-attempt reliability accounting.
 
 \paragraph{Implementation scope and safety.}
-The verifier is Python-specific and recognizes a limited set of structural and behavioral observations. The reported experiments used trusted fixtures and shell-free local execution under a timeout. The current evaluator additionally offers a hardened Docker backend with a read-only repository mount, no network, no Linux capabilities, a non-root user, a no-new-privileges policy, and CPU, memory, process, and temporary-filesystem limits. Its command construction is covered by tests, but Docker Desktop was unavailable for an end-to-end smoke run in this environment; we therefore do not retroactively describe the reported results as containerized.
+The verifier is Python-specific and recognizes a limited set of structural and behavioral observations. The reported experiments used trusted fixtures and shell-free local execution under a timeout. The evaluator also offers a hardened, network-less Docker backend whose command construction is tested, but it was not used for the reported runs, which we therefore do not describe as containerized.
 
 \section{Reproducibility and Availability}
 
-The existing artifact contains evaluator code, prompts, configs, benchmark snapshots, all 720 original canonical decisions and transcripts, input and output manifests, audit reports, analysis scripts, and the independent-review packet. The 180-decision GPT-5.6 extension and 300-attempt cross-provider extension are prepared for the revised artifact; their configs, run indices, reports, transcripts, and failed rows preserve the extension evidence. The larger-replication package adds an identity-blinded adjudication queue, configurable request deadlines, executable repetitions, a prospective power calculation, and a complete 682-record advisory LLM file. The candidates remain unlabeled by experts, and the paper makes no benchmark-performance claim from the advisory outputs. Identifying repository and project-site URLs are omitted during double-blind review. An anonymized snapshot will be supplied through the venue's artifact mechanism; archival DOI and public links will be restored in the non-anonymous version.
+The replication package contains evaluator code, prompts, configs, benchmark snapshots, all canonical decisions and transcripts including the GPT-5.6 and cross-provider extensions and their failed rows, input and output manifests, audit reports, and analysis scripts. It also holds the preregistered expansion: the identity-blinded adjudication queue, the prospective power calculation, and the advisory LLM file over all 682 candidates, which remain unlabeled by experts and support no performance claim. Identifying repository and project-site URLs are omitted during double-blind review.
 
-The artifact has four layers. Input manifests hash cases, repository snapshots, prompts, model configs, evaluator code, verifier code, and scoring code. Run indices identify canonical JSONL outputs. Judge-free audit reports check completeness and invariants. Output manifests hash every canonical result and transcript. The cross-provider manifest additionally records the gateway endpoint, exact model slugs, reasoning setting, token cap, and schema-routing requirement.
-
-The core deterministic reproduction path is:
-\begin{verbatim}
-python -m unittest discover -s tests
-python -m evar.preflight --config CONFIG --cases CASES
-python -m evar.run --protocol PROTOCOL --cases CASES \
-  --config CONFIG --output-dir RESULTS
-python scripts/report_human_pr_20_cross_provider.py
-python scripts/audit_human_pr_20_cross_provider.py
-python scripts/report_gate_ablation.py --input RESULTS --output REPLAY
-python scripts/report_auditability.py --index INDEX --output AUDIT
-\end{verbatim}
-The last two commands regenerate the same-row gate replay and the 1,200-attempt auditability summary from indexed results without model calls.
-Model-backed reproduction requires the corresponding API credential and will not be byte-identical because provider inference is not guaranteed deterministic. The preserved transcripts and metadata support outcome-level rather than bit-level replication.
+The package has four layers. Input manifests hash cases, repository snapshots, prompts, model configs, evaluator, verifier and scoring code. Run indices identify canonical JSONL outputs. Judge-free audit reports check completeness and invariants. Output manifests hash every canonical result and transcript; the cross-provider manifest also records the gateway endpoint, exact model slugs, reasoning setting, token cap, and schema-routing requirement. The package README lists the reproduction commands. The same-row gate replay and the 1,200-attempt auditability summary regenerate from the indexed results without model calls; model-backed reproduction needs API credentials and supports outcome-level rather than bit-level replication, because provider inference is not guaranteed deterministic.
 
 \section{Conclusion}
 
@@ -654,24 +638,6 @@ The sharper result comes from auditing the mechanism. Once receipt, verifier out
 \section*{Data Availability}
 
 An anonymized replication package containing frozen cases, prompts, configs, evaluator code, indexed results, transcripts, manifests, and deterministic audit scripts will be supplied to reviewers. The 682 acquired expansion candidates remain unlabeled until independent expert review; advisory model outputs are segregated and are not benchmark ground truth. Archival identifiers and public project links will be restored after anonymous review.
-
-\appendix
-
-\section{Receipt Validation Rules}
-
-Structural validation removes display-only fences, line numbers, and whitespace before matching the selected frozen-source interval. Two conservative recoveries handle an unambiguous stale path or an out-of-range display interval; behavioral receipts receive neither. Behavioral validation parses an argument vector, enforces a timeout, and requires the expected exit status and \texttt{EVAR\_WITNESS\_PASS} marker. The local backend uses \texttt{shell=False}; the optional Docker backend adds no network, a read-only repository mount, capability dropping, \texttt{no-new-privileges}, a non-root UID, resource limits, and bounded temporary storage. Missing paths, observation mismatches, exit mismatches, and timeouts remain typed failures.
-
-Evidence role is checked separately. The only frozen repairs align a role with an explicit opposite-role AST observation or replace a syntactically invalid inline-Python witness with structural checking. Both are logged and re-verified; neither rewrites a claim, chooses new evidence, or invokes a semantic model. Generic structural recovery is deterministic but not separately tagged, an auditability limitation.
-
-\section{Powered Human PR Expansion Protocol}
-
-The acquired but unlabeled pool contains 682 public review-comment candidates from 63 repositories. Each record binds a human inline comment to exact reviewed and merged commits, changed target, full-file hashes, and source URLs; the collector caps one candidate per pull request and excludes Human PR 20 repositories. These checks establish provenance, not a label.
-
-Two experts independently receive the blinded comment, snapshots, and provenance; decide eligibility; normalize the claim; assign one of five frozen families; and judge support at review and absence at merge. Every disagreement enters identity-blinded third-party adjudication. The merger fails closed on incomplete decisions or non-distinct reviewer identities and records reviewer IDs, resolution mode, adjudicator ID, and input hashes. Deterministic selection then requires 300 eligible comments from at least 40 repositories, balances language and family under a six-comment repository cap, and emits 600 paired temporal cases plus a hashed manifest. Advisory LLM labels are never shown to experts or accepted as ground truth.
-
-The target follows a prospective calculation using only frozen Human PR 20 outcomes. Because no verification-blind pilot exists, both label endpoints use the largest earlier 95\% Wilson upper bound on discordance (.603) as a conservative proxy. Under an exact two-sided McNemar test, a .15 absolute paired difference, and per-endpoint $\alpha=.025$, 300 source comments give calculated power .856 for each endpoint. The confirmatory GPT-4.1 comparison is role-aware soft versus hard actionability from the same BlindGate row; five providers form unpooled extensions. Every request uses a 120-second deadline; gateway-routed provider requests additionally allow at most two attempts within a 250-second total budget, while direct GPT-4.1 requests make one attempt. A stratified 60-comment subset receives three total repetitions. Based on frozen per-attempt costs, the complete 20,160-attempt plan projects to about \$211 before a 25\% contingency (\$264 upper bound); execution therefore requires a separately approved budget and fresh price freeze.
-
-Paid execution is also blocked by a fail-closed preflight. It requires a recorded institutional determination, validated expert and adjudicator exports, the 300-comment selection, the 600 rendered cases, a passing contamination audit of that exact selection, a hash freeze of the model-visible inputs, and current prices for every configured model. The preflight never treats advisory LLM annotations as human labels. At the time of writing, none of these conditions is yet satisfied, and no powered result is reported.
 
 \begin{thebibliography}{31}
 \bibitem{selfrefine}
@@ -702,7 +668,7 @@ C. E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Is
 D. Kumar. SWE-PRBench: Benchmarking AI Code Review Quality Against Pull Request Feedback. \emph{arXiv:2603.26130}, 2026.
 
 \bibitem{swrbench}
-Z. Zeng et al. Benchmarking and Studying the LLM-based Code Review. \emph{arXiv:2509.01494}, 2025.
+Z. Zeng et al. SWR-Bench: Assessing LLM Performance in Real-World Code Review Comment Generation. \emph{arXiv:2509.01494}, 2025.
 
 \bibitem{bacchelli-bird}
 A. Bacchelli and C. Bird. Expectations, Outcomes, and Challenges of Modern Code Review. In \emph{Proceedings of ICSE}, pp. 712--721, 2013. doi:10.1109/ICSE.2013.6606617.
