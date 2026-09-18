@@ -24,3 +24,7 @@ paper/arxiv/*.aux
 paper/arxiv/*.log
 paper/arxiv/*.out
 paper/arxiv/tmp/
+
+# latexmk byproducts
+*.fdb_latexmk
+*.fls
