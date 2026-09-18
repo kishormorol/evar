@@ -28,3 +28,6 @@ paper/arxiv/tmp/
 # latexmk byproducts
 *.fdb_latexmk
 *.fls
+
+# built submission and review PDFs
+/output/
